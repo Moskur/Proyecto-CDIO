@@ -11,8 +11,9 @@ ARCHIVO_CSV = "jugadores.csv"
 CAMPOS_CSV  = ["nombre", "genero", "correo", "puntaje", "fecha"]
 GENEROS     = ["Mujer", "Hombre", "No-binario", "Otro"]
 
-# ============================================================
+
 # BANCO DE PREGUNTAS
+
 
 preguntas_completas = [
     {
@@ -104,7 +105,6 @@ preguntas_completas = [
         ],
         "correcta": "Entre 100 y 500 años",
     },
-    # === CARTÓN Y PAPEL ===
     {
         "id": 10,
         "pregunta": "Si el cartón y el papel no se reciclan y terminan enterrados en un vertedero saturado, ¿cómo dañan el medioambiente?",
@@ -145,7 +145,6 @@ preguntas_completas = [
         ],
         "correcta": "Depende del país/planta, pero hoy en día muchas instalaciones piden dejarlas puestas o separarlas en puntos específicos",
     },
-    # === VIDRIO ===
     {
         "id": 14,
         "pregunta": "¿Qué peligro grave de contaminación y destrucción ambiental genera un envase de vidrio abandonado en un bosque o ecosistema terrestre seco?",
@@ -185,7 +184,7 @@ preguntas_completas = [
         ],
         "correcta": "Falso",
     },
-    # === VERDADERO O FALSO ===
+    # === VERDADERO O FALSO ⬇️
     {
         "id": 18,
         "pregunta": "¿Verdadero o Falso? Las cajas de pizza con manchas de grasa se pueden reciclar sin problema junto con el papel limpio.",
@@ -260,8 +259,9 @@ preguntas_completas = [
     },
 ]
 
-# ============================================================
-# VALIDACIONES
+
+# VALIDACIONES ⬇️
+
 
 def nombre_valido(nombre):
     if not nombre.strip():
@@ -277,8 +277,8 @@ def correo_valido(correo):
         return "El correo debe tener el formato: nombre@dominio.com"
     return ""
 
-# ============================================================
-# GUARDAR EN CSV
+
+# GUARDAR EN CSV ⬇️
 
 
 def guardar_jugador(nombre, genero, correo, puntaje, total):
@@ -302,8 +302,8 @@ def guardar_jugador(nombre, genero, correo, puntaje, total):
             "fecha":   datetime.now().strftime("%Y-%m-%d %H:%M"),
         })
 
-# ============================================================
-# RUTAS
+
+# RUTAS 
 
 
 @app.route("/", methods=["GET", "POST"])
