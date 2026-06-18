@@ -12,7 +12,7 @@ CAMPOS_CSV  = ["nombre", "genero", "correo", "puntaje", "fecha"]
 GENEROS     = ["Mujer", "Hombre", "No-binario", "Otro"]
 
 
-# BANCO DE PREGUNTAS
+# BANCO DE PREGUNTAS 
 
 
 preguntas_completas = [
@@ -184,7 +184,7 @@ preguntas_completas = [
         ],
         "correcta": "Falso",
     },
-    # === VERDADERO O FALSO ⬇️
+    # === VERDADERO O FALSO 
     {
         "id": 18,
         "pregunta": "¿Verdadero o Falso? Las cajas de pizza con manchas de grasa se pueden reciclar sin problema junto con el papel limpio.",
@@ -260,7 +260,7 @@ preguntas_completas = [
 ]
 
 
-# VALIDACIONES ⬇️
+# VALIDACIONES 
 
 
 def nombre_valido(nombre):
@@ -278,7 +278,7 @@ def correo_valido(correo):
     return ""
 
 
-# GUARDAR EN CSV ⬇️
+# GUARDAR EN CSV 
 
 
 def guardar_jugador(nombre, genero, correo, puntaje, total):
