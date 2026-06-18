@@ -1,0 +1,242 @@
+[
+  {
+    "id": 1,
+    "pregunta": "¿Qué significa el número \"1\" dentro del triángulo de reciclaje en las botellas de plástico?",
+    "opciones": [
+      "Que es el plástico más tóxico",
+      "Que está hecho de PET (Polietileno Tereftalato) y es altamente reciclable",
+      "Que solo se puede reciclar una vez en la vida"
+    ],
+    "correcta": "Que está hecho de PET (Polietileno Tereftalato) y es altamente reciclable"
+  },
+  {
+    "id": 2,
+    "pregunta": "¿Cómo afecta la acumulación de microplásticos (partículas menores a 5 mm) al medioambiente marino?",
+    "opciones": [
+      "Sirven de alimento nutritivo para los corales y peces pequeños",
+      "Son ingeridos por la fauna marina, bloqueando sus sistemas digestivos e introduciendo toxinas en toda la cadena alimenticia (incluyendo a los humanos)",
+      "Se disuelven rápidamente purificando el agua salada"
+    ],
+    "correcta": "Son ingeridos por la fauna marina, bloqueando sus sistemas digestivos e introduciendo toxinas en toda la cadena alimenticia (incluyendo a los humanos)"
+  },
+  {
+    "id": 3,
+    "pregunta": "Antes de reciclar un envase de plástico, ¿qué es lo más importante que debes hacer?",
+    "opciones": [
+      "Aplastarlo y enjuagarlo para quitar restos de comida",
+      "Romperlo en pedazos muy pequeños con tijeras",
+      "Pintarlo de verde para que lo reconozcan en la planta"
+    ],
+    "correcta": "Aplastarlo y enjuagarlo para quitar restos de comida"
+  },
+  {
+    "id": 4,
+    "pregunta": "¿En qué se puede transformar una botella de plástico PET reciclada?",
+    "opciones": [
+      "En vidrio templado",
+      "En combustible para aviones",
+      "En ropa de fibra polar (poliéster) o en nuevas botellas"
+    ],
+    "correcta": "En ropa de fibra polar (poliéster) o en nuevas botellas"
+  },
+  {
+    "id": 5,
+    "pregunta": "Cuando los residuos plásticos no se reciclan y se queman ilegalmente a cielo abierto, ¿cuál es su impacto en la atmósfera?",
+    "opciones": [
+      "Liberan gases altamente tóxicos, como dioxinas y furanos, que contaminan el aire y dañan la salud respiratoria de comunidades cercanas",
+      "Producen vapor de agua que ayuda a mitigar las sequías locales",
+      "Generan una capa protectora artificial que frena los rayos UV"
+    ],
+    "correcta": "Liberan gases altamente tóxicos, como dioxinas y furanos, que contaminan el aire y dañan la salud respiratoria de comunidades cercanas"
+  },
+  {
+    "id": 6,
+    "pregunta": "¿Qué tipo de plástico suele ser el número 3 (PVC)?",
+    "opciones": [
+      "Envases de yogur y mantequilla",
+      "Tuberías, tarjetas de crédito y algunos juguetes (difícil de reciclar)"
+    ],
+    "correcta": "Tuberías, tarjetas de crédito y algunos juguetes (difícil de reciclar)"
+  },
+  {
+    "id": 7,
+    "pregunta": "Las bolsas plásticas y redes de pesca abandonadas en el océano provocan el fenómeno de la \"pesca fantasma\". ¿Cómo afecta esto a la biodiversidad?",
+    "opciones": [
+      "Ayuda a que los peces encuentren refugio contra depredadores grandes",
+      "Atrapa y ahoga continuamente a tortugas, ballenas y aves marinas sin control humano",
+      "Acelera la reproducción de los mamíferos marinos"
+    ],
+    "correcta": "Atrapa y ahoga continuamente a tortugas, ballenas y aves marinas sin control humano"
+  },
+  {
+    "id": 8,
+    "pregunta": "¿Se pueden reciclar las bolsas de plástico de los supermercados en el contenedor tradicional de plásticos rígidos?",
+    "opciones": [
+      "Sí, junto con las botellas",
+      "No, suelen requerir un punto de acopio especial porque atascan las máquinas",
+      "Solo si son de color blanco"
+    ],
+    "correcta": "No, suelen requerir un punto de acopio especial porque atascan las máquinas"
+  },
+  {
+    "id": 9,
+    "pregunta": "¿Aproximadamente cuánto tarda una botella de plástico en degradarse en la naturaleza?",
+    "opciones": [
+      "10 años",
+      "Entre 100 y 500 años",
+      "5 años"
+    ],
+    "correcta": "Entre 100 y 500 años"
+  },
+  {
+    "id": 10,
+    "pregunta": "Si el cartón y el papel no se reciclan y terminan enterrados en un vertedero saturado, ¿cómo dañan el medioambiente?",
+    "opciones": [
+      "Se compactan tanto que provocan pequeños terremotos locales",
+      "Se descomponen sin oxígeno (de forma anaeróbica), generando metano, un gas de efecto invernadero mucho más potente que el CO₂",
+      "Filtran nutrientes que congelan las aguas subterráneas"
+    ],
+    "correcta": "Se descomponen sin oxígeno (de forma anaeróbica), generando metano, un gas de efecto invernadero mucho más potente que el CO₂"
+  },
+  {
+    "id": 11,
+    "pregunta": "El plástico de burbujas usado para embalaje, ¿se recicla?",
+    "opciones": [
+      "Sí, en el contenedor de botellas",
+      "Sí, pero como película plástica flexible (puntos de acopio específicos)",
+      "No, es considerado residuo peligroso"
+    ],
+    "correcta": "Sí, pero como película plástica flexible (puntos de acopio específicos)"
+  },
+  {
+    "id": 12,
+    "pregunta": "La tala indiscriminada para producir cartón nuevo (en lugar de reciclar) afecta gravemente a los ecosistemas terrestres porque:",
+    "opciones": [
+      "Provoca la pérdida de hábitats, erosión severa del suelo y reduce la capacidad del planeta para absorber el dióxido de carbono de la atmósfera",
+      "Hace que los árboles restantes crezcan el doble de rápido",
+      "Genera un exceso de oxígeno que confunde a las aves migratorias"
+    ],
+    "correcta": "Provoca la pérdida de hábitats, erosión severa del suelo y reduce la capacidad del planeta para absorber el dióxido de carbono de la atmósfera"
+  },
+  {
+    "id": 13,
+    "pregunta": "¿Qué pasa si dejas la tapa puesta en la botella de plástico al reciclar?",
+    "opciones": [
+      "Hace que la botella sea irreciclable",
+      "Explota en la planta de reciclaje",
+      "Depende del país/planta, pero hoy en día muchas instalaciones piden dejarlas puestas o separarlas en puntos específicos"
+    ],
+    "correcta": "Depende del país/planta, pero hoy en día muchas instalaciones piden dejarlas puestas o separarlas en puntos específicos"
+  },
+  {
+    "id": 14,
+    "pregunta": "¿Qué peligro grave de contaminación y destrucción ambiental genera un envase de vidrio abandonado en un bosque o ecosistema terrestre seco?",
+    "opciones": [
+      "Atrae plagas de insectos que devoran las raíces de los árboles",
+      "Puede actuar como lupa con los rayos del sol, concentrando el calor e iniciando un incendio forestal",
+      "Al degradarse en la tierra, vuelve el suelo completamente estéril en pocas horas"
+    ],
+    "correcta": "Puede actuar como lupa con los rayos del sol, concentrando el calor e iniciando un incendio forestal"
+  },
+  {
+    "id": 15,
+    "pregunta": "Para reciclar una caja de cartón correctamente, ¿cuál es el primer paso?",
+    "opciones": [
+      "Desarmarla y plegarla para que ocupe menos espacio",
+      "Llenarla de otros papeles hasta que esté a punto de explotar",
+      "Mojarla para que se deshaga más rápido"
+    ],
+    "correcta": "Desarmarla y plegarla para que ocupe menos espacio"
+  },
+  {
+    "id": 16,
+    "pregunta": "La fabricación de vidrio desde cero requiere la extracción masiva de arena de sílice de ríos y costas. ¿Cómo afecta esta actividad al medioambiente acuático?",
+    "opciones": [
+      "Destruye los lechos de los ríos, altera los flujos de agua, provoca erosión costera y destruye el hábitat de especies acuáticas",
+      "Ayuda a limpiar el fondo de los ríos de sedimentos peligrosos",
+      "Aumenta la temperatura del agua de forma beneficiosa para los peces tropicales"
+    ],
+    "correcta": "Destruye los lechos de los ríos, altera los flujos de agua, provoca erosión costera y destruye el hábitat de especies acuáticas"
+  },
+  {
+    "id": 17,
+    "pregunta": "¿Verdadero o Falso? Aplastar las botellas de plástico y las cajas de cartón es inútil y no ayuda al proceso de recolección.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Falso"
+  },
+  {
+    "id": 18,
+    "pregunta": "¿Verdadero o Falso? Las cajas de pizza con manchas de grasa se pueden reciclar sin problema junto con el papel limpio.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Falso"
+  },
+  {
+    "id": 19,
+    "pregunta": "¿Verdadero o Falso? El papel se puede reciclar infinitas veces, al igual que el vidrio.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Falso"
+  },
+  {
+    "id": 20,
+    "pregunta": "¿Verdadero o Falso? Los recibos de papel del supermercado (papel térmico) no deben tirarse al contenedor de reciclaje de papel.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Verdadero"
+  },
+  {
+    "id": 21,
+    "pregunta": "¿Verdadero o Falso? Reciclar materiales consume mucha más energía que extraer materia prima nueva de la naturaleza.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Falso"
+  },
+  {
+    "id": 22,
+    "pregunta": "¿Verdadero o Falso? Mezclar basura normal en un contenedor de reciclaje puede hacer que la planta rechace todo el contenido del camión y lo envíe al vertedero.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Verdadero"
+  },
+  {
+    "id": 23,
+    "pregunta": "¿Verdadero o Falso? Los envases marcados como \"biodegradables\" pueden tirarse al suelo en el bosque porque desaparecerán en pocos días.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Falso"
+  },
+  {
+    "id": 24,
+    "pregunta": "¿Verdadero o Falso? Todos los plásticos que existen pueden ser reciclados en los contenedores urbanos estándar de tu ciudad.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Falso"
+  },
+  {
+    "id": 25,
+    "pregunta": "¿Verdadero o Falso? Antes de reciclar una botella, es buena idea enjuagarla para evitar malos olores y plagas en las plantas de separación.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Verdadero"
+  }
+]
