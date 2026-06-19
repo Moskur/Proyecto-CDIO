@@ -1,0 +1,35 @@
+# Recursos de Diseño – Clasificador Ecológico
+
+Paleta moderna:
+- Verde ecológico: #66BB6A
+- Azul océano: #1E88E5
+- Amarillo solar: #FFD54F
+- Fondo oscuro: #101418
+- Texto claro: #F5F7FA
+
+Mensajes de felicitación:
+1. ¡Excelente! Acabas de salvar un poco más el planeta.
+2. ¡Correcto! Cada respuesta te convierte en un héroe ecológico.
+3. ¡Increíble! Tu conocimiento ambiental está creciendo.
+4. ¡Muy bien! Un pequeño paso para ti, un gran paso para la Tierra.
+5. ¡Genial! Sigue reciclando y aprendiendo.
+
+Mensajes motivacionales:
+1. Equivocarse también es aprender. ¡Inténtalo de nuevo!
+2. Cada pregunta es una oportunidad para cuidar el planeta.
+3. Sigue adelante; cada respuesta te hace más consciente.
+4. No te rindas, los grandes cambios comienzan con pequeños aprendizajes.
+5. El planeta necesita personas curiosas como tú.
+
+Nombre creativo:
+EcoMisión: Clasificador Ecológico Interactivo
+
+Quiénes Somos:
+Somos un equipo comprometido con la educación ambiental y la tecnología. Nuestro objetivo es enseñar reciclaje y sostenibilidad mediante experiencias interactivas, divertidas y accesibles para todas las edades.
+
+Reglas generales:
+1. Responde las preguntas de trivia.
+2. Aprende de tus errores y vuelve a intentarlo.
+3. Respeta el propósito educativo del proyecto.
+4. Personaliza tu perfil y sigue tu progreso.
+5. Diviértete mientras ayudas al planeta.
