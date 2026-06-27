@@ -1,165 +1,262 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz – Registro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clasificador Ecológico – Registro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #131212;
-      --card:     #161616;
-      --border:   #2a2a2a;
-      --accent:   #c8f060;
-      --text:     #f0f0f0;
-      --muted:    #888;
-      --error:    #ff6b6b;
-      --radius:   14px;
+      --green-dark:   #1a5c38;
+      --green-mid:    #2e8b57;
+      --green-light:  #4caf7d;
+      --green-pale:   #e8f5ee;
+      --blue-deep:    #1565a8;
+      --blue-mid:     #2196d3;
+      --blue-pale:    #e3f2fd;
+      --white:        #ffffff;
+      --gray-50:      #f8fafb;
+      --gray-100:     #eef2f5;
+      --gray-300:     #c8d4dc;
+      --gray-500:     #6b8090;
+      --gray-800:     #1e2d3a;
+      --error:        #d32f2f;
+      --radius-sm:    10px;
+      --radius-md:    18px;
+      --radius-lg:    28px;
+      --shadow-card:  0 8px 32px rgba(26,92,56,.10), 0 2px 8px rgba(26,92,56,.07);
+      --shadow-btn:   0 4px 16px rgba(46,139,87,.35);
     }
 
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, #e8f5ee 0%, #e3f2fd 50%, #f0faf4 100%);
       min-height: 100vh;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 2rem 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::before {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(78,188,109,.18) 0%, transparent 70%);
+      top: -120px; left: -120px;
+    }
+    body::after {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(33,150,211,.15) 0%, transparent 70%);
+      bottom: -80px; right: -80px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      margin-bottom: 2rem;
+      animation: fadeDown .5s ease both;
+      position: relative; z-index: 1;
+    }
+    .brand-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 14px rgba(46,139,87,.3);
+    }
+    .brand-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--green-dark);
+      letter-spacing: -.01em;
     }
 
     .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2.5rem 2rem;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem 2rem;
       width: 100%;
       max-width: 460px;
-      animation: fadeUp .5s ease both;
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(46,139,87,.12);
+      position: relative; z-index: 1;
+      animation: fadeUp .55s cubic-bezier(.22,.68,0,1.2) both;
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(28px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
     .badge {
-      display: inline-block;
-      background: var(--accent);
-      color: #0d0d0d;
-      font-family: 'Syne', sans-serif;
-      font-size: .7rem;
-      font-weight: 800;
-      letter-spacing: .1em;
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      background: var(--green-pale);
+      color: var(--green-dark);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
       text-transform: uppercase;
-      padding: .3rem .7rem;
+      padding: .3rem .75rem;
       border-radius: 99px;
       margin-bottom: 1rem;
+      border: 1px solid rgba(46,139,87,.2);
     }
+    .badge::before { content: '🌱'; font-size: .85rem; }
 
     h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: 2rem;
-      line-height: 1.15;
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: var(--gray-800);
+      line-height: 1.2;
       margin-bottom: .4rem;
+      letter-spacing: -.02em;
     }
 
     .subtitle {
-      color: var(--muted);
+      color: var(--gray-500);
       font-size: .9rem;
       margin-bottom: 2rem;
+      line-height: 1.5;
     }
 
     .field { margin-bottom: 1.25rem; }
 
-    label {
+    .field > label {
       display: block;
-      font-size: .8rem;
-      font-weight: 500;
-      letter-spacing: .05em;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .06em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: .45rem;
+      color: var(--gray-500);
+      margin-bottom: .5rem;
     }
 
     input[type="text"],
     input[type="email"] {
       width: 100%;
-      background: #1e1e1e;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      background: var(--gray-50);
+      border: 1.5px solid var(--gray-300);
+      border-radius: var(--radius-sm);
+      color: var(--gray-800);
+      font-family: inherit;
       font-size: .95rem;
-      padding: .75rem 1rem;
+      padding: .8rem 1rem;
       outline: none;
-      transition: border-color .2s;
+      transition: border-color .2s, box-shadow .2s, background .2s;
     }
-
-    input:focus { border-color: var(--accent); }
+    input[type="text"]:focus,
+    input[type="email"]:focus {
+      border-color: var(--green-mid);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(46,139,87,.15);
+    }
 
     .genero-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: .6rem;
+      gap: .55rem;
     }
 
+    .genero-grid span { display: contents; }
     .genero-grid input[type="radio"] { display: none; }
 
     .genero-grid label {
-      background: #1e1e1e;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
+      background: var(--gray-50);
+      border: 1.5px solid var(--gray-300);
+      border-radius: var(--radius-sm);
+      color: var(--gray-800);
       cursor: pointer;
-      font-size: .85rem;
-      font-weight: 500;
+      font-size: .88rem;
+      font-weight: 600;
       letter-spacing: 0;
       text-transform: none;
       text-align: center;
-      padding: .65rem;
-      transition: border-color .2s, background .2s;
+      padding: .7rem .5rem;
+      transition: border-color .2s, background .2s, color .2s, box-shadow .2s;
       margin: 0;
+      display: block;
     }
-
+    .genero-grid label:hover {
+      border-color: var(--green-light);
+      background: var(--green-pale);
+    }
     .genero-grid input[type="radio"]:checked + label {
-      border-color: var(--accent);
-      background: #1f2a0e;
-      color: var(--accent);
+      border-color: var(--green-mid);
+      background: var(--green-pale);
+      color: var(--green-dark);
+      box-shadow: 0 0 0 3px rgba(46,139,87,.15);
     }
 
     .error-msg {
       color: var(--error);
       font-size: .8rem;
       margin-top: .4rem;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+    }
+    .error-msg::before { content: '⚠'; font-size: .75rem; }
+
+    .divider {
+      height: 1px;
+      background: var(--gray-100);
+      margin: 1.5rem 0 1.25rem;
     }
 
     .btn {
       width: 100%;
-      background: var(--accent);
-      color: #0d0d0d;
+      background: linear-gradient(135deg, var(--green-mid) 0%, var(--blue-mid) 100%);
+      color: var(--white);
       border: none;
-      border-radius: 8px;
-      font-family: 'Syne', sans-serif;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
       font-size: 1rem;
-      font-weight: 800;
-      padding: .85rem;
+      font-weight: 700;
+      padding: .9rem;
       cursor: pointer;
-      margin-top: .5rem;
-      transition: opacity .2s, transform .1s;
+      margin-top: .25rem;
+      transition: opacity .2s, transform .15s, box-shadow .2s;
+      box-shadow: var(--shadow-btn);
+      letter-spacing: .01em;
     }
-
-    .btn:hover  { opacity: .88; }
+    .btn:hover  { opacity: .9; box-shadow: 0 6px 20px rgba(46,139,87,.4); }
     .btn:active { transform: scale(.98); }
+
+    @media (max-width: 480px) {
+      .card { padding: 2rem 1.5rem 1.75rem; }
+      h1 { font-size: 1.6rem; }
+    }
   </style>
 </head>
 <body>
+  <div class="brand">
+    <div class="brand-icon">🌿</div>
+    <span class="brand-name">Clasificador Ecológico</span>
+  </div>
+
   <div class="card">
-    <span class="badge">Quiz</span>
-    <h1>¡Bienvenido!</h1>
-    <p class="subtitle">Antes de empezar, cuéntanos un poco sobre ti.</p>
+    <span class="badge">Quiz ambiental</span>
+    <h1>¡Bienvenido/a!</h1>
+    <p class="subtitle">Antes de comenzar el quiz, cuéntanos un poco sobre ti.</p>
 
     <form method="POST" action="/">
 
@@ -198,7 +295,9 @@
         {% endif %}
       </div>
 
-      <button type="submit" class="btn">Comenzar quiz →</button>
+      <div class="divider"></div>
+
+      <button type="submit" class="btn">Comenzar quiz 🌍</button>
 
     </form>
   </div>
