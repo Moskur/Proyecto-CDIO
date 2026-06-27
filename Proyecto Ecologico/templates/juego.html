@@ -3,134 +3,268 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz – Pregunta {{ numero }}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <title>Clasificador Ecológico – Pregunta {{ numero }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:     #0d0d0d;
-      --card:   #161616;
-      --border: #2a2a2a;
-      --accent: #c8f060;
-      --text:   #f0f0f0;
-      --muted:  #888;
-      --error:  #ff6b6b;
+      --green-dark:   #1a5c38;
+      --green-mid:    #2e8b57;
+      --green-light:  #4caf7d;
+      --green-pale:   #e8f5ee;
+      --blue-deep:    #1565a8;
+      --blue-mid:     #2196d3;
+      --blue-pale:    #e3f2fd;
+      --white:        #ffffff;
+      --gray-50:      #f8fafb;
+      --gray-100:     #eef2f5;
+      --gray-300:     #c8d4dc;
+      --gray-500:     #6b8090;
+      --gray-800:     #1e2d3a;
+      --error:        #d32f2f;
+      --radius-sm:    10px;
+      --radius-md:    18px;
+      --radius-lg:    28px;
+      --shadow-card:  0 8px 32px rgba(26,92,56,.10), 0 2px 8px rgba(26,92,56,.07);
+      --shadow-btn:   0 4px 16px rgba(46,139,87,.35);
     }
 
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, #e8f5ee 0%, #e3f2fd 50%, #f0faf4 100%);
       min-height: 100vh;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 2rem 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::before {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(78,188,109,.15) 0%, transparent 70%);
+      top: -120px; left: -120px;
+    }
+    body::after {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(33,150,211,.13) 0%, transparent 70%);
+      bottom: -80px; right: -80px;
+    }
+
+    /* Top brand strip */
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: 1.75rem;
+      position: relative; z-index: 1;
+      animation: fadeDown .4s ease both;
+    }
+    .brand-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .brand-name {
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--green-dark);
     }
 
     .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 2.5rem 2rem;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 2rem 2rem 2rem;
       width: 100%;
-      max-width: 520px;
-      animation: fadeUp .4s ease both;
+      max-width: 540px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(46,139,87,.12);
+      position: relative; z-index: 1;
+      animation: fadeUp .5s cubic-bezier(.22,.68,0,1.2) both;
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
+      from { opacity: 0; transform: translateY(24px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-12px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* Progress */
     .progress-wrap {
       display: flex;
       align-items: center;
-      gap: .75rem;
+      gap: .85rem;
       margin-bottom: 1.75rem;
     }
 
     .progress-bar {
       flex: 1;
-      height: 5px;
-      background: #2a2a2a;
+      height: 6px;
+      background: var(--gray-100);
       border-radius: 99px;
       overflow: hidden;
     }
 
     .progress-fill {
       height: 100%;
-      background: var(--accent);
+      background: linear-gradient(90deg, var(--green-mid), var(--blue-mid));
       border-radius: 99px;
       width: {{ (numero / total * 100) | int }}%;
-      transition: width .4s ease;
+      transition: width .5s ease;
     }
 
     .progress-label {
       font-size: .8rem;
-      color: var(--muted);
+      font-weight: 700;
+      color: var(--green-dark);
       white-space: nowrap;
+      background: var(--green-pale);
+      padding: .22rem .65rem;
+      border-radius: 99px;
+      border: 1px solid rgba(46,139,87,.2);
     }
+
+    /* Question number pill */
+    .question-num {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--blue-deep);
+      background: var(--blue-pale);
+      padding: .28rem .7rem;
+      border-radius: 99px;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(33,150,211,.2);
+    }
+    .question-num::before { content: '❓'; font-size: .8rem; }
 
     h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.45rem;
-      line-height: 1.3;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      line-height: 1.4;
       margin-bottom: 1.75rem;
+      letter-spacing: -.01em;
     }
 
-    .opciones { display: flex; flex-direction: column; gap: .65rem; }
+    /* Options */
+    .opciones {
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
 
+    .opciones span { display: contents; }
     .opciones input[type="radio"] { display: none; }
 
     .opciones label {
-      display: block;
-      background: #1e1e1e;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+      background: var(--gray-50);
+      border: 1.5px solid var(--gray-300);
+      border-radius: var(--radius-sm);
+      color: var(--gray-800);
       cursor: pointer;
-      font-size: .95rem;
+      font-size: .93rem;
       font-weight: 500;
-      padding: .85rem 1.1rem;
+      padding: .9rem 1.1rem;
+      transition: border-color .18s, background .18s, box-shadow .18s, transform .1s;
+      position: relative;
+    }
+    .opciones label::before {
+      content: '';
+      flex-shrink: 0;
+      width: 18px; height: 18px;
+      border: 2px solid var(--gray-300);
+      border-radius: 50%;
       transition: border-color .18s, background .18s;
     }
-
-    .opciones label:hover { border-color: #555; }
+    .opciones label:hover {
+      border-color: var(--green-light);
+      background: var(--green-pale);
+      transform: translateX(2px);
+    }
+    .opciones label:hover::before { border-color: var(--green-mid); }
 
     .opciones input[type="radio"]:checked + label {
-      border-color: var(--accent);
-      background: #1f2a0e;
-      color: var(--accent);
+      border-color: var(--green-mid);
+      background: var(--green-pale);
+      color: var(--green-dark);
+      font-weight: 600;
+      box-shadow: 0 0 0 3px rgba(46,139,87,.12);
+    }
+    .opciones input[type="radio"]:checked + label::before {
+      border-color: var(--green-mid);
+      background: var(--green-mid);
+      box-shadow: inset 0 0 0 3px var(--white);
     }
 
     .error-msg {
       color: var(--error);
       font-size: .82rem;
       margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      background: #fff5f5;
+      padding: .6rem .9rem;
+      border-radius: 8px;
+      border: 1px solid rgba(211,47,47,.2);
     }
+    .error-msg::before { content: '⚠'; }
 
     .btn {
       width: 100%;
-      background: var(--accent);
-      color: #0d0d0d;
+      background: linear-gradient(135deg, var(--green-mid) 0%, var(--blue-mid) 100%);
+      color: var(--white);
       border: none;
-      border-radius: 8px;
-      font-family: 'Syne', sans-serif;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
       font-size: 1rem;
-      font-weight: 800;
-      padding: .85rem;
+      font-weight: 700;
+      padding: .9rem;
       cursor: pointer;
       margin-top: 1.5rem;
-      transition: opacity .2s, transform .1s;
+      transition: opacity .2s, transform .15s, box-shadow .2s;
+      box-shadow: var(--shadow-btn);
+      letter-spacing: .01em;
     }
-
-    .btn:hover  { opacity: .88; }
+    .btn:hover  { opacity: .9; box-shadow: 0 6px 22px rgba(46,139,87,.4); }
     .btn:active { transform: scale(.98); }
+
+    @media (max-width: 480px) {
+      .card { padding: 1.75rem 1.25rem 1.5rem; }
+      h2 { font-size: 1.1rem; }
+    }
   </style>
 </head>
 <body>
+
+  <div class="topbar">
+    <div class="brand-icon">🌿</div>
+    <span class="brand-name">Clasificador Ecológico</span>
+  </div>
+
   <div class="card">
 
     <div class="progress-wrap">
@@ -138,6 +272,7 @@
       <span class="progress-label">{{ numero }} / {{ total }}</span>
     </div>
 
+    <span class="question-num">Pregunta {{ numero }}</span>
     <h2>{{ pregunta.pregunta }}</h2>
 
     <form method="POST" action="/juego">
@@ -155,7 +290,7 @@
       {% endif %}
 
       <button type="submit" class="btn">
-        {% if numero == total %}Terminar quiz{% else %}Siguiente →{% endif %}
+        {% if numero == total %}Finalizar quiz 🏁{% else %}Siguiente pregunta →{% endif %}
       </button>
     </form>
 
