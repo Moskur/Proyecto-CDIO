@@ -238,5 +238,296 @@
       "Falso"
     ],
     "correcta": "Verdadero"
+  },
+  {
+    "id": 26,
+    "pregunta": "¿Cuál es el código numérico de plástico para el polietileno de alta densidad (HDPE), usado en botellas de detergente y shampoo?",
+    "opciones": [
+      "Número 1",
+      "Número 2",
+      "Número 5"
+    ],
+    "correcta": "Número 2"
+  },
+  {
+    "id": 27,
+    "pregunta": "Las latas de aluminio se pueden reciclar:",
+    "opciones": [
+      "Solo una vez antes de perder su calidad",
+      "Infinitas veces sin perder calidad",
+      "Solo si están completamente limpias y sin ninguna abolladura"
+    ],
+    "correcta": "Infinitas veces sin perder calidad"
+  },
+  {
+    "id": 28,
+    "pregunta": "Reciclar una lata de aluminio en vez de fabricar una nueva desde cero ahorra aproximadamente:",
+    "opciones": [
+      "El 95% de la energía necesaria para producirla desde la materia prima (bauxita)",
+      "Solo el 5% de la energía",
+      "No genera ningún ahorro energético significativo"
+    ],
+    "correcta": "El 95% de la energía necesaria para producirla desde la materia prima (bauxita)"
+  },
+  {
+    "id": 29,
+    "pregunta": "¿Qué problema ambiental específico generan las pilas y baterías comunes cuando se desechan en la basura normal?",
+    "opciones": [
+      "Filtran metales pesados como mercurio, cadmio y plomo, contaminando el suelo y las aguas subterráneas",
+      "Se descomponen igual que la materia orgánica en pocos meses",
+      "No representan ningún riesgo si se entierran"
+    ],
+    "correcta": "Filtran metales pesados como mercurio, cadmio y plomo, contaminando el suelo y las aguas subterráneas"
+  },
+  {
+    "id": 30,
+    "pregunta": "¿Verdadero o Falso? Los residuos electrónicos (celulares, computadores) deben llevarse a puntos de reciclaje especializados y no a la basura normal.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Verdadero"
+  },
+  {
+    "id": 31,
+    "pregunta": "Dentro de la \"basura electrónica\" (e-waste), ¿qué metales valiosos se pueden recuperar mediante el reciclaje?",
+    "opciones": [
+      "Oro, plata, cobre y paladio",
+      "Solo plástico reciclable",
+      "Ningún material de valor, son puro desecho"
+    ],
+    "correcta": "Oro, plata, cobre y paladio"
+  },
+  {
+    "id": 32,
+    "pregunta": "¿Verdadero o Falso? El aceite de cocina usado se puede verter directamente por el desagüe del lavaplatos sin problema.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Falso"
+  },
+  {
+    "id": 33,
+    "pregunta": "¿Por qué el aceite de cocina usado no debe tirarse por el desagüe?",
+    "opciones": [
+      "Forma una capa que impide el intercambio de oxígeno en el agua y puede contaminar grandes volúmenes de agua potable",
+      "Se evapora rápidamente sin dejar rastro",
+      "Ayuda a lubricar las tuberías de la ciudad"
+    ],
+    "correcta": "Forma una capa que impide el intercambio de oxígeno en el agua y puede contaminar grandes volúmenes de agua potable"
+  },
+  {
+    "id": 34,
+    "pregunta": "¿Qué es el \"upcycling\" o \"suprarreciclaje\"?",
+    "opciones": [
+      "Transformar un residuo en un nuevo producto de igual o mayor valor, sin pasar por un proceso industrial de reciclaje tradicional",
+      "Es exactamente lo mismo que reciclar",
+      "Es enviar los residuos a otro país para que los procesen"
+    ],
+    "correcta": "Transformar un residuo en un nuevo producto de igual o mayor valor, sin pasar por un proceso industrial de reciclaje tradicional"
+  },
+  {
+    "id": 35,
+    "pregunta": "En la jerarquía ambiental de las \"3R\", ¿cuál acción debería priorizarse primero, antes de reciclar?",
+    "opciones": [
+      "Reducir el consumo de productos y materiales desde el origen",
+      "Reciclar todo lo que se pueda sin importar el orden",
+      "Reutilizar solo si reciclar no es posible"
+    ],
+    "correcta": "Reducir el consumo de productos y materiales desde el origen"
+  },
+  {
+    "id": 36,
+    "pregunta": "¿Qué es el compostaje?",
+    "opciones": [
+      "Quemar residuos orgánicos para generar electricidad",
+      "Un proceso natural de descomposición de residuos orgánicos que produce abono rico en nutrientes para la tierra",
+      "Un método para esterilizar plásticos antes de reciclarlos"
+    ],
+    "correcta": "Un proceso natural de descomposición de residuos orgánicos que produce abono rico en nutrientes para la tierra"
+  },
+  {
+    "id": 37,
+    "pregunta": "¿Verdadero o Falso? Los restos de carne, pescado y lácteos se pueden compostar igual que las cáscaras de fruta y verdura sin ningún problema.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Falso"
+  },
+  {
+    "id": 38,
+    "pregunta": "El compostaje doméstico ayuda al medioambiente principalmente porque:",
+    "opciones": [
+      "Reduce la cantidad de residuos orgánicos enviados a vertederos, disminuyendo la generación de metano",
+      "Aumenta la cantidad de plástico reciclado en la ciudad",
+      "Elimina por completo la necesidad de agua para regar plantas"
+    ],
+    "correcta": "Reduce la cantidad de residuos orgánicos enviados a vertederos, disminuyendo la generación de metano"
+  },
+  {
+    "id": 39,
+    "pregunta": "Los envases de tipo Tetra Pak (como los de leche o jugo), ¿de qué materiales están hechos principalmente?",
+    "opciones": [
+      "Solo de plástico",
+      "Una combinación de cartón, plástico y una fina capa de aluminio",
+      "Solo de papel reciclado"
+    ],
+    "correcta": "Una combinación de cartón, plástico y una fina capa de aluminio"
+  },
+  {
+    "id": 40,
+    "pregunta": "¿Verdadero o Falso? Por estar compuestos de varios materiales unidos, los envases Tetra Pak requieren un proceso de reciclaje especial y no siempre se aceptan en todos los puntos de reciclaje.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Verdadero"
+  },
+  {
+    "id": 41,
+    "pregunta": "¿Qué problema tiene el poliestireno expandido (conocido comúnmente como \"plumavit\" o \"telgopor\"), usado en bandejas y embalajes?",
+    "opciones": [
+      "Es uno de los materiales más fáciles y rentables de reciclar",
+      "Es muy liviano y voluminoso, lo que dificulta y encarece su transporte y reciclaje, y se fragmenta fácilmente en el ambiente",
+      "Se disuelve completamente en agua sin dejar residuo"
+    ],
+    "correcta": "Es muy liviano y voluminoso, lo que dificulta y encarece su transporte y reciclaje, y se fragmenta fácilmente en el ambiente"
+  },
+  {
+    "id": 42,
+    "pregunta": "¿Verdadero o Falso? Los filtros de los cigarrillos contienen un plástico (acetato de celulosa) y pueden tardar años en degradarse en el ambiente.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Verdadero"
+  },
+  {
+    "id": 43,
+    "pregunta": "¿Qué se hace habitualmente con los neumáticos (llantas) en buen estado para su reciclaje, en vez de quemarlos o enterrarlos?",
+    "opciones": [
+      "Se trituran para usarlos en pistas de atletismo, parques infantiles o como combustible alternativo en algunas industrias",
+      "Se entierran siempre en vertederos sin excepción",
+      "No existe ninguna forma de reutilizarlos o reciclarlos"
+    ],
+    "correcta": "Se trituran para usarlos en pistas de atletismo, parques infantiles o como combustible alternativo en algunas industrias"
+  },
+  {
+    "id": 44,
+    "pregunta": "¿Por qué los focos o ampolletas fluorescentes (tubos fluorescentes, focos ahorradores) no deben tirarse a la basura normal?",
+    "opciones": [
+      "Contienen pequeñas cantidades de mercurio, un metal tóxico que contamina el ambiente si se rompen",
+      "Son completamente inofensivos y biodegradables",
+      "Atraen plagas de insectos a los vertederos"
+    ],
+    "correcta": "Contienen pequeñas cantidades de mercurio, un metal tóxico que contamina el ambiente si se rompen"
+  },
+  {
+    "id": 45,
+    "pregunta": "¿Verdadero o Falso? Los envases de aerosol (como desodorantes o pinturas en spray) deben estar completamente vacíos antes de desecharlos, ya que pueden explotar si se compactan estando llenos o presurizados.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Verdadero"
+  },
+  {
+    "id": 46,
+    "pregunta": "¿Qué significa el símbolo de Möbius (las tres flechas formando un triángulo) que aparece en los envases?",
+    "opciones": [
+      "Indica que el producto es 100% biodegradable",
+      "Indica que el material es potencialmente reciclable, aunque no garantiza que será reciclado en tu localidad",
+      "Es solo una marca decorativa sin ningún significado"
+    ],
+    "correcta": "Indica que el material es potencialmente reciclable, aunque no garantiza que será reciclado en tu localidad"
+  },
+  {
+    "id": 47,
+    "pregunta": "En Chile, ¿qué ley busca que las empresas se hagan responsables del reciclaje de los envases y reducir el uso de plásticos de un solo uso?",
+    "opciones": [
+      "La Ley de Bosques",
+      "La Ley REP (Responsabilidad Extendida del Productor) y la Ley de Plásticos de un Solo Uso",
+      "La Ley de Pesca"
+    ],
+    "correcta": "La Ley REP (Responsabilidad Extendida del Productor) y la Ley de Plásticos de un Solo Uso"
+  },
+  {
+    "id": 48,
+    "pregunta": "¿Verdadero o Falso? La Ley REP en Chile obliga a las empresas que producen ciertos envases y productos a hacerse responsables de su reciclaje o correcta disposición final.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Verdadero"
+  },
+  {
+    "id": 49,
+    "pregunta": "¿Qué es la llamada \"isla de basura\" o \"Gran Mancha de Basura del Pacífico\"?",
+    "opciones": [
+      "Una isla artificial construida con materiales reciclados",
+      "Una enorme acumulación de desechos plásticos flotantes, formada por las corrientes marinas en el océano Pacífico",
+      "Un mito sin evidencia científica"
+    ],
+    "correcta": "Una enorme acumulación de desechos plásticos flotantes, formada por las corrientes marinas en el océano Pacífico"
+  },
+  {
+    "id": 50,
+    "pregunta": "¿Qué representa habitualmente el color azul en los contenedores de reciclaje?",
+    "opciones": [
+      "Residuos orgánicos",
+      "Papel y cartón",
+      "Vidrio"
+    ],
+    "correcta": "Papel y cartón"
+  },
+  {
+    "id": 51,
+    "pregunta": "¿Qué representa habitualmente el color verde en los contenedores de reciclaje?",
+    "opciones": [
+      "Vidrio",
+      "Plástico",
+      "Residuos peligrosos"
+    ],
+    "correcta": "Vidrio"
+  },
+  {
+    "id": 52,
+    "pregunta": "¿Verdadero o Falso? Mezclar vidrio de distintos colores (verde, transparente y café) no afecta en nada la calidad del vidrio reciclado resultante.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Falso"
+  },
+  {
+    "id": 53,
+    "pregunta": "¿Qué tipo de papel NO se debe poner en el contenedor de papel y cartón para reciclar?",
+    "opciones": [
+      "El papel encerado, papel de aluminio o el papel manchado con grasa o comida (como las cajas de pizza)",
+      "Las hojas de cuaderno usadas",
+      "Las cajas de cartón limpias y plegadas"
+    ],
+    "correcta": "El papel encerado, papel de aluminio o el papel manchado con grasa o comida (como las cajas de pizza)"
+  },
+  {
+    "id": 54,
+    "pregunta": "¿Verdadero o Falso? La ropa y textiles en buen estado se pueden donar o reciclar en puntos especializados, en vez de tirarlos a la basura.",
+    "opciones": [
+      "Verdadero",
+      "Falso"
+    ],
+    "correcta": "Verdadero"
+  },
+  {
+    "id": 55,
+    "pregunta": "La industria de la \"moda rápida\" (fast fashion) impacta negativamente al medioambiente principalmente porque:",
+    "opciones": [
+      "Genera enormes volúmenes de residuos textiles de baja durabilidad y consume grandes cantidades de agua y químicos en su producción",
+      "Utiliza exclusivamente materiales 100% reciclados",
+      "No tiene ningún impacto medible en comparación con otras industrias"
+    ],
+    "correcta": "Genera enormes volúmenes de residuos textiles de baja durabilidad y consume grandes cantidades de agua y químicos en su producción"
   }
 ]
