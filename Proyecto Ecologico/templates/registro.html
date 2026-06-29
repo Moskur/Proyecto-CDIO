@@ -3,101 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clasificador Ecológico – Registro</title>
+  <title>EcoMisión – Inicio</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --green-dark:   #1a5c38;
-      --green-mid:    #2e8b57;
-      --green-light:  #4caf7d;
-      --green-pale:   #e8f5ee;
-      --blue-deep:    #1565a8;
-      --blue-mid:     #2196d3;
-      --blue-pale:    #e3f2fd;
-      --white:        #ffffff;
-      --gray-50:      #f8fafb;
-      --gray-100:     #eef2f5;
-      --gray-300:     #c8d4dc;
-      --gray-500:     #6b8090;
-      --gray-800:     #1e2d3a;
-      --error:        #d32f2f;
-      --radius-sm:    10px;
-      --radius-md:    18px;
-      --radius-lg:    28px;
-      --shadow-card:  0 8px 32px rgba(26,92,56,.10), 0 2px 8px rgba(26,92,56,.07);
-      --shadow-btn:   0 4px 16px rgba(46,139,87,.35);
+      --green-dark:  #1a5c38;
+      --green-mid:   #2e8b57;
+      --green-light: #4caf7d;
+      --green-pale:  #e8f5ee;
+      --blue-mid:    #2196d3;
+      --white:       #ffffff;
+      --gray-50:     #f8fafb;
+      --gray-100:    #eef2f5;
+      --gray-500:    #6b8090;
+      --gray-800:    #1e2d3a;
+      --radius-sm:   10px;
+      --radius-lg:   28px;
+      --shadow-card: 0 8px 32px rgba(26,92,56,.10), 0 2px 8px rgba(26,92,56,.07);
+      --shadow-btn:  0 4px 16px rgba(46,139,87,.35);
     }
-
     body {
       background: linear-gradient(135deg, #e8f5ee 0%, #e3f2fd 50%, #f0faf4 100%);
-      min-height: 100vh;
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 1rem;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    /* Decorative blobs */
-    body::before, body::after {
-      content: '';
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
+      min-height: 100vh; font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 2rem 1rem; position: relative; overflow-x: hidden;
     }
     body::before {
-      width: 500px; height: 500px;
+      content: ''; position: fixed; border-radius: 50%;
+      width: 500px; height: 500px; pointer-events: none; z-index: 0;
       background: radial-gradient(circle, rgba(78,188,109,.18) 0%, transparent 70%);
       top: -120px; left: -120px;
     }
     body::after {
-      width: 400px; height: 400px;
+      content: ''; position: fixed; border-radius: 50%;
+      width: 400px; height: 400px; pointer-events: none; z-index: 0;
       background: radial-gradient(circle, rgba(33,150,211,.15) 0%, transparent 70%);
       bottom: -80px; right: -80px;
     }
-
-    /* Header branding */
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: .7rem;
-      margin-bottom: 2rem;
-      animation: fadeDown .5s ease both;
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; max-width: 460px; margin-bottom: 2rem;
       position: relative; z-index: 1;
+      animation: fadeDown .5s ease both;
     }
+    .brand { display: flex; align-items: center; gap: .7rem; }
     .brand-icon {
       width: 44px; height: 44px;
       background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.4rem;
+      border-radius: 12px; display: flex; align-items: center;
+      justify-content: center; font-size: 1.4rem;
       box-shadow: 0 4px 14px rgba(46,139,87,.3);
     }
-    .brand-name {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--green-dark);
-      letter-spacing: -.01em;
+    .brand-name { font-size: 1.1rem; font-weight: 800; color: var(--green-dark); }
+    .logout-btn {
+      font-size: .8rem; font-weight: 700; color: var(--gray-500);
+      text-decoration: none; padding: .4rem .85rem;
+      border: 1.5px solid var(--gray-100); border-radius: 99px;
+      background: var(--white); transition: color .2s, border-color .2s;
     }
-
+    .logout-btn:hover { color: var(--green-dark); border-color: var(--green-mid); }
     .card {
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      padding: 2.5rem 2rem 2rem;
-      width: 100%;
-      max-width: 460px;
-      box-shadow: var(--shadow-card);
-      border: 1px solid rgba(46,139,87,.12);
-      position: relative; z-index: 1;
+      background: var(--white); border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem 2rem; width: 100%; max-width: 460px;
+      box-shadow: var(--shadow-card); border: 1px solid rgba(46,139,87,.12);
+      position: relative; z-index: 1; text-align: center;
       animation: fadeUp .55s cubic-bezier(.22,.68,0,1.2) both;
     }
-
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(28px) scale(.98); }
       to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -106,202 +78,97 @@
       from { opacity: 0; transform: translateY(-16px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: .35rem;
-      background: var(--green-pale);
-      color: var(--green-dark);
-      font-size: .72rem;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      padding: .3rem .75rem;
-      border-radius: 99px;
-      margin-bottom: 1rem;
-      border: 1px solid rgba(46,139,87,.2);
+    .avatar {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
+      border-radius: 50%; margin: 0 auto 1.25rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; box-shadow: 0 4px 18px rgba(46,139,87,.3);
     }
-    .badge::before { content: '🌱'; font-size: .85rem; }
-
-    h1 {
-      font-size: 1.9rem;
-      font-weight: 800;
-      color: var(--gray-800);
-      line-height: 1.2;
-      margin-bottom: .4rem;
-      letter-spacing: -.02em;
+    h1 { font-size: 1.75rem; font-weight: 800; color: var(--gray-800); margin-bottom: .35rem; }
+    .greeting-name { color: var(--green-mid); }
+    .subtitle { color: var(--gray-500); font-size: .9rem; margin-bottom: 2rem; line-height: 1.5; }
+    .info-row {
+      display: flex; gap: .75rem; justify-content: center;
+      margin-bottom: 2rem; flex-wrap: wrap;
     }
-
-    .subtitle {
-      color: var(--gray-500);
-      font-size: .9rem;
-      margin-bottom: 2rem;
-      line-height: 1.5;
+    .chip {
+      background: var(--gray-50); border: 1px solid var(--gray-100);
+      border-radius: 99px; padding: .35rem .85rem;
+      font-size: .8rem; font-weight: 600; color: var(--gray-500);
+      display: flex; align-items: center; gap: .3rem;
     }
-
-    .field { margin-bottom: 1.25rem; }
-
-    .field > label {
-      display: block;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      color: var(--gray-500);
-      margin-bottom: .5rem;
-    }
-
-    input[type="text"],
-    input[type="email"] {
-      width: 100%;
-      background: var(--gray-50);
-      border: 1.5px solid var(--gray-300);
-      border-radius: var(--radius-sm);
-      color: var(--gray-800);
-      font-family: inherit;
-      font-size: .95rem;
-      padding: .8rem 1rem;
-      outline: none;
-      transition: border-color .2s, box-shadow .2s, background .2s;
-    }
-    input[type="text"]:focus,
-    input[type="email"]:focus {
-      border-color: var(--green-mid);
-      background: var(--white);
-      box-shadow: 0 0 0 3px rgba(46,139,87,.15);
-    }
-
-    .genero-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: .55rem;
-    }
-
-    .genero-grid span { display: contents; }
-    .genero-grid input[type="radio"] { display: none; }
-
-    .genero-grid label {
-      background: var(--gray-50);
-      border: 1.5px solid var(--gray-300);
-      border-radius: var(--radius-sm);
-      color: var(--gray-800);
-      cursor: pointer;
-      font-size: .88rem;
-      font-weight: 600;
-      letter-spacing: 0;
-      text-transform: none;
-      text-align: center;
-      padding: .7rem .5rem;
-      transition: border-color .2s, background .2s, color .2s, box-shadow .2s;
-      margin: 0;
-      display: block;
-    }
-    .genero-grid label:hover {
-      border-color: var(--green-light);
-      background: var(--green-pale);
-    }
-    .genero-grid input[type="radio"]:checked + label {
-      border-color: var(--green-mid);
-      background: var(--green-pale);
-      color: var(--green-dark);
-      box-shadow: 0 0 0 3px rgba(46,139,87,.15);
-    }
-
-    .error-msg {
-      color: var(--error);
-      font-size: .8rem;
-      margin-top: .4rem;
-      display: flex;
-      align-items: center;
-      gap: .3rem;
-    }
-    .error-msg::before { content: '⚠'; font-size: .75rem; }
-
-    .divider {
-      height: 1px;
-      background: var(--gray-100);
-      margin: 1.5rem 0 1.25rem;
-    }
-
+    .divider { height: 1px; background: var(--gray-100); margin: 0 0 1.5rem; }
     .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
       width: 100%;
       background: linear-gradient(135deg, var(--green-mid) 0%, var(--blue-mid) 100%);
-      color: var(--white);
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: inherit;
-      font-size: 1rem;
-      font-weight: 700;
-      padding: .9rem;
-      cursor: pointer;
-      margin-top: .25rem;
+      color: var(--white); border: none; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: 1rem; font-weight: 700;
+      padding: .9rem 2rem; cursor: pointer;
       transition: opacity .2s, transform .15s, box-shadow .2s;
       box-shadow: var(--shadow-btn);
-      letter-spacing: .01em;
     }
-    .btn:hover  { opacity: .9; box-shadow: 0 6px 20px rgba(46,139,87,.4); }
+    .btn:hover  { opacity: .9; box-shadow: 0 6px 22px rgba(46,139,87,.4); }
     .btn:active { transform: scale(.98); }
-
-    @media (max-width: 480px) {
-      .card { padding: 2rem 1.5rem 1.75rem; }
-      h1 { font-size: 1.6rem; }
+    .btn-mini {
+      display: block; text-align: center; margin-top: .75rem;
+      padding: .75rem; border-radius: var(--radius-sm);
+      background: var(--green-pale);
+      border: 1.5px solid var(--green-mid);
+      color: var(--green-dark); font-weight: 700; font-size: .95rem;
+      text-decoration: none;
+      transition: background .2s, border-color .2s, box-shadow .2s;
     }
+    .btn-mini:hover { background: #d0edda; box-shadow: 0 4px 14px rgba(46,139,87,.2); }
+    .rules {
+      margin-top: 1.5rem; text-align: left;
+      background: var(--gray-50); border-radius: var(--radius-sm);
+      border: 1px solid var(--gray-100); padding: 1rem 1.1rem;
+    }
+    .rules p { font-size: .8rem; color: var(--gray-500); margin-bottom: .5rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+    .rules ul { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+    .rules li { font-size: .875rem; color: var(--gray-800); display: flex; gap: .5rem; }
+    .rules li::before { content: '✅'; flex-shrink: 0; }
+    @media (max-width: 480px) { .card { padding: 2rem 1.5rem 1.75rem; } h1 { font-size: 1.5rem; } }
   </style>
 </head>
 <body>
-  <div class="brand">
-    <div class="brand-icon">🌿</div>
-    <span class="brand-name">Clasificador Ecológico</span>
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-icon">🌿</div>
+      <span class="brand-name">EcoMisión</span>
+    </div>
+    <a href="/logout" class="logout-btn">Cerrar sesión</a>
   </div>
 
   <div class="card">
-    <span class="badge">Quiz ambiental</span>
-    <h1>¡Bienvenido/a!</h1>
-    <p class="subtitle">Antes de comenzar el quiz, cuéntanos un poco sobre ti.</p>
+    <div class="avatar">🦸</div>
+    <h1>¡Hola, <span class="greeting-name">{{ jugador.nombre }}</span>!</h1>
+    <p class="subtitle">Listo/a para poner a prueba tu conocimiento ambiental. El quiz tiene 10 preguntas aleatorias.</p>
+
+    <div class="info-row">
+      <span class="chip">📧 {{ jugador.correo }}</span>
+      <span class="chip">⚧ {{ jugador.genero }}</span>
+    </div>
+
+    <div class="divider"></div>
 
     <form method="POST" action="/">
-
-      <div class="field">
-        <label for="nombre">Tu nombre</label>
-        <input type="text" id="nombre" name="nombre"
-               placeholder="Ej: María González"
-               value="{{ datos.get('nombre', '') }}">
-        {% if error_nombre %}
-          <p class="error-msg">{{ error_nombre }}</p>
-        {% endif %}
-      </div>
-
-      <div class="field">
-        <label>Género</label>
-        <div class="genero-grid">
-          {% for g in generos %}
-            <span>
-              <input type="radio" id="g{{ loop.index }}" name="genero" value="{{ g }}">
-              <label for="g{{ loop.index }}">{{ g }}</label>
-            </span>
-          {% endfor %}
-        </div>
-        {% if error_genero %}
-          <p class="error-msg">{{ error_genero }}</p>
-        {% endif %}
-      </div>
-
-      <div class="field">
-        <label for="correo">Correo electrónico</label>
-        <input type="email" id="correo" name="correo"
-               placeholder="Ej: maria@gmail.com"
-               value="{{ datos.get('correo', '') }}">
-        {% if error_correo %}
-          <p class="error-msg">{{ error_correo }}</p>
-        {% endif %}
-      </div>
-
-      <div class="divider"></div>
-
       <button type="submit" class="btn">Comenzar quiz 🌍</button>
-
     </form>
+
+    <a href="/minijuego" class="btn-mini">🎮 Jugar EcoCatcher</a>
+
+    <div class="rules">
+      <p>Reglas</p>
+      <ul>
+        <li>10 preguntas seleccionadas al azar.</li>
+        <li>Solo hay una respuesta correcta por pregunta.</li>
+        <li>Tu puntaje se guarda al finalizar.</li>
+        <li>Puedes repetir el quiz las veces que quieras.</li>
+      </ul>
+    </div>
   </div>
 </body>
 </html>

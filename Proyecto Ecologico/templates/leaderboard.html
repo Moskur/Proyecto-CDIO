@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoMisión – Tablero de Clasificación</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark:  #1a5c38; --green-mid: #2e8b57; --green-pale: #e8f5ee;
+      --blue-mid:    #2196d3; --blue-pale: #e3f2fd;
+      --gold:        #f5a623; --gold-pale: #fff8e8;
+      --silver:      #8e9eab; --silver-pale: #f0f4f8;
+      --bronze:      #c07b3a; --bronze-pale: #fdf3ea;
+      --white:       #ffffff; --gray-50: #f8fafb; --gray-100: #eef2f5;
+      --gray-300:    #c8d4dc; --gray-500: #6b8090; --gray-800: #1e2d3a;
+      --radius-sm:   10px; --radius-md: 16px; --radius-lg: 28px;
+      --shadow-card: 0 8px 32px rgba(26,92,56,.10), 0 2px 8px rgba(26,92,56,.07);
+    }
+    body {
+      background: linear-gradient(135deg, #e8f5ee 0%, #e3f2fd 50%, #f0faf4 100%);
+      min-height: 100vh; font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 2rem 1rem 3rem; position: relative; overflow-x: hidden;
+    }
+    body::before { content:''; position:fixed; border-radius:50%; pointer-events:none; z-index:0;
+      width:500px; height:500px; background:radial-gradient(circle,rgba(78,188,109,.15) 0%,transparent 70%);
+      top:-120px; left:-120px; }
+    body::after  { content:''; position:fixed; border-radius:50%; pointer-events:none; z-index:0;
+      width:400px; height:400px; background:radial-gradient(circle,rgba(33,150,211,.13) 0%,transparent 70%);
+      bottom:-80px; right:-80px; }
+
+    .topbar { display:flex; align-items:center; justify-content:space-between;
+      width:100%; max-width:680px; margin-bottom:2rem;
+      position:relative; z-index:1; animation:fadeDown .4s ease both; }
+    .brand { display:flex; align-items:center; gap:.6rem; text-decoration:none; }
+    .brand-icon { width:40px; height:40px;
+      background:linear-gradient(135deg,var(--green-mid),var(--blue-mid));
+      border-radius:11px; display:flex; align-items:center; justify-content:center;
+      font-size:1.2rem; box-shadow:0 4px 14px rgba(46,139,87,.3); }
+    .brand-name { font-size:1rem; font-weight:800; color:var(--green-dark); }
+    .back-btn { font-size:.82rem; font-weight:700; color:var(--gray-500);
+      text-decoration:none; padding:.4rem .9rem;
+      border:1.5px solid var(--gray-100); border-radius:99px; background:var(--white);
+      transition:color .2s,border-color .2s; }
+    .back-btn:hover { color:var(--green-dark); border-color:var(--green-mid); }
+
+    .page-header { text-align:center; margin-bottom:2rem;
+      position:relative; z-index:1;
+      animation:fadeUp .5s cubic-bezier(.22,.68,0,1.2) .1s both;
+      width:100%; max-width:680px; }
+    .header-trophy { font-size:3rem; display:block; margin-bottom:.75rem; }
+    .page-header h1 { font-size:2rem; font-weight:800; color:var(--gray-800);
+      letter-spacing:-.02em; margin-bottom:.4rem; }
+    .page-header p { color:var(--gray-500); font-size:.9rem; }
+
+    /* stats */
+    .stats-row { display:flex; gap:.75rem; width:100%; max-width:680px; margin-bottom:1.5rem;
+      flex-wrap:wrap; position:relative; z-index:1;
+      animation:fadeUp .5s cubic-bezier(.22,.68,0,1.2) .2s both; }
+    .stat-chip { flex:1; min-width:120px; background:var(--white);
+      border:1px solid rgba(46,139,87,.1); border-radius:var(--radius-md);
+      padding:.85rem 1rem; box-shadow:0 2px 8px rgba(26,92,56,.06); }
+    .stat-chip .stat-val { font-size:1.5rem; font-weight:800; color:var(--green-dark); line-height:1; }
+    .stat-chip .stat-lbl { font-size:.73rem; font-weight:700; color:var(--gray-500);
+      text-transform:uppercase; letter-spacing:.06em; margin-top:.3rem; }
+
+    /* podio */
+    .podium { display:flex; align-items:flex-end; justify-content:center;
+      gap:.75rem; width:100%; max-width:480px; margin-bottom:2rem;
+      position:relative; z-index:1;
+      animation:fadeUp .55s cubic-bezier(.22,.68,0,1.2) .25s both; }
+    .podium-slot { flex:1; display:flex; flex-direction:column; align-items:center; gap:.5rem; min-width:0; }
+    .p-avatar { font-size:1.5rem; width:44px; height:44px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center; font-weight:800;
+      border:3px solid transparent; }
+    .p-name { font-size:.78rem; font-weight:700; color:var(--gray-800); text-align:center;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:90px; }
+    .p-score { font-size:.82rem; font-weight:800; text-align:center; }
+    .p-source { font-size:.68rem; color:var(--gray-500); text-align:center; }
+    .p-block { width:100%; border-radius:var(--radius-sm) var(--radius-sm) 0 0;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.4rem; font-weight:800; color:white; min-height:40px; }
+    .podium-slot.first .p-avatar  { background:var(--gold-pale);   border-color:var(--gold);   }
+    .podium-slot.first .p-score   { color:var(--gold);   }
+    .podium-slot.first .p-block   { background:linear-gradient(135deg,#f5a623,#f7c948); height:90px; }
+    .podium-slot.second .p-avatar { background:var(--silver-pale); border-color:var(--silver); }
+    .podium-slot.second .p-score  { color:var(--silver); }
+    .podium-slot.second .p-block  { background:linear-gradient(135deg,#8e9eab,#b0bec5); height:68px; }
+    .podium-slot.third .p-avatar  { background:var(--bronze-pale); border-color:var(--bronze); }
+    .podium-slot.third .p-score   { color:var(--bronze); }
+    .podium-slot.third .p-block   { background:linear-gradient(135deg,#c07b3a,#d4935a); height:52px; }
+
+    /* tabla */
+    .table-card { background:var(--white); border-radius:var(--radius-lg);
+      box-shadow:var(--shadow-card); border:1px solid rgba(46,139,87,.1);
+      width:100%; max-width:680px; overflow:hidden;
+      position:relative; z-index:1;
+      animation:fadeUp .55s cubic-bezier(.22,.68,0,1.2) .35s both; }
+    .table-head { display:grid; grid-template-columns:52px 1fr 100px 110px 110px 120px;
+      padding:.7rem 1.25rem; background:var(--gray-50);
+      border-bottom:1px solid var(--gray-100);
+      font-size:.7rem; font-weight:800; text-transform:uppercase;
+      letter-spacing:.08em; color:var(--gray-500); }
+    .table-row { display:grid; grid-template-columns:52px 1fr 100px 110px 110px 120px;
+      padding:.85rem 1.25rem; align-items:center;
+      border-bottom:1px solid var(--gray-100); transition:background .15s; }
+    .table-row:last-child { border-bottom:none; }
+    .table-row:hover { background:var(--gray-50); }
+    .table-row.is-me  { background:var(--green-pale); border-left:3px solid var(--green-mid); }
+    .table-row.is-me:hover { background:#dff0e6; }
+    .table-row.top-1 { background:var(--gold-pale);   } .table-row.top-1:hover { background:#fff2cc; }
+    .table-row.top-2 { background:var(--silver-pale); } .table-row.top-2:hover { background:#e9ecee; }
+    .table-row.top-3 { background:var(--bronze-pale); } .table-row.top-3:hover { background:#faeadb; }
+    .rank-cell { display:flex; align-items:center; justify-content:center;
+      font-size:.9rem; font-weight:800; }
+    .rank-medal { font-size:1.2rem; }
+    .name-cell { min-width:0; }
+    .name-text { font-size:.9rem; font-weight:700; color:var(--gray-800);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .name-sub  { font-size:.73rem; color:var(--gray-500);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .me-badge  { display:inline-block; font-size:.65rem; font-weight:800;
+      background:var(--green-mid); color:white; padding:.1rem .4rem;
+      border-radius:99px; margin-left:.35rem; vertical-align:middle; }
+    .score-cell  { font-size:.92rem; font-weight:800; color:var(--green-dark); text-align:center; }
+    .source-cell { font-size:.75rem; color:var(--gray-500); text-align:center; }
+    .date-cell   { font-size:.75rem; color:var(--gray-500); text-align:right; }
+    .source-badge { display:inline-block; font-size:.68rem; font-weight:700;
+      padding:.15rem .5rem; border-radius:99px; }
+    .source-badge.quiz     { background:#e8f5ee; color:var(--green-dark); }
+    .source-badge.minijuego{ background:#e3f2fd; color:#1565a8; }
+
+    .empty { text-align:center; padding:3rem 2rem; color:var(--gray-500); }
+    .empty .empty-icon { font-size:2.5rem; margin-bottom:1rem; display:block; }
+
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(24px) scale(.98)} to{opacity:1;transform:none} }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:none} }
+    @media(max-width:600px){
+      .table-head,.table-row { grid-template-columns:40px 1fr 80px 90px; }
+      .date-cell,.table-head>*:last-child,
+      .table-row>*:nth-child(5),.table-head>*:nth-child(5) { display:none; }
+      .podium { max-width:340px; }
+      .page-header h1 { font-size:1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="/" class="brand">
+      <div class="brand-icon">🌿</div>
+      <span class="brand-name">EcoMisión</span>
+    </a>
+    <a href="/" class="back-btn">← Volver al inicio</a>
+  </div>
+
+  <div class="page-header">
+    <span class="header-trophy">🏆</span>
+    <h1>Tablero de Clasificación</h1>
+    <p>Quiz y EcoCatcher en un solo ranking. ¿Dónde estás tú?</p>
+  </div>
+
+  {% if jugadores %}
+  <div class="stats-row">
+    <div class="stat-chip">
+      <div class="stat-val">{{ jugadores | length }}</div>
+      <div class="stat-lbl">Partidas jugadas</div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-val">{{ jugadores | map(attribute='nombre') | list | unique | list | length }}</div>
+      <div class="stat-lbl">Jugadores únicos</div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-val">{{ mejor_puntaje }}</div>
+      <div class="stat-lbl">Récord absoluto</div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if jugadores and jugadores | length >= 3 %}
+  <div class="podium">
+    <div class="podium-slot second">
+      <div class="p-avatar">🥈</div>
+      <div class="p-name">{{ jugadores[1].nombre }}</div>
+      <div class="p-score">{{ jugadores[1].puntaje_total }} pts</div>
+      <div class="p-source">Quiz: {{ jugadores[1].puntaje_quiz }} · EcoCatcher: {{ jugadores[1].puntaje_minijuego }}</div>
+      <div class="p-block">2</div>
+    </div>
+    <div class="podium-slot first">
+      <div class="p-avatar">🥇</div>
+      <div class="p-name">{{ jugadores[0].nombre }}</div>
+      <div class="p-score">{{ jugadores[0].puntaje_total }} pts</div>
+      <div class="p-source">Quiz: {{ jugadores[0].puntaje_quiz }} · EcoCatcher: {{ jugadores[0].puntaje_minijuego }}</div>
+      <div class="p-block">1</div>
+    </div>
+    <div class="podium-slot third">
+      <div class="p-avatar">🥉</div>
+      <div class="p-name">{{ jugadores[2].nombre }}</div>
+      <div class="p-score">{{ jugadores[2].puntaje_total }} pts</div>
+      <div class="p-source">Quiz: {{ jugadores[2].puntaje_quiz }} · EcoCatcher: {{ jugadores[2].puntaje_minijuego }}</div>
+      <div class="p-block">3</div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="table-card">
+    {% if jugadores %}
+    <div class="table-head">
+      <div>#</div>
+      <div>Jugador</div>
+      <div style="text-align:center">Total</div>
+      <div style="text-align:center">📝 Quiz</div>
+      <div style="text-align:center">🎮 EcoCatcher</div>
+      <div style="text-align:right">Fecha</div>
+    </div>
+    {% for j in jugadores %}
+    <div class="table-row
+      {% if loop.index == 1 %}top-1{% elif loop.index == 2 %}top-2{% elif loop.index == 3 %}top-3{% endif %}
+      {% if j.correo == jugador_actual.correo %}is-me{% endif %}">
+      <div class="rank-cell">
+        {% if loop.index == 1 %}<span class="rank-medal">🥇</span>
+        {% elif loop.index == 2 %}<span class="rank-medal">🥈</span>
+        {% elif loop.index == 3 %}<span class="rank-medal">🥉</span>
+        {% else %}<span style="color:var(--gray-500);font-size:.85rem">{{ loop.index }}</span>
+        {% endif %}
+      </div>
+      <div class="name-cell">
+        <div class="name-text">{{ j.nombre }}
+          {% if j.correo == jugador_actual.correo %}<span class="me-badge">Tú</span>{% endif %}
+        </div>
+        <div class="name-sub">{{ j.correo }}</div>
+      </div>
+      <div class="score-cell">{{ j.puntaje_total }}</div>
+      <div class="score-cell" style="color:var(--green-mid)">{{ j.puntaje_quiz }}</div>
+      <div class="score-cell" style="color:var(--blue-mid)">{{ j.puntaje_minijuego }}</div>
+      <div class="date-cell">{{ j.fecha }}</div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="empty">
+      <span class="empty-icon">🌱</span>
+      <p>Aún no hay partidas registradas.<br>¡Sé el primero en jugar!</p>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>

@@ -7,258 +7,101 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --green-dark:   #1a5c38;
-      --green-mid:    #2e8b57;
-      --green-light:  #4caf7d;
-      --green-pale:   #e8f5ee;
-      --blue-deep:    #1565a8;
-      --blue-mid:     #2196d3;
-      --blue-pale:    #e3f2fd;
-      --white:        #ffffff;
-      --gray-50:      #f8fafb;
-      --gray-100:     #eef2f5;
-      --gray-300:     #c8d4dc;
-      --gray-500:     #6b8090;
-      --gray-800:     #1e2d3a;
-      --radius-sm:    10px;
-      --radius-md:    18px;
-      --radius-lg:    28px;
-      --shadow-card:  0 8px 32px rgba(26,92,56,.10), 0 2px 8px rgba(26,92,56,.07);
-      --shadow-btn:   0 4px 16px rgba(46,139,87,.35);
+      --green-dark:  #1a5c38; --green-mid: #2e8b57; --green-pale: #e8f5ee;
+      --blue-mid:    #2196d3; --white: #ffffff;
+      --gray-50:     #f8fafb; --gray-100: #eef2f5; --gray-500: #6b8090; --gray-800: #1e2d3a;
+      --radius-sm:   10px; --radius-lg: 28px;
+      --shadow-card: 0 8px 32px rgba(26,92,56,.10), 0 2px 8px rgba(26,92,56,.07);
+      --shadow-btn:  0 4px 16px rgba(46,139,87,.35);
     }
-
     body {
       background: linear-gradient(135deg, #e8f5ee 0%, #e3f2fd 50%, #f0faf4 100%);
-      min-height: 100vh;
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 1rem;
-      position: relative;
-      overflow-x: hidden;
+      min-height: 100vh; font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 2rem 1rem; position: relative; overflow-x: hidden;
     }
+    body::before { content:''; position:fixed; border-radius:50%; pointer-events:none; z-index:0;
+      width:600px; height:600px; background:radial-gradient(circle,rgba(78,188,109,.18) 0%,transparent 70%);
+      top:-150px; left:-150px; }
+    body::after  { content:''; position:fixed; border-radius:50%; pointer-events:none; z-index:0;
+      width:500px; height:500px; background:radial-gradient(circle,rgba(33,150,211,.14) 0%,transparent 70%);
+      bottom:-100px; right:-100px; }
+    .topbar { display:flex; align-items:center; gap:.6rem; margin-bottom:2rem;
+      position:relative; z-index:1; animation:fadeDown .4s ease both; }
+    .brand-icon { width:40px; height:40px;
+      background:linear-gradient(135deg,var(--green-mid),var(--blue-mid));
+      border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:1.25rem; }
+    .brand-name { font-size:1rem; font-weight:800; color:var(--green-dark); }
+    .card { background:var(--white); border-radius:var(--radius-lg); padding:2.5rem 2rem 2rem;
+      width:100%; max-width:460px; box-shadow:var(--shadow-card);
+      border:1px solid rgba(46,139,87,.12); position:relative; z-index:1; text-align:center;
+      animation:fadeUp .6s cubic-bezier(.22,.68,0,1.2) both; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(28px) scale(.97)} to{opacity:1;transform:none} }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:none} }
+    @keyframes popIn { 0%{transform:scale(.6);opacity:0} 60%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
+    @keyframes countUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+    .result-emoji { font-size:3.2rem; display:block; margin-bottom:1rem;
+      animation:popIn .5s cubic-bezier(.22,.68,0,1.2) .15s both; }
+    h1 { font-size:1.8rem; font-weight:800; color:var(--gray-800); line-height:1.2;
+      margin-bottom:.4rem; letter-spacing:-.02em; }
+    .nombre-destaque { color:var(--green-mid); }
+    .subtitulo { color:var(--gray-500); font-size:.9rem; margin-bottom:1.5rem; line-height:1.5; }
 
-    body::before, body::after {
-      content: '';
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
-    }
-    body::before {
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(78,188,109,.18) 0%, transparent 70%);
-      top: -150px; left: -150px;
-    }
-    body::after {
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(33,150,211,.14) 0%, transparent 70%);
-      bottom: -100px; right: -100px;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      margin-bottom: 2rem;
-      position: relative; z-index: 1;
-      animation: fadeDown .4s ease both;
-    }
-    .brand-icon {
-      width: 40px; height: 40px;
-      background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
-      border-radius: 11px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.25rem;
-    }
-    .brand-name {
-      font-size: 1rem;
-      font-weight: 800;
-      color: var(--green-dark);
-    }
-
-    .card {
-      background: var(--white);
+    /* puntos grandes */
+    .points-display {
+      background: linear-gradient(135deg, var(--green-pale), var(--blue-mid) 200%);
+      border: 1px solid rgba(46,139,87,.2);
       border-radius: var(--radius-lg);
-      padding: 2.5rem 2rem 2rem;
-      width: 100%;
-      max-width: 460px;
-      box-shadow: var(--shadow-card);
-      border: 1px solid rgba(46,139,87,.12);
-      position: relative; z-index: 1;
-      text-align: center;
-      animation: fadeUp .6s cubic-bezier(.22,.68,0,1.2) both;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(28px) scale(.97); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes popIn {
-      0%   { transform: scale(0.6); opacity: 0; }
-      60%  { transform: scale(1.08); }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    @keyframes countUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .result-emoji {
-      font-size: 3.2rem;
-      display: block;
-      margin-bottom: 1rem;
-      animation: popIn .5s cubic-bezier(.22,.68,0,1.2) .15s both;
-    }
-
-    h1 {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--gray-800);
-      line-height: 1.2;
-      margin-bottom: .4rem;
-      letter-spacing: -.02em;
-    }
-
-    .nombre-destaque {
-      color: var(--green-mid);
-    }
-
-    .subtitulo {
-      color: var(--gray-500);
-      font-size: .9rem;
-      margin-bottom: 2rem;
-      line-height: 1.5;
-    }
-
-    /* Score ring */
-    .score-ring {
-      position: relative;
-      width: 148px;
-      height: 148px;
-      margin: 0 auto 2rem;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
       animation: popIn .55s cubic-bezier(.22,.68,0,1.2) .25s both;
     }
-    .score-ring svg {
-      width: 100%; height: 100%;
-      transform: rotate(-90deg);
+    .points-num {
+      font-size: 3rem; font-weight: 800; color: var(--green-dark);
+      line-height: 1; letter-spacing: -.03em;
     }
-    .score-ring .track {
-      fill: none;
-      stroke: var(--gray-100);
-      stroke-width: 10;
-    }
-    .score-ring .fill {
-      fill: none;
-      stroke: url(#scoreGrad);
-      stroke-width: 10;
-      stroke-linecap: round;
-      stroke-dasharray: 345;
-      stroke-dashoffset: {{ (345 - (puntaje / total * 345)) | int }};
-      transition: stroke-dashoffset 1s ease .4s;
-    }
-    .score-inner {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      animation: countUp .5s ease .4s both;
-    }
-    .score-number {
-      font-size: 2.6rem;
-      font-weight: 800;
-      color: var(--green-dark);
-      line-height: 1;
-      letter-spacing: -.03em;
-    }
-    .score-denom {
-      font-size: .8rem;
-      color: var(--gray-500);
-      font-weight: 600;
-      margin-top: .15rem;
-    }
+    .points-label { font-size: .78rem; font-weight: 700; color: var(--gray-500);
+      text-transform: uppercase; letter-spacing: .08em; margin-top: .3rem; }
+    .points-detail { font-size: .85rem; color: var(--gray-500); margin-top: .5rem; }
+    .points-detail strong { color: var(--green-dark); }
 
-    /* Percent label */
-    .score-pct {
-      display: inline-block;
-      background: var(--green-pale);
-      color: var(--green-dark);
-      font-size: .78rem;
-      font-weight: 700;
-      padding: .28rem .7rem;
-      border-radius: 99px;
-      border: 1px solid rgba(46,139,87,.2);
-      margin-bottom: 1.5rem;
-    }
+    .mensaje { background:var(--gray-50); border:1px solid var(--gray-100);
+      border-radius:var(--radius-sm); color:var(--gray-500); font-size:.9rem;
+      padding:1rem 1.1rem; margin-bottom:1.75rem; line-height:1.55;
+      text-align:left; display:flex; gap:.6rem; align-items:flex-start; }
+    .mensaje-icon { flex-shrink:0; font-size:1.1rem; margin-top:.05rem; }
 
-    .mensaje {
-      background: var(--gray-50);
-      border: 1px solid var(--gray-100);
-      border-radius: var(--radius-sm);
-      color: var(--gray-500);
-      font-size: .9rem;
-      padding: 1rem 1.1rem;
-      margin-bottom: 1.75rem;
-      line-height: 1.55;
-      text-align: left;
-      display: flex;
-      gap: .6rem;
-      align-items: flex-start;
-    }
-    .mensaje-icon { flex-shrink: 0; font-size: 1.1rem; margin-top: .05rem; }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: .5rem;
-      width: 100%;
-      background: linear-gradient(135deg, var(--green-mid) 0%, var(--blue-mid) 100%);
-      color: var(--white);
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: inherit;
-      font-size: 1rem;
-      font-weight: 700;
-      padding: .9rem 2rem;
-      cursor: pointer;
-      text-decoration: none;
-      transition: opacity .2s, transform .15s, box-shadow .2s;
-      box-shadow: var(--shadow-btn);
-    }
-    .btn:hover  { opacity: .9; box-shadow: 0 6px 22px rgba(46,139,87,.4); }
-    .btn:active { transform: scale(.98); }
-
-    @media (max-width: 480px) {
-      .card { padding: 2rem 1.5rem 1.75rem; }
-      h1 { font-size: 1.55rem; }
-    }
+    .btn-group { display:flex; flex-direction:column; gap:.6rem; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+      width:100%; background:linear-gradient(135deg,var(--green-mid) 0%,var(--blue-mid) 100%);
+      color:var(--white); border:none; border-radius:var(--radius-sm);
+      font-family:inherit; font-size:1rem; font-weight:700; padding:.9rem 2rem;
+      cursor:pointer; text-decoration:none;
+      transition:opacity .2s,transform .15s,box-shadow .2s; box-shadow:var(--shadow-btn); }
+    .btn:hover  { opacity:.9; box-shadow:0 6px 22px rgba(46,139,87,.4); }
+    .btn:active { transform:scale(.98); }
+    .btn-outline { display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+      width:100%; background:var(--white); color:var(--green-dark);
+      border:2px solid var(--green-mid); border-radius:var(--radius-sm);
+      font-family:inherit; font-size:.95rem; font-weight:700; padding:.8rem 2rem;
+      cursor:pointer; text-decoration:none; transition:background .2s,box-shadow .2s,transform .15s; }
+    .btn-outline:hover  { background:var(--green-pale); box-shadow:0 4px 14px rgba(46,139,87,.2); }
+    .btn-outline:active { transform:scale(.98); }
+    @media(max-width:480px){ .card{padding:2rem 1.5rem 1.75rem} h1{font-size:1.55rem} }
   </style>
 </head>
 <body>
-
   <div class="topbar">
     <div class="brand-icon">🌿</div>
     <span class="brand-name">Clasificador Ecológico</span>
   </div>
-
   <div class="card">
-
-    {% if puntaje == total %}
+    {% if aciertos == total %}
       <span class="result-emoji">🏆</span>
       <h1>¡Perfecto, <span class="nombre-destaque">{{ jugador.nombre }}</span>!</h1>
       <p class="subtitulo">Respondiste todo correctamente. ¡Eres un experto en ecología!</p>
-    {% elif puntaje >= (total * 0.6) | int %}
+    {% elif aciertos >= (total * 0.6) | int %}
       <span class="result-emoji">🌿</span>
       <h1>¡Bien hecho, <span class="nombre-destaque">{{ jugador.nombre }}</span>!</h1>
       <p class="subtitulo">Un resultado sólido. Tu conocimiento ambiental es admirable.</p>
@@ -268,32 +111,24 @@
       <p class="subtitulo">Hay margen para crecer. ¡El aprendizaje ecológico nunca termina!</p>
     {% endif %}
 
-    <div class="score-ring">
-      <svg viewBox="0 0 120 120">
-        <defs>
-          <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   stop-color="#2e8b57"/>
-            <stop offset="100%" stop-color="#2196d3"/>
-          </linearGradient>
-        </defs>
-        <circle class="track" cx="60" cy="60" r="55"/>
-        <circle class="fill"  cx="60" cy="60" r="55"/>
-      </svg>
-      <div class="score-inner">
-        <span class="score-number">{{ puntaje }}</span>
-        <span class="score-denom">de {{ total }}</span>
+    <div class="points-display">
+      <div class="points-num">{{ puntaje }}</div>
+      <div class="points-label">puntos</div>
+      <div class="points-detail">
+        <strong>{{ aciertos }} / {{ total }}</strong> respuestas correctas
+        &nbsp;·&nbsp; 250 pts c/u
       </div>
     </div>
 
-    <span class="score-pct">{{ ((puntaje / total) * 100) | int }}% correcto</span>
-
     <div class="mensaje">
       <span class="mensaje-icon">✅</span>
-      <span>Tu resultado ha quedado guardado. ¡Gracias por participar en el Clasificador Ecológico!</span>
+      <span>Tu resultado ha quedado guardado en el tablero de clasificación.</span>
     </div>
 
-    <a href="/" class="btn">🔄 Jugar de nuevo</a>
-
+    <div class="btn-group">
+      <a href="/" class="btn">🔄 Jugar de nuevo</a>
+      <a href="/leaderboard" class="btn-outline">🏆 Ver tablero de clasificación</a>
+    </div>
   </div>
 </body>
 </html>

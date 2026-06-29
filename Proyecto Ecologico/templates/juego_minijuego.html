@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoMisión – Mini Juego</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark:  #1a5c38;
+      --green-mid:   #2e8b57;
+      --green-light: #4caf7d;
+      --green-bright:#56d17e;
+      --blue-mid:    #2196d3;
+      --brown:       #8B5E3C;
+      --brown-dark:  #6B3F1F;
+      --sky-top:     #0d1b2a;
+      --sky-bot:     #1a3a2a;
+      --white:       #ffffff;
+      --gray-100:    #eef2f5;
+      --gray-500:    #6b8090;
+      --gray-800:    #1e2d3a;
+      --radius-sm:   10px;
+      --radius-lg:   20px;
+    }
+
+    body {
+      background: linear-gradient(160deg, var(--sky-top) 0%, var(--sky-bot) 100%);
+      min-height: 100vh;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+      overflow: hidden;
+    }
+
+    .hud {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+      max-width: 520px;
+      margin-bottom: .75rem;
+      flex-wrap: wrap;
+    }
+
+    .hud-brand {
+      display: flex; align-items: center; gap: .45rem;
+      margin-right: auto;
+    }
+    .hud-brand .icon {
+      width: 30px; height: 30px;
+      background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
+      border-radius: 8px; display: flex; align-items: center;
+      justify-content: center; font-size: .9rem;
+    }
+    .hud-brand span { font-size: .85rem; font-weight: 800; color: #c8e6c9; }
+
+    .lives {
+      display: flex; gap: .3rem;
+      font-size: 1.15rem;
+      letter-spacing: .05rem;
+    }
+
+    .hud-score {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 99px;
+      padding: .28rem .75rem;
+      font-size: .82rem; font-weight: 700; color: #a5d6a7;
+    }
+
+    .timer-badge {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 99px;
+      padding: .28rem .75rem;
+      font-size: .82rem; font-weight: 700; color: #fff9c4;
+      min-width: 54px; text-align: center;
+    }
+    .timer-badge.urgent { color: #ef9a9a; animation: pulse .5s infinite alternate; }
+    @keyframes pulse { from { opacity: 1; } to { opacity: .55; } }
+
+    /* barra de stamina para el sprint */
+    .stamina-wrap {
+      width: 100%; max-width: 520px;
+      margin-bottom: .6rem;
+    }
+    .stamina-label {
+      font-size: .72rem; font-weight: 700; color: #80cbc4;
+      text-transform: uppercase; letter-spacing: .07em;
+      margin-bottom: .3rem; display: flex; align-items: center; gap: .35rem;
+    }
+    .stamina-label::before { content: '⚡'; }
+    .stamina-track {
+      width: 100%; height: 8px;
+      background: rgba(255,255,255,.1);
+      border-radius: 99px; overflow: hidden;
+    }
+    .stamina-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #26c6da, #80deea);
+      border-radius: 99px;
+      transition: width .08s linear;
+    }
+    .stamina-fill.low { background: linear-gradient(90deg, #ef5350, #e57373); }
+
+    /* indicador de power-up activo */
+    .powerup-status {
+      width: 100%; max-width: 520px;
+      margin-bottom: .4rem;
+      min-height: 22px;
+      font-size: .78rem; font-weight: 700;
+      color: #ffe082;
+      text-align: center;
+      letter-spacing: .03em;
+      transition: opacity .3s;
+    }
+
+    canvas {
+      display: block;
+      border-radius: var(--radius-lg);
+      border: 2px solid rgba(255,255,255,.1);
+      box-shadow: 0 12px 48px rgba(0,0,0,.55);
+      background: linear-gradient(180deg, #102218 0%, #0d1b10 100%);
+      image-rendering: pixelated;
+      cursor: none;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10,22,14,.82);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(4px);
+      text-align: center;
+      padding: 2rem;
+      z-index: 10;
+    }
+    .overlay.hidden { display: none; }
+
+    .overlay-emoji { font-size: 3.5rem; margin-bottom: 1rem; }
+    .overlay h2 {
+      font-size: 1.8rem; font-weight: 800; color: #fff;
+      margin-bottom: .5rem; line-height: 1.2;
+    }
+    .overlay p { font-size: .95rem; color: #a5d6a7; margin-bottom: 1.5rem; line-height: 1.5; }
+
+    .overlay-btn {
+      background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
+      color: #fff; border: none; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: 1rem; font-weight: 700;
+      padding: .75rem 2rem; cursor: pointer;
+      transition: opacity .2s, transform .15s;
+      box-shadow: 0 4px 18px rgba(46,139,87,.4);
+    }
+    .overlay-btn:hover  { opacity: .9; }
+    .overlay-btn:active { transform: scale(.97); }
+
+    .overlay-nav {
+      display: flex;
+      gap: .6rem;
+      margin-top: .65rem;
+      width: 100%;
+      justify-content: center;
+    }
+    .overlay-nav-btn {
+      flex: 1;
+      max-width: 180px;
+      background: rgba(255,255,255,.08);
+      color: #c8e6c9;
+      border: 1.5px solid rgba(255,255,255,.18);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: .88rem;
+      font-weight: 700;
+      padding: .6rem 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      transition: background .2s, border-color .2s, transform .15s;
+    }
+    .overlay-nav-btn:hover  { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.35); }
+    .overlay-nav-btn:active { transform: scale(.97); }
+
+    /* ocultar nav por defecto, solo mostrar al terminar */
+    .overlay-nav.hidden { display: none; }
+
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .controls-hint {
+      margin-top: .65rem;
+      font-size: .75rem; color: rgba(255,255,255,.35);
+      text-align: center; letter-spacing: .03em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HUD superior -->
+  <div class="hud">
+    <div class="hud-brand">
+      <div class="icon">🌿</div>
+      <span>EcoMisión</span>
+    </div>
+    <div class="lives" id="lives">❤️❤️❤️</div>
+    <div class="hud-score">🌿 <span id="score">0</span></div>
+    <div class="timer-badge" id="timer">50s</div>
+  </div>
+
+  <!-- Barra de stamina -->
+  <div class="stamina-wrap">
+    <div class="stamina-label">Sprint</div>
+    <div class="stamina-track">
+      <div class="stamina-fill" id="staminaFill"></div>
+    </div>
+  </div>
+
+  <!-- Texto que avisa si hay power-up activo -->
+  <div class="powerup-status" id="powerupStatus"></div>
+
+  <!-- Canvas del juego -->
+  <div class="canvas-wrapper">
+    <canvas id="gameCanvas" width="520" height="380"></canvas>
+
+    <div class="overlay" id="overlay">
+      <div class="overlay-emoji" id="overlayEmoji">🌿</div>
+      <h2 id="overlayTitle">¡EcoCatcher!</h2>
+      <p id="overlayMsg">Atrapa los residuos ecológicos antes de que toquen el suelo.<br>
+        Usa ← → para moverte y ESPACIO para sprintar.<br>
+        <span style="color:#ffe082">⏱️ Tiempo extra &nbsp;|&nbsp; 🛡️ Escudo protege una vida</span>
+      </p>
+      <button class="overlay-btn" id="overlayBtn" onclick="startGame()">Jugar 🌍</button>
+      <div class="overlay-nav hidden" id="overlayNav">
+        <a href="/" class="overlay-nav-btn">🏠 Inicio</a>
+        <a href="/leaderboard" class="overlay-nav-btn">🏆 Ranking</a>
+      </div>
+    </div>
+  </div>
+
+  <p class="controls-hint">← → Moverse &nbsp;|&nbsp; ESPACIO Sprint &nbsp;|&nbsp; Móvil: toca los lados</p>
+
+<script>
+// -- CONFIGURACIÓN GENERAL --
+const CANVAS_W    = 520;
+const CANVAS_H    = 380;
+const PLAYER_W    = 48;
+const PLAYER_H    = 48;
+const GROUND_Y    = CANVAS_H - 20;
+const BLOCK_W     = 36;
+const BLOCK_H     = 36;
+const MAX_TIME    = 50;         // aumentamos a 50s para que sea más jugable
+const MAX_LIVES   = 3;
+const MAX_STAMINA = 100;
+const SPRINT_DRAIN  = 1.8;
+const STAMINA_REGEN = 0.55;
+const BASE_SPEED  = 4;
+const SPRINT_MULT = 2.2;
+const BASE_FALL   = 2.8;
+
+// power-ups disponibles y cuánto duran / cuánto tiempo dan
+const POWERUP_TYPES = {
+  time:   { emoji: "⏱️", color: "#ffe082", label: "+5 segundos" },
+  shield: { emoji: "🛡️", color: "#80cbc4", label: "Escudo activo" },
+};
+const TIME_BONUS    = 5;    // segundos que añade el power-up de tiempo
+const MAX_TIME_POWERUPS = 3; // máximo de relojes por partida
+const SHIELD_DURATION = 5000; // ms que dura el escudo
+const POINTS_PER_TRASH  = 25;   // puntos base por residuo
+const COMBO_EVERY       = 3;    // recogidas para subir de nivel de combo
+const COMBO_STEP        = 0.1;  // cuánto sube el multiplicador por nivel
+
+// -- MEJOR PUNTAJE (persiste entre partidas) --
+let bestScore = 0;
+
+// -- ESTADO DEL JUEGO --
+let state, animId;
+
+function newState() {
+  return {
+    running:   false,
+    over:      false,
+    score:     0,
+    lives:     MAX_LIVES,
+    stamina:   MAX_STAMINA,
+    sprinting: false,
+    timeLeft:  MAX_TIME,
+    lastTick:  null,
+    player: {
+      x: CANVAS_W / 2 - PLAYER_W / 2,
+      y: GROUND_Y - PLAYER_H,
+      vx: 0,
+    },
+    blocks:     [],
+    powerups:   [],
+    spawnTimer: 0,
+    spawnRate:  90,
+    powerupTimer: 0,
+    powerupRate:  420,
+    fallSpeed:  BASE_FALL,
+    keys: { left: false, right: false, space: false },
+    particles: [],
+    // combo
+    streak:       0,     // recogidas consecutivas sin perder vida
+    comboLevel:   0,     // nivel actual (streak / COMBO_EVERY)
+    multiplier:   1.0,   // multiplicador de puntos
+    comboPopup:   null,  // { text, x, y, life } texto flotante
+    // power-ups activos
+    shieldActive:  false,
+    shieldEndsAt:  0,
+    timePowerupsSpawned: 0,
+  };
+}
+
+// =====================================================
+// SPRITES PIXEL-ART (dibujados con Canvas 2D)
+// =====================================================
+
+// Paleta de colores compartida
+const PAL = {
+  // pingüino
+  pBlack:   "#1a1a2a",   // negro plumaje cabeza/espalda
+  pBlackD:  "#0d0d18",   // negro más oscuro (sombra)
+  pWhite:   "#e8eaf0",   // panza blanca
+  pWhiteD:  "#c5c8d8",   // panza sombra
+  pGray:    "#7a8099",   // alas grises
+  pGrayL:   "#9ba3be",   // alas gris claro
+  pBeak:    "#e8820c",   // pico naranja
+  pBeakD:   "#b85e08",   // pico oscuro
+  pEyeW:    "#ffffff",   // blanco del ojo
+  pEyeR:    "#e03050",   // iris rosado/rojo
+  pEyeB:    "#1a0a0a",   // pupila negra
+  pLeg:     "#f06090",   // patas rosadas
+  pLegD:    "#c03060",   // patas oscuro
+  pFoot:    "#d04870",   // pies
+  // camisa
+  shirt:    "#1565c0",   // azul ULAGOS
+  shirtL:   "#1e88e5",   // azul claro (highlight)
+  shirtD:   "#0d3b6e",   // azul oscuro (sombra)
+  shirtW:   "#e8eaf0",   // texto blanco camiseta
+  // residuo / basura
+  trashG:   "#66bb6a",
+  trashGD:  "#2e7d32",
+  trashGHL: "#a5d6a7",
+  detail:   "#1b5e20",
+  // power-up tiempo
+  puTimeY:  "#ffe082",
+  puTimeYD: "#f9a825",
+  // power-up escudo
+  puShC:    "#80cbc4",
+  puShCD:   "#00796b",
+};
+
+// ---- SPRITE: JUGADOR — Pingüino ULAGOS (24px × 24px → 48×48) ----
+function drawPlayer(ctx, x, y, sprinting, shieldActive) {
+  ctx.save();
+  ctx.translate(x, y);
+  const S = 2;
+
+  // Función auxiliar: rectángulo en coordenadas de sprite
+  const r = (col, row, w, h, color) => {
+    ctx.fillStyle = color;
+    ctx.fillRect(col*S, row*S, w*S, h*S);
+  };
+
+  // ══════════════════════════════════════════
+  //  CABEZA (filas 0–9)
+  // ══════════════════════════════════════════
+
+  // Plumaje negro cabeza — forma ovalada
+  r(5,  0, 14, 1, PAL.pBlack);   // tope
+  r(3,  1, 18, 2, PAL.pBlack);   // expansión
+  r(2,  3, 20, 6, PAL.pBlack);   // parte central cabeza
+  r(3,  9,  2, 1, PAL.pBlack);   // esquina inf-izq
+  r(19, 9,  2, 1, PAL.pBlack);   // esquina inf-der
+
+  // Panza blanca cara (zona central)
+  r(6,  2, 12, 1, PAL.pWhite);
+  r(5,  3, 14, 5, PAL.pWhite);
+  r(6,  8,  4, 1, PAL.pWhite);
+  r(14, 8,  4, 1, PAL.pWhite);
+
+  // Sombra sutil en panza cara
+  r(6,  3,  1, 5, PAL.pWhiteD);   // sombra izq
+  r(17, 3,  1, 5, PAL.pWhiteD);   // sombra der
+
+  // ── Ojos (estilo expresivo con iris rosado) ──
+  // Ojo izquierdo
+  r(6,  3, 4, 4, PAL.pEyeW);     // blanco
+  r(6,  3, 1, 1, PAL.pBlack);    // esquina
+  r(9,  3, 1, 1, PAL.pBlack);
+  r(6,  6, 1, 1, PAL.pBlack);
+  r(9,  6, 1, 1, PAL.pBlack);
+  r(7,  4, 2, 2, PAL.pEyeR);     // iris rosado
+  r(7,  4, 1, 1, PAL.pEyeB);     // pupila
+  r(8,  5, 1, 1, PAL.pEyeW);     // brillo
+
+  // Ojo derecho
+  r(14, 3, 4, 4, PAL.pEyeW);
+  r(14, 3, 1, 1, PAL.pBlack);
+  r(17, 3, 1, 1, PAL.pBlack);
+  r(14, 6, 1, 1, PAL.pBlack);
+  r(17, 6, 1, 1, PAL.pBlack);
+  r(15, 4, 2, 2, PAL.pEyeR);
+  r(15, 4, 1, 1, PAL.pEyeB);
+  r(16, 5, 1, 1, PAL.pEyeW);
+
+  // ── Pico (fila 7–8, centro) ──
+  r(9,  7, 6, 1, PAL.pBeak);
+  r(10, 8, 4, 1, PAL.pBeak);
+  r(11, 9, 2, 1, PAL.pBeakD);
+  r(9,  8, 1, 1, PAL.pBeakD);
+  r(14, 8, 1, 1, PAL.pBeakD);
+
+  // ══════════════════════════════════════════
+  //  CAMISETA ULAGOS (filas 10–17)
+  // ══════════════════════════════════════════
+
+  // Cuerpo principal (azul)
+  r(3, 10, 18, 8, PAL.shirt);
+
+  // Highlight superior
+  r(3, 10, 18,  1, PAL.shirtL);
+  r(3, 10,  1,  8, PAL.shirtL);
+
+  // Sombra inferior
+  r(3, 17, 18,  1, PAL.shirtD);
+  r(20, 10, 1,  8, PAL.shirtD);
+
+  // Alas (a los lados, grises con punta negra)
+  r(0, 10, 3, 6, PAL.pGray);
+  r(21, 10, 3, 6, PAL.pGray);
+  r(0, 10, 1, 6, PAL.pGrayL);    // highlight ala izq
+  r(23, 10, 1, 6, PAL.pBlackD);  // sombra ala der
+  // Puntas de ala negra
+  r(0, 15, 3, 2, PAL.pBlack);
+  r(21, 15, 3, 2, PAL.pBlack);
+
+  // ── Logo "≡ULAGOS" pixel en la camiseta ──
+  // "≡" (tres líneas)
+  r(5, 12, 4, 1, PAL.shirtW);
+  r(5, 14, 4, 1, PAL.shirtW);
+  r(5, 16, 4, 1, PAL.shirtW);
+  // "U"
+  r(10, 12, 1, 4, PAL.shirtW);
+  r(13, 12, 1, 4, PAL.shirtW);
+  r(11, 15, 2, 1, PAL.shirtW);
+  // "L"
+  r(15, 12, 1, 4, PAL.shirtW);
+  r(16, 15, 2, 1, PAL.shirtW);
+
+  // ══════════════════════════════════════════
+  //  PATAS ROSADAS (filas 18–21)
+  // ══════════════════════════════════════════
+
+  r(7,  18, 4, 4, PAL.pLeg);   // pata izq
+  r(13, 18, 4, 4, PAL.pLeg);   // pata der
+  r(10, 18, 4, 2, PAL.pWhiteD); // separación panza
+
+  // Sombra interior patas
+  r(10, 18, 1, 4, PAL.pLegD);
+  r(13, 18, 1, 4, PAL.pLegD);
+
+  // ── Pies (filas 22–23, más anchos) ──
+  r(5,  22, 7, 2, PAL.pFoot);   // pie izq
+  r(12, 22, 7, 2, PAL.pFoot);   // pie der
+  r(5,  23, 7, 1, PAL.pLegD);   // sombra pie izq
+  r(12, 23, 7, 1, PAL.pLegD);   // sombra pie der
+  // dedos pixel
+  r(5,  22, 1, 2, PAL.pLegD);
+  r(8,  22, 1, 2, PAL.pLegD);
+  r(12, 22, 1, 2, PAL.pLegD);
+  r(15, 22, 1, 2, PAL.pLegD);
+
+  // ══════════════════════════════════════════
+  //  EFECTOS
+  // ══════════════════════════════════════════
+
+  // Efecto sprint: líneas de velocidad amarillas
+  if (sprinting) {
+    ctx.globalAlpha = 0.8;
+    ctx.fillStyle = "#ffeb3b";
+    ctx.fillRect(-6, 10*S, 4, 2);
+    ctx.fillRect(-8, 14*S, 6, 2);
+    ctx.fillRect(-6, 18*S, 4, 2);
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.restore();
+}
+
+// ---- SPRITES: 4 TACHOS DE RECICLAJE ----
+// Cada uno tiene su paleta oscura que encaja con la estética del juego.
+// drawBin(ctx, x, y, colores) dibuja la caja base + símbolo ♻ en el color dado.
+
+const BIN_TYPES = [
+  // Verde — orgánico / vidrio
+  { body: "#1b4d2e", bodyHL: "#2d6e42", bodySH: "#0d2c19", rim: "#3a7d52", sym: "#4caf7d" },
+  // Azul — papel / plástico
+  { body: "#1a2f4a", bodyHL: "#25456e", bodySH: "#0d1c2e", rim: "#2e5f8a", sym: "#5b9bd5" },
+  // Naranja/Marrón — residuo general
+  { body: "#4a2510", bodyHL: "#6b3818", bodySH: "#2a1208", rim: "#7d4a20", sym: "#c87941" },
+  // Amarillo — envases / metales
+  { body: "#3d3000", bodyHL: "#5a4600", bodySH: "#231b00", rim: "#7a6000", sym: "#c9a227" },
+];
+
+function drawBinBase(ctx, S, bin) {
+  // Sombra
+  ctx.fillStyle = "rgba(0,0,0,0.35)";
+  ctx.fillRect(3*S, 3*S, 18*S, 18*S);
+
+  // Cuerpo principal
+  ctx.fillStyle = bin.body;
+  ctx.fillRect(0, 0, 18*S, 18*S);
+
+  // Franja de tapa superior (más clara)
+  ctx.fillStyle = bin.bodyHL;
+  ctx.fillRect(0, 0, 18*S, 4*S);
+
+  // Highlight borde sup-izq (pixel de luz)
+  ctx.fillStyle = bin.rim;
+  ctx.fillRect(0,    0,    18*S, S);
+  ctx.fillRect(0,    0,    S,    18*S);
+
+  // Sombra borde inf-der
+  ctx.fillStyle = bin.bodySH;
+  ctx.fillRect(0,    17*S, 18*S, S);
+  ctx.fillRect(17*S, 0,    S,    18*S);
+
+  // Detalle: línea horizontal que simula la apertura de la tapa
+  ctx.fillStyle = bin.bodySH;
+  ctx.fillRect(S, 4*S, 16*S, S);
+
+  // Detalle: dos "agarraderas" en la tapa
+  ctx.fillStyle = bin.rim;
+  ctx.fillRect(6*S,  2*S, 2*S, 2*S);
+  ctx.fillRect(10*S, 2*S, 2*S, 2*S);
+}
+
+function drawRecycleSymbol(ctx, S, color) {
+  // Símbolo ♻ simplificado en pixel-art: 3 flechas curvas formando triángulo
+  ctx.fillStyle = color;
+
+  // ── Flecha arriba (apunta ↑) ──
+  ctx.fillRect(8*S,  5*S, 2*S, 4*S);  // tronco
+  ctx.fillRect(6*S,  6*S, 6*S, S);    // base punta
+  ctx.fillRect(7*S,  5*S, S,   S);    // punta izq
+  ctx.fillRect(11*S, 5*S, S,   S);    // punta der
+
+  // ── Flecha abajo-izq (apunta ↙) ──
+  ctx.fillRect(3*S,  11*S, S,  4*S);  // tronco
+  ctx.fillRect(3*S,  14*S, 4*S, S);   // base punta
+  ctx.fillRect(3*S,  10*S, S,  S);    // punta arr
+  ctx.fillRect(3*S,  15*S, S,  S);    // punta abj
+
+  // ── Flecha abajo-der (apunta ↘) ──
+  ctx.fillRect(14*S, 11*S, S,  4*S);  // tronco
+  ctx.fillRect(11*S, 14*S, 4*S, S);   // base punta
+  ctx.fillRect(14*S, 10*S, S,  S);    // punta arr
+  ctx.fillRect(14*S, 15*S, S,  S);    // punta abj
+
+  // Triángulo central (hueco, solo borde)
+  ctx.fillStyle = color + "55";       // semitransparente
+  ctx.fillRect(7*S,  9*S,  4*S, S);
+  ctx.fillRect(6*S,  10*S, S,   2*S);
+  ctx.fillRect(11*S, 10*S, S,   2*S);
+  ctx.fillRect(7*S,  12*S, 4*S, S);
+}
+
+function drawTrash(ctx, x, y, binType) {
+  const bin = BIN_TYPES[binType ?? 0];
+  ctx.save();
+  ctx.translate(x, y);
+  const S = 2;
+  drawBinBase(ctx, S, bin);
+  drawRecycleSymbol(ctx, S, bin.sym);
+  ctx.restore();
+}
+
+// ---- SPRITE: POWER-UP TIEMPO — reloj de pared pixel-art ----
+function drawPowerupTime(ctx, x, y) {
+  ctx.save();
+  ctx.translate(x, y);
+  const S = 2;
+  const t = performance.now();
+
+  // Brillo pulsante amarillo
+  const glow = 8 + Math.sin(t * 0.006) * 6;
+  ctx.shadowColor = "#ffe082";
+  ctx.shadowBlur  = glow;
+
+  // Sombra base
+  ctx.fillStyle = "rgba(0,0,0,0.3)";
+  ctx.fillRect(2*S, 2*S, 16*S, 16*S);
+
+  // Fondo oscuro dorado
+  ctx.fillStyle = "#f57f17";
+  ctx.fillRect(0, 0, 16*S, 16*S);
+  ctx.fillStyle = "#ffe082";
+  ctx.fillRect(S, S, 14*S, 14*S);
+
+  ctx.shadowBlur = 0;
+
+  // ── Cuerpo del reloj (forma circular pixel) ──
+  // Marco exterior del reloj (gris oscuro)
+  ctx.fillStyle = "#424242";
+  ctx.fillRect(3*S, 1*S, 10*S,  S);   // top
+  ctx.fillRect(2*S, 2*S, 12*S,  S);
+  ctx.fillRect(1*S, 3*S, 14*S, 8*S);  // lateral
+  ctx.fillRect(2*S, 11*S,12*S,  S);
+  ctx.fillRect(3*S, 12*S,10*S,  S);   // bot
+
+  // Esfera blanca interior
+  ctx.fillStyle = "#fafafa";
+  ctx.fillRect(2*S, 3*S, 12*S, 8*S);
+  ctx.fillRect(3*S, 2*S, 10*S,  S);
+  ctx.fillRect(3*S, 11*S,10*S,  S);
+
+  // Marcas de hora (12, 3, 6, 9)
+  ctx.fillStyle = "#424242";
+  ctx.fillRect(7*S, 3*S,  2*S, S);    // 12
+  ctx.fillRect(12*S,6*S,  S,  2*S);   // 3
+  ctx.fillRect(7*S, 10*S, 2*S, S);    // 6
+  ctx.fillRect(2*S, 6*S,  S,  2*S);   // 9
+
+  // Manecillas desde el centro (8,7)
+  ctx.fillStyle = "#1a237e";
+  ctx.fillRect(7*S, 4*S,  2*S, 4*S);  // minutero (apunta arriba)
+  ctx.fillStyle = "#c62828";
+  ctx.fillRect(8*S, 7*S,  3*S, S);    // horario (apunta der)
+  // Centro pivot
+  ctx.fillStyle = "#424242";
+  ctx.fillRect(7*S, 7*S,  2*S, S);
+
+  // Pernos del reloj (arriba y abajo)
+  ctx.fillStyle = "#9e9e9e";
+  ctx.fillRect(6*S, 0,    4*S, S);    // perno superior
+  ctx.fillRect(6*S, 13*S, 4*S, S);    // perno inferior (pie)
+
+  // "+5s" debajo
+  ctx.fillStyle = "#f57f17";
+  // "+"
+  ctx.fillRect(1*S, 14*S, S,  3*S);
+  ctx.fillRect(0,   15*S, 3*S, S);
+  // "5"
+  ctx.fillRect(4*S, 14*S, 3*S, S);
+  ctx.fillRect(4*S, 14*S, S,  2*S);
+  ctx.fillRect(4*S, 15*S, 3*S, S);
+  ctx.fillRect(6*S, 15*S, S,  2*S);
+  ctx.fillRect(4*S, 16*S, 3*S, S);
+  // "s"
+  ctx.fillRect(8*S, 14*S, 3*S, S);
+  ctx.fillRect(8*S, 14*S, S,  2*S);
+  ctx.fillRect(8*S, 15*S, 3*S, S);
+  ctx.fillRect(10*S,15*S, S,  2*S);
+  ctx.fillRect(8*S, 16*S, 3*S, S);
+
+  ctx.restore();
+}
+
+// ---- SPRITE: POWER-UP ESCUDO ----
+function drawPowerupShield(ctx, x, y) {
+  ctx.save();
+  ctx.translate(x, y);
+  const S = 2;
+  const t = performance.now();
+
+  // Brillo pulsante cian
+  const glow = 8 + Math.sin(t * 0.005) * 6;
+  ctx.shadowColor = "#4dd0e1";
+  ctx.shadowBlur  = glow;
+
+  // Sombra base
+  ctx.fillStyle = "rgba(0,0,0,0.35)";
+  ctx.fillRect(2*S, 2*S, 16*S, 16*S);
+
+  // Fondo en capas (simula profundidad)
+  ctx.fillStyle = "#00363a";
+  ctx.fillRect(0, 0, 16*S, 16*S);
+  ctx.fillStyle = "#004d52";
+  ctx.fillRect(S, S, 14*S, 14*S);
+  ctx.fillStyle = "#006064";
+  ctx.fillRect(2*S, 2*S, 12*S, 12*S);
+
+  ctx.shadowBlur = 0;
+
+  // Bordes pixel
+  ctx.fillStyle = "#4dd0e1";
+  ctx.fillRect(0, 0, 16*S, S);
+  ctx.fillRect(0, 0, S, 16*S);
+  ctx.fillStyle = "#00363a";
+  ctx.fillRect(0, 15*S, 16*S, S);
+  ctx.fillRect(15*S, 0, S, 16*S);
+
+  // Sombra del escudo desplazada
+  ctx.fillStyle = "#003033";
+  ctx.fillRect(5*S, 3*S, 8*S,  S);
+  ctx.fillRect(4*S, 4*S, 10*S, 6*S);
+  ctx.fillRect(5*S, 10*S,8*S,  S);
+  ctx.fillRect(6*S, 11*S,6*S,  S);
+  ctx.fillRect(7*S, 12*S,4*S,  S);
+  ctx.fillRect(8*S, 13*S,2*S,  S);
+
+  // Escudo blanco
+  ctx.fillStyle = "#e0f7fa";
+  ctx.fillRect(4*S, 2*S, 8*S,  S);
+  ctx.fillRect(3*S, 3*S, 10*S, 7*S);
+  ctx.fillRect(4*S, 10*S,8*S,  S);
+  ctx.fillRect(5*S, 11*S,6*S,  S);
+  ctx.fillRect(6*S, 12*S,4*S,  S);
+  ctx.fillRect(7*S, 13*S,2*S,  S);
+
+  // Highlight lateral izq (efecto 3D)
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(3*S, 3*S, S, 7*S);
+  ctx.fillRect(4*S, 2*S, S, S);
+
+  // Cruz interna (cian oscuro)
+  ctx.fillStyle = "#00838f";
+  ctx.fillRect(7*S, 4*S, 2*S, 5*S);
+  ctx.fillRect(4*S, 6*S, 8*S, 2*S);
+  // Brillo en la cruz
+  ctx.fillStyle = "#4dd0e1";
+  ctx.fillRect(7*S, 4*S, S, 2*S);
+  ctx.fillRect(4*S, 6*S, 2*S, S);
+
+  ctx.restore();
+}
+
+// =====================================================
+// FIN DE SPRITES
+// =====================================================
+
+// -- CANVAS Y REFERENCIAS AL DOM --
+const canvas = document.getElementById("gameCanvas");
+const ctx    = canvas.getContext("2d");
+
+const scoreEl      = document.getElementById("score");
+const timerEl      = document.getElementById("timer");
+const livesEl      = document.getElementById("lives");
+const staminaEl    = document.getElementById("staminaFill");
+const powerupEl    = document.getElementById("powerupStatus");
+const overlay      = document.getElementById("overlay");
+const oEmoji       = document.getElementById("overlayEmoji");
+const oTitle       = document.getElementById("overlayTitle");
+const oMsg         = document.getElementById("overlayMsg");
+const oBtn         = document.getElementById("overlayBtn");
+
+// -- CONTROLES DE TECLADO --
+document.addEventListener("keydown", e => {
+  if (!state) return;
+  if (e.key === "ArrowLeft"  || e.key === "a") state.keys.left  = true;
+  if (e.key === "ArrowRight" || e.key === "d") state.keys.right = true;
+  if (e.key === " " || e.key === "Spacebar")   { e.preventDefault(); state.keys.space = true; }
+});
+document.addEventListener("keyup", e => {
+  if (!state) return;
+  if (e.key === "ArrowLeft"  || e.key === "a") state.keys.left  = false;
+  if (e.key === "ArrowRight" || e.key === "d") state.keys.right = false;
+  if (e.key === " " || e.key === "Spacebar")   state.keys.space  = false;
+});
+
+// controles táctiles: toca izquierda o derecha del canvas
+canvas.addEventListener("touchstart", e => {
+  if (!state) return;
+  const tx = e.touches[0].clientX - canvas.getBoundingClientRect().left;
+  if (tx < CANVAS_W / 2) state.keys.left = true;
+  else                    state.keys.right = true;
+}, { passive: true });
+canvas.addEventListener("touchend", () => {
+  if (!state) return;
+  state.keys.left = state.keys.right = false;
+}, { passive: true });
+
+// -- LOOP PRINCIPAL --
+function startGame() {
+  if (animId) cancelAnimationFrame(animId);
+  state = newState();
+  state.running = true;
+  overlay.classList.add("hidden");
+  // ocultar botones de navegación para la pantalla de inicio
+  document.getElementById("overlayNav").classList.add("hidden");
+  animId = requestAnimationFrame(loop);
+}
+
+function loop(ts) {
+  if (!state.running) return;
+
+  // calcular delta time, limitar a 80ms para que no salte si cambias de pestaña
+  if (!state.lastTick) state.lastTick = ts;
+  const dt = Math.min(ts - state.lastTick, 80);
+  state.lastTick = ts;
+
+  // descontar tiempo
+  state.timeLeft -= dt / 1000;
+  if (state.timeLeft <= 0) {
+    state.timeLeft = 0;
+    endGame("time");
+    return;
+  }
+
+  update(ts, dt);
+  render();
+  updateHUD(ts);
+
+  animId = requestAnimationFrame(loop);
+}
+
+// -- LÓGICA DE ACTUALIZACIÓN --
+function update(ts, dt) {
+  const s = state;
+  const canSprint = s.keys.space && s.stamina > 0;
+
+  // gestión del stamina para el sprint
+  if (canSprint) {
+    s.stamina = Math.max(0, s.stamina - SPRINT_DRAIN);
+    s.sprinting = true;
+  } else {
+    s.stamina = Math.min(MAX_STAMINA, s.stamina + STAMINA_REGEN);
+    s.sprinting = false;
+  }
+
+  // mover jugador
+  const spd = BASE_SPEED * (s.sprinting && s.stamina > 0 ? SPRINT_MULT : 1);
+  if (s.keys.left)  s.player.x -= spd;
+  if (s.keys.right) s.player.x += spd;
+  s.player.x = Math.max(0, Math.min(CANVAS_W - PLAYER_W, s.player.x));
+
+  // dificultad progresiva: cada segundo que pasa, los bloques caen más rápido
+  const elapsed = MAX_TIME - s.timeLeft;
+  s.fallSpeed = BASE_FALL + elapsed * 0.08;
+  s.spawnRate = Math.max(35, 90 - elapsed * 1.5);
+
+  // spawnear bloques de residuos normales
+  s.spawnTimer++;
+  if (s.spawnTimer >= s.spawnRate) {
+    s.spawnTimer = 0;
+    s.blocks.push({
+      x:  Math.random() * (CANVAS_W - BLOCK_W),
+      y:  -BLOCK_H,
+      vy: s.fallSpeed + Math.random() * 1.5,
+      hit: false,
+      binType: Math.floor(Math.random() * 4),
+    });
+  }
+
+  // spawnear power-ups cada cierto tiempo, solo uno a la vez
+  s.powerupTimer++;
+  if (s.powerupTimer >= s.powerupRate && s.powerups.length === 0) {
+    s.powerupTimer = 0;
+    // Si ya se spawnearon el máximo de relojes, solo puede salir escudo
+    let tipos = Object.keys(POWERUP_TYPES);
+    if (s.timePowerupsSpawned >= MAX_TIME_POWERUPS) {
+      tipos = tipos.filter(t => t !== "time");
+    }
+    if (tipos.length > 0) {
+      const tipo = tipos[Math.floor(Math.random() * tipos.length)];
+      if (tipo === "time") s.timePowerupsSpawned++;
+      s.powerups.push({
+        x:    Math.random() * (CANVAS_W - 32),
+        y:    -32,
+        vy:   2.2,
+        tipo,
+        hit:  false,
+      });
+    }
+  }
+
+  // mover y revisar colisión de power-ups con el jugador
+  for (let i = s.powerups.length - 1; i >= 0; i--) {
+    const pu = s.powerups[i];
+    pu.y += pu.vy;
+
+    const caught =
+      !pu.hit &&
+      pu.y + 32 >= s.player.y &&
+      pu.y <= s.player.y + PLAYER_H &&
+      pu.x + 32 > s.player.x + 4 &&
+      pu.x < s.player.x + PLAYER_W - 4;
+
+    if (caught) {
+      pu.hit = true;
+      activarPowerup(pu.tipo, ts);
+      spawnParticles(pu.x + 16, pu.y + 16, POWERUP_TYPES[pu.tipo].color);
+      s.powerups.splice(i, 1);
+      continue;
+    }
+
+    // si llega al suelo sin atraparse, simplemente desaparece (sin penalización)
+    if (pu.y > GROUND_Y) {
+      s.powerups.splice(i, 1);
+    }
+  }
+
+  // mover y revisar colisión de bloques normales
+  for (let i = s.blocks.length - 1; i >= 0; i--) {
+    const b = s.blocks[i];
+    b.y += b.vy;
+
+    const caught =
+      !b.hit &&
+      b.y + BLOCK_H >= s.player.y &&
+      b.y <= s.player.y + PLAYER_H &&
+      b.x + BLOCK_W > s.player.x + 6 &&
+      b.x < s.player.x + PLAYER_W - 6;
+
+    if (caught) {
+      b.hit = true;
+
+      // actualizar combo
+      s.streak++;
+      const newLevel = Math.floor(s.streak / COMBO_EVERY);
+      if (newLevel > s.comboLevel) {
+        s.comboLevel = newLevel;
+        s.multiplier = parseFloat((1.0 + s.comboLevel * COMBO_STEP).toFixed(1));
+        // popup de subida de combo
+        s.comboPopup = {
+          text: `COMBO x${s.multiplier.toFixed(1)}! 🔥`,
+          x: b.x + BLOCK_W / 2,
+          y: b.y,
+          life: 90,
+        };
+      }
+
+      // sumar puntos con multiplicador
+      const pts = Math.round(POINTS_PER_TRASH * s.multiplier);
+      s.score += pts;
+
+      // popup de puntos
+      spawnParticles(b.x + BLOCK_W / 2, b.y + BLOCK_H / 2, "#56d17e");
+      s.blocks.splice(i, 1);
+      continue;
+    }
+
+    // bloque llega al suelo: perder una vida (el escudo la absorbe)
+    if (b.y > GROUND_Y) {
+      spawnParticles(b.x + BLOCK_W / 2, GROUND_Y, "#ef5350");
+      s.blocks.splice(i, 1);
+
+      if (s.shieldActive) {
+        // el escudo absorbe el golpe y se rompe
+        s.shieldActive = false;
+        spawnParticles(s.player.x + PLAYER_W / 2, s.player.y, "#80cbc4");
+      } else {
+        s.lives--;
+        // resetear combo al perder vida
+        s.streak     = 0;
+        s.comboLevel = 0;
+        s.multiplier = 1.0;
+        s.comboPopup = { text: "💔 Racha perdida", x: s.player.x + PLAYER_W / 2, y: s.player.y, life: 80 };
+        if (s.lives <= 0) { endGame("lives"); return; }
+      }
+    }
+  }
+
+  // expirar escudo si ya pasó su tiempo
+  if (s.shieldActive && ts >= s.shieldEndsAt) {
+    s.shieldActive = false;
+  }
+
+  // actualizar partículas
+  for (let i = s.particles.length - 1; i >= 0; i--) {
+    const p = s.particles[i];
+    p.x  += p.vx;
+    p.y  += p.vy;
+    p.vy += 0.15;
+    p.life -= 3;
+    if (p.life <= 0) s.particles.splice(i, 1);
+  }
+
+  // actualizar popup de combo
+  if (s.comboPopup) {
+    s.comboPopup.y  -= 1;
+    s.comboPopup.life -= 2;
+    if (s.comboPopup.life <= 0) s.comboPopup = null;
+  }
+}
+
+// activar el efecto de cada tipo de power-up
+function activarPowerup(tipo, ts) {
+  if (tipo === "time") {
+    state.timeLeft = Math.min(state.timeLeft + TIME_BONUS, MAX_TIME);
+  } else if (tipo === "shield") {
+    state.shieldActive = true;
+    state.shieldEndsAt = ts + SHIELD_DURATION;
+  }
+}
+
+function spawnParticles(x, y, color) {
+  for (let i = 0; i < 8; i++) {
+    state.particles.push({
+      x, y,
+      vx:   (Math.random() - .5) * 4,
+      vy:   (Math.random() - 1.2) * 3,
+      color,
+      life: 80 + Math.random() * 40,
+      size: 3 + Math.random() * 3,
+    });
+  }
+}
+
+// -- RENDER --
+function render() {
+  const s = state;
+  ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+
+  // fondo con grilla sutil
+  ctx.strokeStyle = "rgba(255,255,255,.03)";
+  ctx.lineWidth = 1;
+  for (let x = 0; x < CANVAS_W; x += 40) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, CANVAS_H); ctx.stroke();
+  }
+  for (let y = 0; y < CANVAS_H; y += 40) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(CANVAS_W, y); ctx.stroke();
+  }
+
+  // suelo
+  ctx.fillStyle = "#1b3a25";
+  ctx.fillRect(0, GROUND_Y, CANVAS_W, CANVAS_H - GROUND_Y);
+  ctx.fillStyle = "#2e8b57";
+  ctx.fillRect(0, GROUND_Y, CANVAS_W, 3);
+
+  // partículas
+  for (const p of s.particles) {
+    ctx.globalAlpha = p.life / 120;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // bloques de residuos cayendo — sprite pixel-art
+  for (const b of s.blocks) {
+    drawTrash(ctx, b.x, b.y, b.binType);
+  }
+
+  // power-ups cayendo — sprites pixel-art
+  for (const pu of s.powerups) {
+    if (pu.tipo === "time") {
+      drawPowerupTime(ctx, pu.x, pu.y);
+    } else if (pu.tipo === "shield") {
+      drawPowerupShield(ctx, pu.x, pu.y);
+    }
+  }
+
+  // jugador
+  const px = s.player.x;
+  const py = s.player.y;
+
+  // aura de escudo si está activo
+  if (s.shieldActive) {
+    ctx.save();
+    ctx.shadowColor = "#80cbc4";
+    ctx.shadowBlur  = 20;
+    ctx.strokeStyle = "#80cbc4";
+    ctx.lineWidth   = 3;
+    ctx.beginPath();
+    ctx.roundRect(px - 5, py - 5, PLAYER_W + 10, PLAYER_H + 10, 14);
+    ctx.stroke();
+    ctx.globalAlpha = 0.4;
+    ctx.strokeStyle = "#b2dfdb";
+    ctx.lineWidth = 6;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // sombra del jugador en el suelo
+  ctx.save();
+  ctx.globalAlpha = 0.28;
+  ctx.fillStyle = "#000";
+  ctx.beginPath();
+  ctx.ellipse(px + PLAYER_W/2, GROUND_Y + 4, PLAYER_W/2 - 2, 5, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+
+  // sprite del jugador
+  drawPlayer(ctx, px, py, s.sprinting, s.shieldActive);
+
+  // popup de combo flotante
+  if (s.comboPopup) {
+    const cp = s.comboPopup;
+    ctx.save();
+    ctx.globalAlpha = Math.min(1, cp.life / 40);
+    ctx.font = "bold 13px 'Plus Jakarta Sans', sans-serif";
+    ctx.textAlign = "center";
+    // sombra de texto
+    ctx.fillStyle = "#000";
+    ctx.fillText(cp.text, cp.x + 1, cp.y + 1);
+    // texto con color según tipo
+    ctx.fillStyle = cp.text.includes("💔") ? "#ef9a9a" : "#ffe082";
+    ctx.fillText(cp.text, cp.x, cp.y);
+    ctx.restore();
+  }
+
+  ctx.textAlign = "left";
+}
+
+// -- ACTUALIZAR HUD --
+function updateHUD(ts) {
+  const s = state;
+
+  scoreEl.textContent = s.score;
+
+  const secs = Math.ceil(s.timeLeft);
+  timerEl.textContent = `${secs}s`;
+  timerEl.classList.toggle("urgent", secs <= 10);
+
+  livesEl.textContent = "❤️".repeat(s.lives) + "🖤".repeat(MAX_LIVES - s.lives);
+
+  const pct = (s.stamina / MAX_STAMINA) * 100;
+  staminaEl.style.width = pct + "%";
+  staminaEl.classList.toggle("low", pct < 25);
+
+  // mostrar combo o power-up activo
+  if (s.shieldActive) {
+    const remaining = Math.ceil((s.shieldEndsAt - ts) / 1000);
+    powerupEl.textContent = `🛡️ Escudo activo (${remaining}s)`;
+  } else if (s.comboLevel > 0) {
+    powerupEl.textContent = `🔥 Racha x${s.multiplier.toFixed(1)} · ${s.streak % COMBO_EVERY || COMBO_EVERY}/${COMBO_EVERY} para x${(s.multiplier + COMBO_STEP).toFixed(1)}`;
+  } else {
+    const next = COMBO_EVERY - (s.streak % COMBO_EVERY);
+    powerupEl.textContent = next === COMBO_EVERY && s.streak === 0
+      ? ""
+      : `⚡ ${next} más para combo x${(1.0 + COMBO_STEP).toFixed(1)}`;
+  }
+}
+
+// -- FIN DEL JUEGO --
+async function endGame(reason) {
+  state.running = false;
+  cancelAnimationFrame(animId);
+  render();
+
+  // actualizar mejor puntaje
+  const isNewBest = state.score > bestScore;
+  if (isNewBest) bestScore = state.score;
+
+  // guardar puntaje en el servidor
+  try {
+    const fd = new FormData();
+    fd.append("puntos", state.score);
+    await fetch("/guardar_minijuego", { method: "POST", body: fd });
+  } catch (e) { /* silencioso si falla */ }
+
+  overlay.classList.remove("hidden");
+
+  const sc = state.score;
+  const bestLine = isNewBest
+    ? `<br><span style="color:#ffe082">🏅 ¡Nuevo récord!</span>`
+    : `<br><span style="color:#80cbc4">🏅 Récord: ${bestScore} pts</span>`;
+
+  if (reason === "time") {
+    oEmoji.textContent = sc >= 1000 ? "🏆" : sc >= 500 ? "🌿" : "🌱";
+    oTitle.textContent = sc >= 1000 ? "¡Experto ecológico!" : sc >= 500 ? "¡Buen trabajo!" : "¡Sigue practicando!";
+    oMsg.innerHTML = `Obtuviste <strong>${sc} puntos</strong> en 50 segundos.${bestLine}`;
+  } else {
+    oEmoji.textContent = "😵";
+    oTitle.textContent = "¡Sin vidas!";
+    oMsg.innerHTML = `Se te escaparon demasiados residuos. Obtuviste <strong>${sc} puntos</strong>.${bestLine}`;
+  }
+
+  oBtn.textContent = "Jugar de nuevo 🔄";
+  oBtn.onclick     = startGame;
+
+  // mostrar botones de navegación al terminar una partida
+  document.getElementById("overlayNav").classList.remove("hidden");
+}
+</script>
+</body>
+</html>

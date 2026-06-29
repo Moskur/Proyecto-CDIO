@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Admin – EcoMisión</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark: #1a5c38; --green-mid: #2e8b57; --green-pale: #e8f5ee;
+      --blue-mid: #2196d3; --blue-pale: #e3f2fd;
+      --red: #d32f2f; --red-pale: #fff5f5;
+      --white: #ffffff; --gray-50: #f8fafb; --gray-100: #eef2f5;
+      --gray-300: #c8d4dc; --gray-500: #6b8090; --gray-800: #1e2d3a;
+      --radius-sm: 10px; --radius-md: 16px; --radius-lg: 24px;
+      --shadow-card: 0 8px 32px rgba(26,92,56,.10), 0 2px 8px rgba(26,92,56,.07);
+    }
+    body {
+      background: linear-gradient(135deg, #1a2a1e 0%, #0d1b2a 100%);
+      min-height: 100vh; font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 900px; margin: 0 auto 2rem;
+    }
+    .brand { display: flex; align-items: center; gap: .55rem; }
+    .brand-icon {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
+      border-radius: 10px; display: flex; align-items: center;
+      justify-content: center; font-size: 1.1rem;
+    }
+    .brand-name { font-size: .95rem; font-weight: 800; color: #c8e6c9; }
+    .brand-tag  { font-size: .68rem; font-weight: 700; color: #4caf7d;
+      background: rgba(76,175,61,.15); border: 1px solid rgba(76,175,80,.3);
+      padding: .18rem .5rem; border-radius: 99px; margin-left: .3rem; }
+    .logout-btn {
+      font-size: .82rem; font-weight: 700; color: #ef9a9a;
+      text-decoration: none; padding: .38rem .9rem;
+      border: 1.5px solid rgba(239,154,154,.3); border-radius: 99px;
+      background: rgba(239,154,154,.08);
+      transition: background .2s, border-color .2s;
+    }
+    .logout-btn:hover { background: rgba(239,154,154,.18); border-color: rgba(239,154,154,.6); }
+
+    /* ── FLASH ── */
+    .flash {
+      max-width: 900px; margin: 0 auto 1.25rem;
+      background: #e8f5ee; border: 1px solid rgba(46,139,87,.3);
+      color: var(--green-dark); font-size: .88rem; font-weight: 600;
+      padding: .75rem 1.1rem; border-radius: var(--radius-sm);
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .flash::before { content: '✅'; }
+
+    /* ── ENCABEZADO ── */
+    .page-header { max-width: 900px; margin: 0 auto 1.5rem; }
+    .page-header h1 {
+      font-size: 1.7rem; font-weight: 800; color: #e8f5ee;
+      margin-bottom: .25rem; letter-spacing: -.02em;
+    }
+    .page-header p { color: #80cbc4; font-size: .88rem; }
+
+    /* ── STATS ── */
+    .stats-row {
+      display: flex; gap: .75rem; max-width: 900px;
+      margin: 0 auto 1.5rem; flex-wrap: wrap;
+    }
+    .stat-chip {
+      flex: 1; min-width: 120px; background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1); border-radius: var(--radius-md);
+      padding: .85rem 1rem;
+    }
+    .stat-chip .val { font-size: 1.5rem; font-weight: 800; color: #a5d6a7; line-height: 1; }
+    .stat-chip .lbl { font-size: .7rem; font-weight: 700; color: #80cbc4;
+      text-transform: uppercase; letter-spacing: .06em; margin-top: .3rem; }
+
+    /* ── TABLA ── */
+    .table-card {
+      background: var(--white); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card); max-width: 900px;
+      margin: 0 auto; overflow: hidden;
+      border: 1px solid rgba(46,139,87,.1);
+    }
+    .table-head {
+      display: grid;
+      grid-template-columns: 46px 1fr 90px 100px 110px 170px;
+      padding: .7rem 1.25rem; background: var(--gray-50);
+      border-bottom: 1px solid var(--gray-100);
+      font-size: .68rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--gray-500);
+    }
+    .table-row {
+      display: grid;
+      grid-template-columns: 46px 1fr 90px 100px 110px 170px;
+      padding: .85rem 1.25rem; align-items: center;
+      border-bottom: 1px solid var(--gray-100);
+      transition: background .15s;
+    }
+    .table-row:last-child { border-bottom: none; }
+    .table-row:hover { background: var(--gray-50); }
+
+    .rank-cell { font-size: .85rem; font-weight: 800; color: var(--gray-500); text-align: center; }
+    .name-cell .name-text { font-size: .88rem; font-weight: 700; color: var(--gray-800);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .name-cell .name-sub  { font-size: .72rem; color: var(--gray-500); }
+    .score-cell { font-size: .88rem; font-weight: 800; color: var(--green-dark); text-align: center; }
+    .score-quiz { color: var(--green-mid); }
+    .score-mini { color: var(--blue-mid); }
+
+    /* ── ACCIONES ── */
+    .actions-cell { display: flex; gap: .4rem; justify-content: flex-end; }
+
+    .btn-edit, .btn-del {
+      font-size: .75rem; font-weight: 700; padding: .35rem .75rem;
+      border: none; border-radius: 8px; cursor: pointer;
+      font-family: inherit; transition: opacity .2s, transform .15s;
+    }
+    .btn-edit { background: var(--green-pale); color: var(--green-dark); border: 1px solid rgba(46,139,87,.25); }
+    .btn-edit:hover { opacity: .8; }
+    .btn-del  { background: var(--red-pale); color: var(--red); border: 1px solid rgba(211,47,47,.2); }
+    .btn-del:hover { opacity: .8; }
+
+    /* ── MODAL DE EDICIÓN ── */
+    .modal-bg {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
+      z-index: 100; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-bg.open { display: flex; }
+    .modal {
+      background: var(--white); border-radius: var(--radius-lg);
+      padding: 2rem; width: 100%; max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.4);
+      animation: popIn .25s cubic-bezier(.22,.68,0,1.2) both;
+    }
+    @keyframes popIn { from{opacity:0;transform:scale(.93)} to{opacity:1;transform:none} }
+
+    .modal h2 { font-size: 1.2rem; font-weight: 800; color: var(--gray-800); margin-bottom: .3rem; }
+    .modal .modal-sub { font-size: .82rem; color: var(--gray-500); margin-bottom: 1.5rem; }
+
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-size: .73rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em; color: var(--gray-500); margin-bottom: .4rem; }
+    .field input {
+      width: 100%; background: var(--gray-50); border: 1.5px solid var(--gray-300);
+      border-radius: var(--radius-sm); color: var(--gray-800); font-family: inherit;
+      font-size: .93rem; padding: .72rem .95rem; outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus { border-color: var(--green-mid); background: var(--white);
+      box-shadow: 0 0 0 3px rgba(46,139,87,.15); }
+    .field .hint { font-size: .72rem; color: var(--gray-500); margin-top: .3rem; }
+
+    .modal-btns { display: flex; gap: .6rem; margin-top: 1.5rem; }
+    .modal-btns .btn-save {
+      flex: 1; background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
+      color: var(--white); border: none; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: .95rem; font-weight: 700;
+      padding: .8rem; cursor: pointer; transition: opacity .2s;
+    }
+    .modal-btns .btn-save:hover { opacity: .9; }
+    .modal-btns .btn-cancel {
+      flex: 1; background: var(--gray-50); color: var(--gray-800);
+      border: 1.5px solid var(--gray-300); border-radius: var(--radius-sm);
+      font-family: inherit; font-size: .95rem; font-weight: 700;
+      padding: .8rem; cursor: pointer; transition: background .2s;
+    }
+    .modal-btns .btn-cancel:hover { background: var(--gray-100); }
+
+    /* ── MODAL CONFIRMAR ELIMINAR ── */
+    .modal-del h2 { color: var(--red); }
+    .modal-del .warn {
+      background: var(--red-pale); border: 1px solid rgba(211,47,47,.2);
+      border-radius: 8px; padding: .75rem 1rem; font-size: .85rem;
+      color: var(--red); margin-bottom: 1.25rem; line-height: 1.5;
+    }
+    .modal-del .btn-confirm-del {
+      flex: 1; background: var(--red); color: var(--white); border: none;
+      border-radius: var(--radius-sm); font-family: inherit; font-size: .95rem;
+      font-weight: 700; padding: .8rem; cursor: pointer; transition: opacity .2s;
+    }
+    .modal-del .btn-confirm-del:hover { opacity: .85; }
+
+    .empty { text-align: center; padding: 3rem; color: var(--gray-500); }
+    .empty span { font-size: 2rem; display: block; margin-bottom: .75rem; }
+
+    @media(max-width:640px){
+      .table-head, .table-row { grid-template-columns: 36px 1fr 80px 120px; }
+      .table-head>*:nth-child(4),
+      .table-row>*:nth-child(4),
+      .table-head>*:nth-child(5),
+      .table-row>*:nth-child(5) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-icon">🌿</div>
+      <span class="brand-name">EcoMisión</span>
+      <span class="brand-tag">Admin</span>
+    </div>
+    <a href="/admin/logout" class="logout-btn">Cerrar sesión ↩</a>
+  </div>
+
+  {% if flash_msg %}
+  <div class="flash">{{ flash_msg }}</div>
+  {% endif %}
+
+  <div class="page-header">
+    <h1>Panel de administrador</h1>
+    <p>Gestiona los jugadores registrados en el ranking.</p>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-chip">
+      <div class="val">{{ jugadores | length }}</div>
+      <div class="lbl">Jugadores</div>
+    </div>
+    <div class="stat-chip">
+      <div class="val">{{ jugadores[0].puntaje_total if jugadores else 0 }}</div>
+      <div class="lbl">Récord total</div>
+    </div>
+    <div class="stat-chip">
+      <div class="val">{{ jugadores | map(attribute='puntaje_quiz') | map('int') | max if jugadores else 0 }}</div>
+      <div class="lbl">Récord quiz</div>
+    </div>
+    <div class="stat-chip">
+      <div class="val">{{ jugadores | map(attribute='puntaje_minijuego') | map('int') | max if jugadores else 0 }}</div>
+      <div class="lbl">Récord EcoCatcher</div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    {% if jugadores %}
+    <div class="table-head">
+      <div>#</div>
+      <div>Jugador</div>
+      <div style="text-align:center">Total</div>
+      <div style="text-align:center">📝 Quiz</div>
+      <div style="text-align:center">🎮 EcoCatcher</div>
+      <div style="text-align:right">Acciones</div>
+    </div>
+
+    {% for j in jugadores %}
+    <div class="table-row">
+      <div class="rank-cell">{{ loop.index }}</div>
+      <div class="name-cell">
+        <div class="name-text">{{ j.nombre }}</div>
+        <div class="name-sub">{{ j.correo }}</div>
+      </div>
+      <div class="score-cell">{{ j.puntaje_total }}</div>
+      <div class="score-cell score-quiz">{{ j.puntaje_quiz }}</div>
+      <div class="score-cell score-mini">{{ j.puntaje_minijuego }}</div>
+      <div class="actions-cell">
+        <button class="btn-edit"
+          onclick="abrirEditar('{{ j.correo }}', '{{ j.nombre }}', {{ j.puntaje_minijuego }})">
+          ✏️ Editar
+        </button>
+        <button class="btn-del"
+          onclick="abrirEliminar('{{ j.correo }}', '{{ j.nombre }}')">
+          🗑️ Eliminar
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+
+    {% else %}
+    <div class="empty">
+      <span>🌱</span>
+      <p>No hay jugadores registrados aún.</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- ── MODAL EDITAR ── -->
+  <div class="modal-bg" id="modalEditar">
+    <div class="modal">
+      <h2>✏️ Editar jugador</h2>
+      <p class="modal-sub" id="editSub">Modifica los campos que necesites.</p>
+      <form method="POST" id="formEditar">
+        <div class="field">
+          <label for="editNombre">Nombre</label>
+          <input type="text" id="editNombre" name="nombre" placeholder="Nombre del jugador">
+          <p class="hint">Deja en blanco para no cambiar el nombre.</p>
+        </div>
+        <div class="field">
+          <label for="editMini">Puntaje EcoCatcher</label>
+          <input type="number" id="editMini" name="puntaje_minijuego" min="0" placeholder="Ej: 500">
+          <p class="hint">Deja en blanco para no cambiar el puntaje.</p>
+        </div>
+        <div class="modal-btns">
+          <button type="button" class="btn-cancel" onclick="cerrarModales()">Cancelar</button>
+          <button type="submit" class="btn-save">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── MODAL ELIMINAR ── -->
+  <div class="modal-bg" id="modalEliminar">
+    <div class="modal modal-del">
+      <h2>🗑️ Eliminar jugador</h2>
+      <p class="modal-sub" id="delSub">Esta acción no se puede deshacer.</p>
+      <div class="warn" id="delWarn"></div>
+      <form method="POST" id="formEliminar">
+        <div class="modal-btns">
+          <button type="button" class="btn-cancel" onclick="cerrarModales()">Cancelar</button>
+          <button type="submit" class="btn-confirm-del">Sí, eliminar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script>
+  function abrirEditar(correo, nombre, miniActual) {
+    document.getElementById("editSub").textContent = correo;
+    document.getElementById("editNombre").value    = nombre;
+    document.getElementById("editMini").value      = miniActual;
+    document.getElementById("formEditar").action   = "/admin/editar/" + encodeURIComponent(correo);
+    document.getElementById("modalEditar").classList.add("open");
+  }
+
+  function abrirEliminar(correo, nombre) {
+    document.getElementById("delSub").textContent  = correo;
+    document.getElementById("delWarn").textContent = `¿Seguro que quieres eliminar a "${nombre}" del ranking? Se perderán todos sus puntajes.`;
+    document.getElementById("formEliminar").action = "/admin/eliminar/" + encodeURIComponent(correo);
+    document.getElementById("modalEliminar").classList.add("open");
+  }
+
+  function cerrarModales() {
+    document.getElementById("modalEditar").classList.remove("open");
+    document.getElementById("modalEliminar").classList.remove("open");
+  }
+
+  // cerrar modal al hacer clic fuera
+  document.querySelectorAll(".modal-bg").forEach(bg => {
+    bg.addEventListener("click", e => { if (e.target === bg) cerrarModales(); });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoMisión – Crear cuenta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark:  #1a5c38;
+      --green-mid:   #2e8b57;
+      --green-light: #4caf7d;
+      --green-pale:  #e8f5ee;
+      --blue-mid:    #2196d3;
+      --white:       #ffffff;
+      --gray-50:     #f8fafb;
+      --gray-100:    #eef2f5;
+      --gray-300:    #c8d4dc;
+      --gray-500:    #6b8090;
+      --gray-800:    #1e2d3a;
+      --error:       #d32f2f;
+      --radius-sm:   10px;
+      --radius-lg:   28px;
+      --shadow-card: 0 8px 32px rgba(26,92,56,.10), 0 2px 8px rgba(26,92,56,.07);
+      --shadow-btn:  0 4px 16px rgba(46,139,87,.35);
+    }
+    body {
+      background: linear-gradient(135deg, #e8f5ee 0%, #e3f2fd 50%, #f0faf4 100%);
+      min-height: 100vh; font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 2rem 1rem; position: relative; overflow-x: hidden;
+    }
+    body::before, body::after {
+      content: ''; position: fixed; border-radius: 50%;
+      pointer-events: none; z-index: 0;
+    }
+    body::before {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(78,188,109,.18) 0%, transparent 70%);
+      top: -120px; left: -120px;
+    }
+    body::after {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(33,150,211,.15) 0%, transparent 70%);
+      bottom: -80px; right: -80px;
+    }
+    .brand {
+      display: flex; align-items: center; gap: .7rem;
+      margin-bottom: 2rem; animation: fadeDown .5s ease both;
+      position: relative; z-index: 1;
+    }
+    .brand-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
+      border-radius: 12px; display: flex; align-items: center;
+      justify-content: center; font-size: 1.4rem;
+      box-shadow: 0 4px 14px rgba(46,139,87,.3);
+    }
+    .brand-name { font-size: 1.1rem; font-weight: 800; color: var(--green-dark); }
+    .card {
+      background: var(--white); border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem 2rem; width: 100%; max-width: 460px;
+      box-shadow: var(--shadow-card); border: 1px solid rgba(46,139,87,.12);
+      position: relative; z-index: 1;
+      animation: fadeUp .55s cubic-bezier(.22,.68,0,1.2) both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: .35rem;
+      background: var(--green-pale); color: var(--green-dark);
+      font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; padding: .3rem .75rem;
+      border-radius: 99px; margin-bottom: 1rem;
+      border: 1px solid rgba(46,139,87,.2);
+    }
+    .badge::before { content: '🌱'; font-size: .85rem; }
+    h1 {
+      font-size: 1.9rem; font-weight: 800; color: var(--gray-800);
+      line-height: 1.2; margin-bottom: .4rem; letter-spacing: -.02em;
+    }
+    .subtitle { color: var(--gray-500); font-size: .9rem; margin-bottom: 2rem; line-height: 1.5; }
+    .field { margin-bottom: 1.2rem; }
+    .field > label {
+      display: block; font-size: .78rem; font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--gray-500); margin-bottom: .5rem;
+    }
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%; background: var(--gray-50);
+      border: 1.5px solid var(--gray-300); border-radius: var(--radius-sm);
+      color: var(--gray-800); font-family: inherit; font-size: .95rem;
+      padding: .8rem 1rem; outline: none;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    input:focus {
+      border-color: var(--green-mid); background: var(--white);
+      box-shadow: 0 0 0 3px rgba(46,139,87,.15);
+    }
+    input.has-error { border-color: var(--error); }
+    .genero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+    .genero-grid span { display: contents; }
+    .genero-grid input[type="radio"] { display: none; }
+    .genero-grid label {
+      background: var(--gray-50); border: 1.5px solid var(--gray-300);
+      border-radius: var(--radius-sm); color: var(--gray-800);
+      cursor: pointer; font-size: .88rem; font-weight: 600;
+      text-align: center; padding: .7rem .5rem; margin: 0; display: block;
+      transition: border-color .2s, background .2s, color .2s, box-shadow .2s;
+    }
+    .genero-grid label:hover { border-color: var(--green-light); background: var(--green-pale); }
+    .genero-grid input[type="radio"]:checked + label {
+      border-color: var(--green-mid); background: var(--green-pale);
+      color: var(--green-dark); box-shadow: 0 0 0 3px rgba(46,139,87,.15);
+    }
+    .error-msg {
+      color: var(--error); font-size: .8rem; margin-top: .4rem;
+      display: flex; align-items: center; gap: .3rem;
+    }
+    .error-msg::before { content: '⚠'; font-size: .75rem; }
+    .divider { height: 1px; background: var(--gray-100); margin: 1.5rem 0 1.25rem; }
+    .btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--green-mid) 0%, var(--blue-mid) 100%);
+      color: var(--white); border: none; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: 1rem; font-weight: 700;
+      padding: .9rem; cursor: pointer;
+      transition: opacity .2s, transform .15s, box-shadow .2s;
+      box-shadow: var(--shadow-btn);
+    }
+    .btn:hover  { opacity: .9; box-shadow: 0 6px 20px rgba(46,139,87,.4); }
+    .btn:active { transform: scale(.98); }
+    .link-row {
+      text-align: center; margin-top: 1.25rem;
+      font-size: .875rem; color: var(--gray-500);
+    }
+    .link-row a { color: var(--green-mid); font-weight: 700; text-decoration: none; }
+    .link-row a:hover { text-decoration: underline; }
+    @media (max-width: 480px) { .card { padding: 2rem 1.5rem 1.75rem; } h1 { font-size: 1.6rem; } }
+  </style>
+</head>
+<body>
+  <div class="brand">
+    <div class="brand-icon">🌿</div>
+    <span class="brand-name">EcoMisión</span>
+  </div>
+
+  <div class="card">
+    <span class="badge">Nueva cuenta</span>
+    <h1>Únete a la misión</h1>
+    <p class="subtitle">Crea tu cuenta para guardar tu progreso y competir en el ranking.</p>
+
+    <form method="POST" action="/register">
+
+      <div class="field">
+        <label for="nombre">Tu nombre</label>
+        <input type="text" id="nombre" name="nombre"
+               placeholder="Ej: María González"
+               value="{{ datos.get('nombre', '') }}"
+               class="{{ 'has-error' if errores.get('nombre') else '' }}">
+        {% if errores.get('nombre') %}
+          <p class="error-msg">{{ errores.nombre }}</p>
+        {% endif %}
+      </div>
+
+      <div class="field">
+        <label for="correo">Correo electrónico</label>
+        <input type="email" id="correo" name="correo"
+               placeholder="tu@correo.com"
+               value="{{ datos.get('correo', '') }}"
+               class="{{ 'has-error' if errores.get('correo') else '' }}">
+        {% if errores.get('correo') %}
+          <p class="error-msg">{{ errores.correo }}</p>
+        {% endif %}
+      </div>
+
+      <div class="field">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password"
+               placeholder="Mínimo 6 caracteres"
+               class="{{ 'has-error' if errores.get('password') else '' }}">
+        {% if errores.get('password') %}
+          <p class="error-msg">{{ errores.password }}</p>
+        {% endif %}
+      </div>
+
+      <div class="field">
+        <label>Género</label>
+        <div class="genero-grid">
+          {% for g in generos %}
+            <span>
+              <input type="radio" id="g{{ loop.index }}" name="genero" value="{{ g }}">
+              <label for="g{{ loop.index }}">{{ g }}</label>
+            </span>
+          {% endfor %}
+        </div>
+        {% if errores.get('genero') %}
+          <p class="error-msg">{{ errores.genero }}</p>
+        {% endif %}
+      </div>
+
+      <div class="divider"></div>
+      <button type="submit" class="btn">Crear cuenta y jugar 🌍</button>
+    </form>
+
+    <p class="link-row">¿Ya tienes cuenta? <a href="/login">Inicia sesión</a></p>
+  </div>
+</body>
+</html>
