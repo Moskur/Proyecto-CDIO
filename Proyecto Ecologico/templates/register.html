@@ -21,6 +21,7 @@
       --gray-800:    #1e2d3a;
       --error:       #d32f2f;
       --radius-sm:   10px;
+      --radius-md:   18px;
       --radius-lg:   28px;
       --shadow-card: 0 8px 32px rgba(26,92,56,.10), 0 2px 8px rgba(26,92,56,.07);
       --shadow-btn:  0 4px 16px rgba(46,139,87,.35);
@@ -45,10 +46,147 @@
       background: radial-gradient(circle, rgba(33,150,211,.15) 0%, transparent 70%);
       bottom: -80px; right: -80px;
     }
+
+    /* ── Floating leaves ── */
+    .deco-leaf {
+      position: fixed; pointer-events: none; z-index: 0;
+      opacity: 0; animation: floatLeaf linear infinite;
+      font-size: 1.5rem; user-select: none;
+    }
+    @keyframes floatLeaf {
+      0%   { opacity: 0;   transform: translateY(0) rotate(0deg); }
+      10%  { opacity: .4; }
+      90%  { opacity: .3; }
+      100% { opacity: 0;   transform: translateY(-110vh) rotate(360deg); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 740px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Quiénes Somos panel ── */
+    .qs-panel {
+      width: 230px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: .85rem;
+      padding-top: 4.5rem;
+    }
+    .qs-trigger {
+      background: var(--white);
+      border: 1px solid rgba(46,139,87,.18);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: .85rem 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      transition: box-shadow .2s, border-color .2s;
+      animation: fadeUp .55s cubic-bezier(.22,.68,0,1.2) .1s both;
+    }
+    .qs-trigger:hover { border-color: var(--green-mid); box-shadow: 0 8px 28px rgba(46,139,87,.16); }
+    .qs-trigger-label {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .82rem; font-weight: 700;
+      color: var(--green-dark); letter-spacing: .04em; text-transform: uppercase;
+    }
+    .qs-trigger-label span { font-size: 1.1rem; }
+    .qs-chevron {
+      color: var(--green-mid); font-size: .8rem;
+      transition: transform .3s cubic-bezier(.22,.68,0,1.2);
+    }
+    .qs-trigger[aria-expanded="true"] .qs-chevron { transform: rotate(180deg); }
+    .qs-body {
+      background: var(--white);
+      border: 1px solid rgba(46,139,87,.14);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      max-height: 0; opacity: 0;
+      transition: max-height .45s cubic-bezier(.22,.68,0,1.2), opacity .35s ease, padding .35s ease;
+      padding: 0 1.1rem;
+    }
+    .qs-body.open { max-height: 800px; opacity: 1; padding: 1.25rem 1.1rem 1.4rem; }
+    .qs-uni {
+      display: flex; align-items: center; gap: .45rem;
+      background: var(--green-pale); border-radius: 8px;
+      padding: .55rem .75rem; margin-bottom: 1rem;
+    }
+    .qs-uni-icon { font-size: 1rem; }
+    .qs-uni-text { font-size: .72rem; font-weight: 700; color: var(--green-dark); line-height: 1.4; }
+    .qs-desc {
+      font-size: .8rem; color: var(--gray-500);
+      line-height: 1.55; margin-bottom: 1rem;
+    }
+    .qs-members-label {
+      font-size: .67rem; font-weight: 700;
+      letter-spacing: .09em; text-transform: uppercase;
+      color: var(--gray-300); margin-bottom: .6rem;
+    }
+    .qs-member {
+      display: flex; align-items: center; gap: .65rem;
+      padding: .55rem 0; border-bottom: 1px solid var(--gray-100);
+    }
+    .qs-member:last-of-type { border-bottom: none; }
+    .qs-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 800; color: var(--white);
+      flex-shrink: 0;
+    }
+    .qs-member-name { font-size: .8rem; font-weight: 700; color: var(--gray-800); }
+    .qs-member-role { font-size: .68rem; color: var(--gray-500); margin-top: .1rem; }
+    .qs-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: .45rem; margin-top: 1rem; padding-top: 1rem;
+      border-top: 1px solid var(--gray-100);
+    }
+    .qs-stat {
+      background: var(--gray-50); border-radius: 8px;
+      padding: .6rem .3rem; text-align: center;
+    }
+    .qs-stat-icon { font-size: .95rem; }
+    .qs-stat-value {
+      font-size: 1rem; font-weight: 800;
+      color: var(--green-dark); line-height: 1.2;
+      letter-spacing: -.02em;
+    }
+    .qs-stat-label {
+      font-size: .58rem; font-weight: 600; color: var(--gray-500);
+      letter-spacing: .04em; text-transform: uppercase; margin-top: .1rem;
+    }
+
+    /* ── Center column ── */
+    .center-col {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
     .brand {
       display: flex; align-items: center; gap: .7rem;
       margin-bottom: 2rem; animation: fadeDown .5s ease both;
-      position: relative; z-index: 1;
+      width: 100%;
     }
     .brand-icon {
       width: 44px; height: 44px;
@@ -62,16 +200,7 @@
       background: var(--white); border-radius: var(--radius-lg);
       padding: 2.5rem 2rem 2rem; width: 100%; max-width: 460px;
       box-shadow: var(--shadow-card); border: 1px solid rgba(46,139,87,.12);
-      position: relative; z-index: 1;
       animation: fadeUp .55s cubic-bezier(.22,.68,0,1.2) both;
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(28px) scale(.98); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-16px); }
-      to   { opacity: 1; transform: translateY(0); }
     }
     .badge {
       display: inline-flex; align-items: center; gap: .35rem;
@@ -143,74 +272,165 @@
     }
     .link-row a { color: var(--green-mid); font-weight: 700; text-decoration: none; }
     .link-row a:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 860px) {
+      .qs-panel { display: none; }
+      .layout { max-width: 460px; }
+    }
     @media (max-width: 480px) { .card { padding: 2rem 1.5rem 1.75rem; } h1 { font-size: 1.6rem; } }
   </style>
 </head>
 <body>
-  <div class="brand">
-    <div class="brand-icon">🌿</div>
-    <span class="brand-name">EcoMisión</span>
-  </div>
 
-  <div class="card">
-    <span class="badge">Nueva cuenta</span>
-    <h1>Únete a la misión</h1>
-    <p class="subtitle">Crea tu cuenta para guardar tu progreso y competir en el ranking.</p>
+  <!-- Floating leaves -->
+  <div class="deco-leaf" style="left:5%;  animation-duration:14s; animation-delay:0s;   top:100vh;">🍃</div>
+  <div class="deco-leaf" style="left:12%; animation-duration:18s; animation-delay:3s;   top:100vh; font-size:1rem;">🌿</div>
+  <div class="deco-leaf" style="left:80%; animation-duration:16s; animation-delay:6s;   top:100vh;">🌱</div>
+  <div class="deco-leaf" style="left:90%; animation-duration:12s; animation-delay:2s;   top:100vh; font-size:1rem;">🍃</div>
+  <div class="deco-leaf" style="left:55%; animation-duration:20s; animation-delay:9s;   top:100vh; font-size:.9rem;">🌿</div>
 
-    <form method="POST" action="/register">
+  <div class="layout">
 
-      <div class="field">
-        <label for="nombre">Tu nombre</label>
-        <input type="text" id="nombre" name="nombre"
-               placeholder="Ej: María González"
-               value="{{ datos.get('nombre', '') }}"
-               class="{{ 'has-error' if errores.get('nombre') else '' }}">
-        {% if errores.get('nombre') %}
-          <p class="error-msg">{{ errores.nombre }}</p>
-        {% endif %}
-      </div>
+    <!-- ── Left: Quiénes Somos ── -->
+    <aside class="qs-panel" aria-label="Quiénes somos">
+      <button class="qs-trigger" aria-expanded="false" aria-controls="qs-body" id="qs-btn" onclick="toggleQS()">
+        <span class="qs-trigger-label"><span>👥</span> Quiénes somos</span>
+        <span class="qs-chevron">▾</span>
+      </button>
 
-      <div class="field">
-        <label for="correo">Correo electrónico</label>
-        <input type="email" id="correo" name="correo"
-               placeholder="tu@correo.com"
-               value="{{ datos.get('correo', '') }}"
-               class="{{ 'has-error' if errores.get('correo') else '' }}">
-        {% if errores.get('correo') %}
-          <p class="error-msg">{{ errores.correo }}</p>
-        {% endif %}
-      </div>
-
-      <div class="field">
-        <label for="password">Contraseña</label>
-        <input type="password" id="password" name="password"
-               placeholder="Mínimo 6 caracteres"
-               class="{{ 'has-error' if errores.get('password') else '' }}">
-        {% if errores.get('password') %}
-          <p class="error-msg">{{ errores.password }}</p>
-        {% endif %}
-      </div>
-
-      <div class="field">
-        <label>Género</label>
-        <div class="genero-grid">
-          {% for g in generos %}
-            <span>
-              <input type="radio" id="g{{ loop.index }}" name="genero" value="{{ g }}">
-              <label for="g{{ loop.index }}">{{ g }}</label>
-            </span>
-          {% endfor %}
+      <div class="qs-body" id="qs-body" role="region" aria-labelledby="qs-btn">
+        <div class="qs-uni">
+          <span class="qs-uni-icon">🎓</span>
+          <div class="qs-uni-text">Univ. de Los Lagos<br>Puerto Montt · 1er semestre</div>
         </div>
-        {% if errores.get('genero') %}
-          <p class="error-msg">{{ errores.genero }}</p>
-        {% endif %}
+
+        <p class="qs-desc">
+          Somos un equipo de estudiantes comprometidos con el medio ambiente, desarrollando herramientas digitales para promover hábitos ecológicos.
+        </p>
+
+        <div class="qs-members-label">Integrantes</div>
+
+        <div class="qs-member">
+          <div class="qs-avatar">MF</div>
+          <div>
+            <div class="qs-member-name">Matías Fernández</div>
+            <div class="qs-member-role">Desarrollador</div>
+          </div>
+        </div>
+        <div class="qs-member">
+          <div class="qs-avatar">JR</div>
+          <div>
+            <div class="qs-member-name">Javier Ramírez</div>
+            <div class="qs-member-role">Diseño & UX</div>
+          </div>
+        </div>
+        <div class="qs-member">
+          <div class="qs-avatar">VV</div>
+          <div>
+            <div class="qs-member-name">Victor Vega</div>
+            <div class="qs-member-role">Contenido</div>
+          </div>
+        </div>
+
+        <div class="qs-stats">
+          <div class="qs-stat">
+            <div class="qs-stat-icon">♻️</div>
+            <div class="qs-stat-value">3</div>
+            <div class="qs-stat-label">Integr.</div>
+          </div>
+          <div class="qs-stat">
+            <div class="qs-stat-icon">🌿</div>
+            <div class="qs-stat-value">1er</div>
+            <div class="qs-stat-label">Semestre</div>
+          </div>
+          <div class="qs-stat">
+            <div class="qs-stat-icon">🌍</div>
+            <div class="qs-stat-value">100%</div>
+            <div class="qs-stat-label">Eco</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── Center ── -->
+    <div class="center-col">
+      <div class="brand">
+        <div class="brand-icon">🌿</div>
+        <span class="brand-name">EcoMisión</span>
       </div>
 
-      <div class="divider"></div>
-      <button type="submit" class="btn">Crear cuenta y jugar 🌍</button>
-    </form>
+      <div class="card">
+        <span class="badge">Nueva cuenta</span>
+        <h1>Únete a la misión</h1>
+        <p class="subtitle">Crea tu cuenta para guardar tu progreso y competir en el ranking.</p>
 
-    <p class="link-row">¿Ya tienes cuenta? <a href="/login">Inicia sesión</a></p>
+        <form method="POST" action="/register">
+
+          <div class="field">
+            <label for="nombre">Tu nombre</label>
+            <input type="text" id="nombre" name="nombre"
+                   placeholder="Ej: María González"
+                   value="{{ datos.get('nombre', '') }}"
+                   class="{{ 'has-error' if errores.get('nombre') else '' }}">
+            {% if errores.get('nombre') %}
+              <p class="error-msg">{{ errores.nombre }}</p>
+            {% endif %}
+          </div>
+
+          <div class="field">
+            <label for="correo">Correo electrónico</label>
+            <input type="email" id="correo" name="correo"
+                   placeholder="tu@correo.com"
+                   value="{{ datos.get('correo', '') }}"
+                   class="{{ 'has-error' if errores.get('correo') else '' }}">
+            {% if errores.get('correo') %}
+              <p class="error-msg">{{ errores.correo }}</p>
+            {% endif %}
+          </div>
+
+          <div class="field">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password"
+                   placeholder="Mínimo 6 caracteres"
+                   class="{{ 'has-error' if errores.get('password') else '' }}">
+            {% if errores.get('password') %}
+              <p class="error-msg">{{ errores.password }}</p>
+            {% endif %}
+          </div>
+
+          <div class="field">
+            <label>Género</label>
+            <div class="genero-grid">
+              {% for g in generos %}
+                <span>
+                  <input type="radio" id="g{{ loop.index }}" name="genero" value="{{ g }}">
+                  <label for="g{{ loop.index }}">{{ g }}</label>
+                </span>
+              {% endfor %}
+            </div>
+            {% if errores.get('genero') %}
+              <p class="error-msg">{{ errores.genero }}</p>
+            {% endif %}
+          </div>
+
+          <div class="divider"></div>
+          <button type="submit" class="btn">Crear cuenta y jugar 🌍</button>
+        </form>
+
+        <p class="link-row">¿Ya tienes cuenta? <a href="/login">Inicia sesión</a></p>
+      </div>
+    </div>
+
   </div>
+
+  <script>
+    function toggleQS() {
+      const btn  = document.getElementById('qs-btn');
+      const body = document.getElementById('qs-body');
+      const open = body.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open);
+    }
+  </script>
 </body>
 </html>
