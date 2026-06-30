@@ -84,6 +84,75 @@
     @keyframes pop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
     .hud-pill.pop { animation:pop .32s ease; }
 
+    /* ── MODAL REGLAS ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(15,30,20,.55); backdrop-filter: blur(3px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+      animation: fadeOverlay .2s ease;
+    }
+    .modal-overlay.hidden { display: none; }
+    @keyframes fadeOverlay { from{opacity:0} to{opacity:1} }
+    .modal {
+      background: var(--white); border-radius: var(--radius-lg);
+      padding: 2rem 1.75rem 1.5rem;
+      width: 100%; max-width: 400px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.22);
+      position: relative;
+      animation: popModal .25s cubic-bezier(.22,.68,0,1.2);
+    }
+    @keyframes popModal { from{opacity:0;transform:scale(.93) translateY(12px)} to{opacity:1;transform:none} }
+    .modal-close {
+      position: absolute; top: .9rem; right: 1rem;
+      background: var(--gray-100); border: none; border-radius: 99px;
+      width: 28px; height: 28px; font-size: .85rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gray-500); transition: background .15s;
+    }
+    .modal-close:hover { background: var(--gray-300); }
+    .modal-title {
+      font-size: 1.05rem; font-weight: 800; color: var(--gray-800);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem;
+    }
+    .modal-section { margin-bottom: .9rem; }
+    .modal-section p {
+      font-size: .82rem; color: var(--gray-500); line-height: 1.55; margin-bottom: .4rem;
+    }
+    .modal-section strong { color: var(--gray-800); }
+    .modal-tiers {
+      display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .45rem;
+    }
+    .modal-tiers span {
+      font-size: .74rem; font-weight: 700; color: var(--gray-500);
+      background: var(--gray-50); border: 1px solid var(--gray-100);
+      border-radius: 99px; padding: .2rem .65rem;
+    }
+    .modal-tiers span strong { color: var(--green-dark); }
+    .modal-warn {
+      font-size: .78rem; color: #b91c1c; margin-top: .5rem;
+      display: flex; align-items: center; gap: .3rem;
+    }
+    .modal-btn-ok {
+      width: 100%; margin-top: 1.1rem; padding: .75rem;
+      background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
+      color: white; border: none; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: .9rem; font-weight: 700;
+      cursor: pointer; transition: opacity .2s;
+    }
+    .modal-btn-ok:hover { opacity: .9; }
+
+    /* botón flotante Reglas */
+    .btn-reglas {
+      position: fixed; bottom: 1.1rem; left: 1.1rem; z-index: 50;
+      font-size: .75rem; font-weight: 700; color: var(--gray-500);
+      background: var(--white); border: 1.5px solid var(--gray-300);
+      border-radius: 99px; padding: .35rem .85rem;
+      cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      transition: color .2s, border-color .2s;
+    }
+    .btn-reglas:hover { color: var(--green-dark); border-color: var(--green-mid); }
+
     /* ── TOPBAR ── */
     .topbar {
       display: flex;
@@ -244,7 +313,7 @@
     .error-msg::before { content: '⚠'; }
 
     /* botones */
-    .btn-row { display: flex; gap: .75rem; margin-top: 1.5rem; }
+    .btn-row { display: flex; gap: .75rem; margin-top: 1.5rem; align-items: center; }
 
     .btn {
       flex: 1;
@@ -252,17 +321,30 @@
       color: var(--white); border: none; border-radius: var(--radius-sm);
       font-family: inherit; font-size: 1rem; font-weight: 700;
       padding: .9rem; cursor: pointer;
-      transition: opacity .2s, transform .15s, box-shadow .2s;
+      transition: opacity .2s, transform .15s, box-shadow .2s, font-size .2s, padding .2s;
       box-shadow: var(--shadow-btn); letter-spacing: .01em;
-      display: none; /* se muestra con JS */
+      display: none;
     }
     .btn:hover  { opacity: .9; box-shadow: 0 6px 22px rgba(46,139,87,.4); }
     .btn:active { transform: scale(.98); }
     .btn.visible { display: block; }
 
     #btn-comprobar {
-      background: linear-gradient(135deg, var(--green-mid) 0%, var(--blue-mid) 100%);
-      display: block; /* siempre visible al inicio */
+      display: block;
+    }
+    #btn-comprobar.used {
+      background: var(--gray-100);
+      color: var(--gray-300);
+      box-shadow: none;
+      cursor: not-allowed;
+      opacity: 1;
+    }
+    #btn-comprobar.used:hover { opacity: 1; box-shadow: none; }
+
+    #btn-siguiente.visible {
+      font-size: 1.05rem;
+      padding: 1rem;
+      box-shadow: 0 6px 22px rgba(46,139,87,.45);
     }
 
     /* ── PANEL RETROALIMENTACIÓN (derecha) ── */
@@ -394,6 +476,31 @@
     const RETRO = {{ retroalimentacion | tojson }};
     const CORRECTA = {{ pregunta.correcta | tojson }};
   </script>
+
+  <!-- MODAL REGLAS -->
+  <div class="modal-overlay {% if numero != 1 %}hidden{% endif %}" id="modal-overlay">
+    <div class="modal">
+      <button class="modal-close" onclick="cerrarModal()" aria-label="Cerrar">✕</button>
+      <div class="modal-title">📋 ¿Cómo funciona el quiz?</div>
+      <div class="modal-section">
+        <p>Responde <strong>10 preguntas</strong> de ecología. Cada respuesta correcta vale <strong>250 pts</strong> base.</p>
+      </div>
+      <div class="modal-section">
+        <p><strong>🔥 Sistema de rachas</strong> — encadena aciertos para subir el multiplicador:</p>
+        <div class="modal-tiers">
+          <span>2 seguidas → <strong>×1.2</strong></span>
+          <span>4 → <strong>×1.4</strong></span>
+          <span>6 → <strong>×1.6</strong></span>
+          <span>8 → <strong>×1.8</strong></span>
+        </div>
+        <p class="modal-warn">❌ Si fallas, la racha se resetea a 0.</p>
+      </div>
+      <button class="modal-btn-ok" onclick="cerrarModal()">¡Entendido, a jugar! 🌍</button>
+    </div>
+  </div>
+
+  <!-- BOTÓN FLOTANTE REGLAS -->
+  <button class="btn-reglas" onclick="abrirModal()">📋 Reglas</button>
 
   <div class="layout">
 
@@ -634,7 +741,8 @@
       respHidden.value = sel;
       bloquearOpciones();
       marcarOpciones(sel);
-      btnComprobar.classList.remove('visible');
+      btnComprobar.classList.add('used');
+      btnComprobar.disabled = true;
       btnSiguiente.classList.add('visible');
     });
 
@@ -644,6 +752,17 @@
         errorMsg.textContent = 'Primero comprueba tu respuesta.';
         errorMsg.style.display = 'flex';
       }
+    });
+
+    function cerrarModal() {
+      document.getElementById('modal-overlay').classList.add('hidden');
+    }
+    function abrirModal() {
+      document.getElementById('modal-overlay').classList.remove('hidden');
+    }
+    // cerrar al hacer click fuera del modal
+    document.getElementById('modal-overlay').addEventListener('click', function(e) {
+      if (e.target === this) cerrarModal();
     });
   </script>
 

@@ -43,7 +43,7 @@
       align-items: center;
       gap: 1rem;
       width: 100%;
-      max-width: 520px;
+      max-width: 640px;
       margin-bottom: .75rem;
       flex-wrap: wrap;
     }
@@ -87,7 +87,7 @@
 
     /* barra de stamina para el sprint */
     .stamina-wrap {
-      width: 100%; max-width: 520px;
+      width: 100%; max-width: 640px;
       margin-bottom: .6rem;
     }
     .stamina-label {
@@ -113,7 +113,7 @@
 
     /* indicador de power-up activo */
     .powerup-status {
-      width: 100%; max-width: 520px;
+      width: 100%; max-width: 640px;
       margin-bottom: .4rem;
       min-height: 22px;
       font-size: .78rem; font-weight: 700;
@@ -121,6 +121,34 @@
       text-align: center;
       letter-spacing: .03em;
       transition: opacity .3s;
+    }
+
+    /* insignia de escudo activo: flota al costado del canvas,
+       así no tapa la racha ni el HUD de puntos/vidas */
+    .shield-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      background: rgba(0,77,82,.85);
+      border: 1px solid rgba(128,203,196,.5);
+      border-radius: 99px;
+      padding: .3rem .65rem;
+      font-size: .76rem;
+      font-weight: 700;
+      color: #b2dfdb;
+      box-shadow: 0 2px 10px rgba(0,0,0,.35);
+      z-index: 5;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity .2s, transform .2s;
+      pointer-events: none;
+    }
+    .shield-badge.active {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     canvas {
@@ -131,6 +159,14 @@
       background: linear-gradient(180deg, #102218 0%, #0d1b10 100%);
       image-rendering: pixelated;
       cursor: none;
+    }
+
+    /* el canvas del juego se muestra más grande que su resolución interna
+       (520x380) gracias a image-rendering:pixelated, que mantiene los
+       sprites nítidos al escalar */
+    #gameCanvas {
+      width: 640px;
+      height: 468px;
     }
 
     .overlay {
@@ -201,7 +237,7 @@
 
     .canvas-wrapper {
       position: relative;
-      width: 520px;
+      width: 640px;
       max-width: 100%;
       flex: 0 0 auto;
     }
@@ -214,7 +250,7 @@
       justify-content: center;
       gap: 1rem;
       width: 100%;
-      max-width: 780px;
+      max-width: 920px;
     }
 
     /* panel lateral de información de poderes y reciclajes */
@@ -273,6 +309,11 @@
       font-weight: 800;
       color: #a5d6a7;
     }
+    .bin-item span.bin-pts {
+      font-size: .66rem;
+      font-weight: 700;
+      color: #8aa39b;
+    }
     .bins-caption {
       margin-top: .55rem;
       font-size: .7rem;
@@ -292,7 +333,7 @@
       font-size: .75rem;
       color: #ffe082;
       text-align: center;
-      max-width: 520px;
+      max-width: 640px;
       line-height: 1.4;
     }
 
@@ -309,9 +350,34 @@
       z-index: 5;
       pointer-events: none;
     }
+
+    /* botón fijo para volver al inicio, siempre visible (no reemplaza
+       al botón de inicio que aparece al perder, ese se mantiene) */
+    .home-btn-fixed {
+      position: fixed;
+      top: .6rem;
+      right: .6rem;
+      z-index: 20;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,.08);
+      border: 1.5px solid rgba(255,255,255,.18);
+      border-radius: 50%;
+      font-size: 1.05rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background .2s, border-color .2s, transform .15s;
+    }
+    .home-btn-fixed:hover  { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.35); }
+    .home-btn-fixed:active { transform: scale(.93); }
   </style>
 </head>
 <body>
+
+  <a href="/" class="home-btn-fixed" title="Volver al inicio">🏠</a>
 
   <!-- HUD superior -->
   <div class="hud">
@@ -344,6 +410,7 @@
   <div class="game-layout">
     <div class="canvas-wrapper">
       <canvas id="gameCanvas" width="520" height="380"></canvas>
+      <div class="shield-badge" id="shieldBadge">🛡️ <span id="shieldBadgeText">Escudo</span></div>
 
       <div class="overlay" id="overlay">
         <div class="overlay-emoji" id="overlayEmoji">🌿</div>
@@ -372,10 +439,10 @@
 
       <h3 class="info-title">♻️ Reciclajes</h3>
       <div class="bins-showcase">
-        <div class="bin-item"><canvas class="bin-mini" data-bin="0" width="36" height="36"></canvas><span>+25</span></div>
-        <div class="bin-item"><canvas class="bin-mini" data-bin="1" width="36" height="36"></canvas><span>+25</span></div>
-        <div class="bin-item"><canvas class="bin-mini" data-bin="2" width="36" height="36"></canvas><span>+25</span></div>
-        <div class="bin-item"><canvas class="bin-mini" data-bin="3" width="36" height="36"></canvas><span>+25</span></div>
+        <div class="bin-item"><canvas class="bin-mini" data-bin="0" width="36" height="36"></canvas><span>Botella</span><span class="bin-pts">+25</span></div>
+        <div class="bin-item"><canvas class="bin-mini" data-bin="1" width="36" height="36"></canvas><span>Lata</span><span class="bin-pts">+25</span></div>
+        <div class="bin-item"><canvas class="bin-mini" data-bin="2" width="36" height="36"></canvas><span>Papel</span><span class="bin-pts">+25</span></div>
+        <div class="bin-item"><canvas class="bin-mini" data-bin="3" width="36" height="36"></canvas><span>Plátano</span><span class="bin-pts">+25</span></div>
       </div>
       <p class="bins-caption">Cualquier residuo atrapado suma +25 pts</p>
     </aside>
@@ -412,6 +479,9 @@ const POWERUP_TYPES = {
   stamina: { emoji: "⚡", color: "#ce93d8", label: "+stamina reserva" },
   heal:    { emoji: "❤️", color: "#ff5252", label: "+1 vida" },
 };
+// pesos relativos al elegir qué power-up cae (más alto = más probable);
+// la reserva de stamina queda ligeramente favorecida sobre el resto
+const POWERUP_WEIGHTS = { time: 1, shield: 1, stamina: 1.3, heal: 1 };
 const TIME_BONUS    = 5;    // segundos que añade el power-up de tiempo
 const MAX_TIME_POWERUPS = 3; // máximo de relojes por partida
 const SHIELD_DURATION = 8000; // ms que dura el escudo
@@ -642,91 +712,115 @@ function drawPlayer(ctx, x, y, sprinting, shieldActive) {
   ctx.restore();
 }
 
-// ---- SPRITES: 4 TACHOS DE RECICLAJE ----
-// Cada uno tiene su paleta oscura que encaja con la estética del juego.
-// drawBin(ctx, x, y, colores) dibuja la caja base + símbolo ♻ en el color dado.
+// ---- SPRITES DE RESIDUOS: 4 objetos reales y reconocibles ----
+// En vez de íconos abstractos, dibujamos objetos cotidianos fáciles de
+// identificar de un vistazo: botella, lata, papel y cáscara de plátano.
 
-const BIN_TYPES = [
-  // Verde — orgánico / vidrio
-  { body: "#1b4d2e", bodyHL: "#2d6e42", bodySH: "#0d2c19", rim: "#3a7d52", sym: "#4caf7d" },
-  // Azul — papel / plástico
-  { body: "#1a2f4a", bodyHL: "#25456e", bodySH: "#0d1c2e", rim: "#2e5f8a", sym: "#5b9bd5" },
-  // Naranja/Marrón — residuo general
-  { body: "#4a2510", bodyHL: "#6b3818", bodySH: "#2a1208", rim: "#7d4a20", sym: "#c87941" },
-  // Amarillo — envases / metales
-  { body: "#3d3000", bodyHL: "#5a4600", bodySH: "#231b00", rim: "#7a6000", sym: "#c9a227" },
+const TRASH_TYPES = [
+  { name: "Botella", glow: "#4dd0e1" }, // 0
+  { name: "Lata",     glow: "#ff8a65" }, // 1
+  { name: "Papel",    glow: "#bcaaa4" }, // 2
+  { name: "Plátano",  glow: "#ffca28" }, // 3
 ];
 
-function drawBinBase(ctx, S, bin) {
-  // Sombra
-  ctx.fillStyle = "rgba(0,0,0,0.35)";
-  ctx.fillRect(3*S, 3*S, 18*S, 18*S);
-
-  // Cuerpo principal
-  ctx.fillStyle = bin.body;
-  ctx.fillRect(0, 0, 18*S, 18*S);
-
-  // Franja de tapa superior (más clara)
-  ctx.fillStyle = bin.bodyHL;
-  ctx.fillRect(0, 0, 18*S, 4*S);
-
-  // Highlight borde sup-izq (pixel de luz)
-  ctx.fillStyle = bin.rim;
-  ctx.fillRect(0,    0,    18*S, S);
-  ctx.fillRect(0,    0,    S,    18*S);
-
-  // Sombra borde inf-der
-  ctx.fillStyle = bin.bodySH;
-  ctx.fillRect(0,    17*S, 18*S, S);
-  ctx.fillRect(17*S, 0,    S,    18*S);
-
-  // Detalle: línea horizontal que simula la apertura de la tapa
-  ctx.fillStyle = bin.bodySH;
-  ctx.fillRect(S, 4*S, 16*S, S);
-
-  // Detalle: dos "agarraderas" en la tapa
-  ctx.fillStyle = bin.rim;
-  ctx.fillRect(6*S,  2*S, 2*S, 2*S);
-  ctx.fillRect(10*S, 2*S, 2*S, 2*S);
+// Tarjeta de fondo suave para que el objeto resalte sobre el césped
+function drawTrashBackdrop(ctx, S, glow) {
+  ctx.save();
+  ctx.shadowColor = glow;
+  ctx.shadowBlur = 6;
+  ctx.fillStyle = "rgba(255,255,255,0.07)";
+  ctx.beginPath();
+  ctx.roundRect(0, 0, 18*S, 18*S, 6);
+  ctx.fill();
+  ctx.restore();
 }
 
-function drawRecycleSymbol(ctx, S, color) {
-  // Símbolo ♻ simplificado en pixel-art: 3 flechas curvas formando triángulo
-  ctx.fillStyle = color;
+// 0 — Botella de plástico
+function drawBottle(ctx, S) {
+  ctx.fillStyle = "#00695c";
+  ctx.fillRect(7*S, 1*S, 4*S, 2*S);          // tapa
+  ctx.fillStyle = "#4dd0e1";
+  ctx.fillRect(7*S, 3*S, 4*S, 3*S);          // cuello
+  ctx.fillRect(5*S, 6*S, 8*S, 2*S);          // hombros
+  ctx.fillRect(3*S, 8*S, 12*S, 8*S);         // cuerpo
+  ctx.fillRect(4*S, 16*S, 10*S, 1*S);        // base
+  ctx.fillStyle = "#00838f";
+  ctx.fillRect(13*S, 8*S, 2*S, 8*S);         // sombra derecha
+  ctx.fillRect(11*S, 6*S, 2*S, 2*S);
+  ctx.fillStyle = "#b2ebf2";
+  ctx.fillRect(3*S, 8*S, 2*S, 8*S);          // brillo izquierda
+  ctx.fillStyle = "#fafafa";
+  ctx.fillRect(3*S, 10*S, 12*S, 3*S);        // etiqueta
+  ctx.fillStyle = "#90a4ae";
+  ctx.fillRect(4*S, 11*S, 10*S, 1*S);        // línea de texto
+}
 
-  // ── Flecha arriba (apunta ↑) ──
-  ctx.fillRect(8*S,  5*S, 2*S, 4*S);  // tronco
-  ctx.fillRect(6*S,  6*S, 6*S, S);    // base punta
-  ctx.fillRect(7*S,  5*S, S,   S);    // punta izq
-  ctx.fillRect(11*S, 5*S, S,   S);    // punta der
+// 1 — Lata de aluminio
+function drawCan(ctx, S) {
+  ctx.fillStyle = "#9e9e9e";
+  ctx.fillRect(8*S, 0, 2*S, 1*S);            // anilla
+  ctx.fillStyle = "#cfd8dc";
+  ctx.fillRect(3*S, 1*S, 12*S, 2*S);         // tapa superior
+  ctx.fillStyle = "#e53935";
+  ctx.fillRect(2*S, 3*S, 14*S, 12*S);        // cuerpo
+  ctx.fillStyle = "#b71c1c";
+  ctx.fillRect(14*S, 3*S, 2*S, 12*S);        // sombra derecha
+  ctx.fillStyle = "#ff8a80";
+  ctx.fillRect(2*S, 3*S, 2*S, 12*S);         // brillo izquierda
+  ctx.fillStyle = "#fff3e0";
+  ctx.fillRect(2*S, 8*S, 14*S, 3*S);         // etiqueta
+  ctx.fillStyle = "#bf360c";
+  ctx.fillRect(3*S, 9*S, 12*S, 1*S);         // línea de texto
+  ctx.fillStyle = "#cfd8dc";
+  ctx.fillRect(3*S, 15*S, 12*S, 2*S);        // base
+}
 
-  // ── Flecha abajo-izq (apunta ↙) ──
-  ctx.fillRect(3*S,  11*S, S,  4*S);  // tronco
-  ctx.fillRect(3*S,  14*S, 4*S, S);   // base punta
-  ctx.fillRect(3*S,  10*S, S,  S);    // punta arr
-  ctx.fillRect(3*S,  15*S, S,  S);    // punta abj
+// 2 — Papel / hoja arrugada
+function drawPaper(ctx, S) {
+  ctx.fillStyle = "#efebe9";
+  ctx.fillRect(2*S, 2*S, 13*S, 14*S);        // hoja base
+  ctx.fillStyle = "#bcaaa4";
+  ctx.fillRect(2*S, 14*S, 13*S, 2*S);        // sombra inferior
+  ctx.fillRect(2*S, 2*S, 1*S, 14*S);         // sombra izquierda
+  ctx.fillStyle = "#a1887f";
+  ctx.beginPath();
+  ctx.moveTo(12*S, 2*S);
+  ctx.lineTo(15*S, 2*S);
+  ctx.lineTo(12*S, 5*S);
+  ctx.closePath();
+  ctx.fill();                                // doblez esquina sup-der
+  ctx.fillStyle = "#a1887f";
+  [6, 8, 10, 12].forEach(row => ctx.fillRect(4*S, row*S, 8*S, S)); // líneas de texto
+}
 
-  // ── Flecha abajo-der (apunta ↘) ──
-  ctx.fillRect(14*S, 11*S, S,  4*S);  // tronco
-  ctx.fillRect(11*S, 14*S, 4*S, S);   // base punta
-  ctx.fillRect(14*S, 10*S, S,  S);    // punta arr
-  ctx.fillRect(14*S, 15*S, S,  S);    // punta abj
-
-  // Triángulo central (hueco, solo borde)
-  ctx.fillStyle = color + "55";       // semitransparente
-  ctx.fillRect(7*S,  9*S,  4*S, S);
-  ctx.fillRect(6*S,  10*S, S,   2*S);
-  ctx.fillRect(11*S, 10*S, S,   2*S);
-  ctx.fillRect(7*S,  12*S, 4*S, S);
+// 3 — Cáscara de plátano
+function drawBanana(ctx, S) {
+  const seg = [
+    {x:12,y:2},{x:11,y:3},{x:10,y:4},{x:9,y:5},
+    {x:8,y:6}, {x:7,y:7}, {x:6,y:8}, {x:5,y:9},
+    {x:4,y:10},{x:4,y:11},{x:3,y:12},
+  ];
+  ctx.fillStyle = "#ffca28";
+  seg.forEach(p => ctx.fillRect(p.x*S, p.y*S, 4*S, 3*S));
+  ctx.fillStyle = "#ffa000";
+  seg.forEach(p => ctx.fillRect(p.x*S, (p.y+2)*S, 4*S, S));   // sombra inferior de la curva
+  ctx.fillStyle = "#5d4037";
+  ctx.fillRect(12*S, 1*S, 3*S, 2*S);         // punta superior (tallo)
+  ctx.fillRect(2*S, 12*S, 3*S, 2*S);         // punta inferior
+  ctx.fillStyle = "#fff59d";
+  seg.slice(0, 6).forEach(p => ctx.fillRect(p.x*S, p.y*S, 1*S, S)); // brillo
 }
 
 function drawTrash(ctx, x, y, binType) {
-  const bin = BIN_TYPES[binType ?? 0];
+  const t = TRASH_TYPES[binType ?? 0];
   ctx.save();
   ctx.translate(x, y);
   const S = 2;
-  drawBinBase(ctx, S, bin);
-  drawRecycleSymbol(ctx, S, bin.sym);
+  drawTrashBackdrop(ctx, S, t.glow);
+  if (binType === 0)      drawBottle(ctx, S);
+  else if (binType === 1) drawCan(ctx, S);
+  else if (binType === 2) drawPaper(ctx, S);
+  else                     drawBanana(ctx, S);
   ctx.restore();
 }
 
@@ -769,21 +863,21 @@ function drawPowerupTime(ctx, x, y) {
   ctx.fillRect(3*S, 2*S, 10*S,  S);
   ctx.fillRect(3*S, 11*S,10*S,  S);
 
-  // Marcas de hora (12, 3, 6, 9)
-  ctx.fillStyle = "#424242";
-  ctx.fillRect(7*S, 3*S,  2*S, S);    // 12
-  ctx.fillRect(12*S,6*S,  S,  2*S);   // 3
-  ctx.fillRect(7*S, 10*S, 2*S, S);    // 6
-  ctx.fillRect(2*S, 6*S,  S,  2*S);   // 9
+  // Marcas de hora (12, 3, 6, 9) — más gruesas y oscuras para que resalten
+  ctx.fillStyle = "#212121";
+  ctx.fillRect(6*S, 2*S,  4*S, S);    // 12
+  ctx.fillRect(11*S,6*S,  2*S, 2*S);  // 3
+  ctx.fillRect(6*S, 11*S, 4*S, S);    // 6
+  ctx.fillRect(2*S, 6*S,  2*S, 2*S);  // 9
 
-  // Manecillas desde el centro (8,7)
-  ctx.fillStyle = "#1a237e";
-  ctx.fillRect(7*S, 4*S,  2*S, 4*S);  // minutero (apunta arriba)
-  ctx.fillStyle = "#c62828";
-  ctx.fillRect(8*S, 7*S,  3*S, S);    // horario (apunta der)
+  // Manecillas desde el centro (8,7) — colores más vivos y trazo más grueso
+  ctx.fillStyle = "#0d47a1";
+  ctx.fillRect(6.5*S, 3.5*S, 3*S, 4.5*S); // minutero (apunta arriba)
+  ctx.fillStyle = "#d32f2f";
+  ctx.fillRect(8*S, 6.5*S, 4*S, 1.5*S);   // horario (apunta der)
   // Centro pivot
-  ctx.fillStyle = "#424242";
-  ctx.fillRect(7*S, 7*S,  2*S, S);
+  ctx.fillStyle = "#212121";
+  ctx.fillRect(6.5*S, 6.5*S, 2.5*S, 1.5*S);
 
   // Pernos del reloj (arriba y abajo)
   ctx.fillStyle = "#9e9e9e";
@@ -1010,6 +1104,8 @@ const reservaEl    = document.getElementById("reservaFill");
 const reservaTrack = document.getElementById("reservaTrack");
 const reservaLabel = document.getElementById("reservaLabel");
 const powerupEl    = document.getElementById("powerupStatus");
+const shieldBadge     = document.getElementById("shieldBadge");
+const shieldBadgeText = document.getElementById("shieldBadgeText");
 const overlay      = document.getElementById("overlay");
 const oEmoji       = document.getElementById("overlayEmoji");
 const oTitle       = document.getElementById("overlayTitle");
@@ -1033,9 +1129,10 @@ document.addEventListener("keyup", e => {
 // controles táctiles: toca izquierda o derecha del canvas
 canvas.addEventListener("touchstart", e => {
   if (!state) return;
-  const tx = e.touches[0].clientX - canvas.getBoundingClientRect().left;
-  if (tx < CANVAS_W / 2) state.keys.left = true;
-  else                    state.keys.right = true;
+  const rect = canvas.getBoundingClientRect();
+  const tx = e.touches[0].clientX - rect.left;
+  if (tx < rect.width / 2) state.keys.left = true;
+  else                      state.keys.right = true;
 }, { passive: true });
 canvas.addEventListener("touchend", () => {
   if (!state) return;
@@ -1136,7 +1233,15 @@ function update(ts, dt) {
       tipos = tipos.filter(t => t !== "heal");
     }
     if (tipos.length > 0) {
-      const tipo = tipos[Math.floor(Math.random() * tipos.length)];
+      // selección con pesos: la reserva de stamina aparece un poco más seguido
+      const pesos = tipos.map(t => POWERUP_WEIGHTS[t] ?? 1);
+      const total = pesos.reduce((a, b) => a + b, 0);
+      let r = Math.random() * total;
+      let tipo = tipos[0];
+      for (let i = 0; i < tipos.length; i++) {
+        r -= pesos[i];
+        if (r <= 0) { tipo = tipos[i]; break; }
+      }
       if (tipo === "time") s.timePowerupsSpawned++;
       if (tipo === "heal") s.healPowerupSpawned = true;
       s.powerups.push({
@@ -1408,11 +1513,17 @@ function updateHUD(ts) {
   // barra de reserva: siempre visible, solo cambia el ancho
   reservaEl.style.width = (s.staminaReserva / MAX_STAMINA * 100) + "%";
 
-  // mostrar combo o power-up activo
+  // insignia de escudo (siempre al costado, no tapa nada del HUD)
   if (s.shieldActive) {
     const remaining = Math.ceil((s.shieldEndsAt - ts) / 1000);
-    powerupEl.textContent = `🛡️ Escudo activo (${remaining}s)`;
-  } else if (s.comboLevel > 0) {
+    shieldBadgeText.textContent = `Escudo (${remaining}s)`;
+    shieldBadge.classList.add("active");
+  } else {
+    shieldBadge.classList.remove("active");
+  }
+
+  // mostrar racha / próximo combo (independiente del escudo)
+  if (s.comboLevel > 0) {
     powerupEl.textContent = `🔥 Racha x${s.multiplier.toFixed(1)} · ${s.streak % COMBO_EVERY || COMBO_EVERY}/${COMBO_EVERY} para x${(s.multiplier + COMBO_STEP).toFixed(1)}`;
   } else {
     const next = COMBO_EVERY - (s.streak % COMBO_EVERY);
