@@ -275,6 +275,8 @@ def registro():
         session["preguntas"] = preguntas
         session["indice"]    = 0
         session["puntaje"]   = 0
+        session["racha"]    = 0
+        session["aciertos"] = 0
         return redirect(url_for("juego"))
 
     return render_template("registro.html", jugador=jugador, generos=GENEROS,
@@ -300,8 +302,19 @@ def juego():
             error = "Elige una opción antes de continuar."
         else:
             if respuesta == pregunta_actual["correcta"]:
-                # sumar los puntos correspondientes
-                session["puntaje"] = session.get("puntaje", 0) + PUNTOS_POR_PREGUNTA
+                # recalcular multiplicador según racha acumulada en sesión
+                racha = session.get("racha", 0) + 1
+                session["racha"] = racha
+                if   racha >= 8: mult = 1.8
+                elif racha >= 6: mult = 1.6
+                elif racha >= 4: mult = 1.4
+                elif racha >= 2: mult = 1.2
+                else:            mult = 1.0
+                puntos = round(PUNTOS_POR_PREGUNTA * mult)
+                session["puntaje"]   = session.get("puntaje", 0) + puntos
+                session["aciertos"] = session.get("aciertos", 0) + 1
+            else:
+                session["racha"] = 0  # falló: resetear racha
             # avanzar a la siguiente pregunta
             session["indice"] = indice + 1
             return redirect(url_for("juego"))
@@ -323,7 +336,7 @@ def resultado():
     total   = len(session.get("preguntas", []))
 
     # cuántas preguntas acertó (para mostrar en la pantalla de resultado)
-    aciertos = puntos // PUNTOS_POR_PREGUNTA
+    aciertos = session.get("aciertos", 0)
 
     if jugador:
         guardar_partida(jugador["nombre"], jugador["genero"],
@@ -333,6 +346,8 @@ def resultado():
     session.pop("preguntas", None)
     session.pop("indice",    None)
     session.pop("puntaje",   None)
+    session.pop("racha",     None)
+    session.pop("aciertos",  None)
 
     return render_template("resultado.html", jugador=jugador,
                            puntaje=puntos, aciertos=aciertos, total=total)

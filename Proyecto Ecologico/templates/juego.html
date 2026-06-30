@@ -31,6 +31,10 @@
       --radius-lg:   28px;
       --shadow-card: 0 8px 32px rgba(26,92,56,.10), 0 2px 8px rgba(26,92,56,.07);
       --shadow-btn:  0 4px 16px rgba(46,139,87,.35);
+      --streak-1:    #f59e0b;
+      --streak-2:    #ef6c00;
+      --streak-3:    #e53935;
+      --streak-max:  #7c3aed;
     }
 
     body {
@@ -59,6 +63,26 @@
       background: radial-gradient(circle, rgba(33,150,211,.15) 0%, transparent 70%);
       bottom: -80px; right: -80px;
     }
+
+    /* ── HUD PILLS (topbar) ── */
+    .hud-pills { display:flex; gap:.5rem; align-items:center; }
+    .hud-wrap  { display:flex; flex-direction:column; align-items:center; gap:.1rem; }
+    .hud-pill {
+      font-size:.72rem; font-weight:700;
+      padding:.28rem .72rem; border-radius:99px;
+      border:1.5px solid; display:flex; align-items:center; gap:.28rem;
+      white-space:nowrap; transition:transform .2s,background .3s,border-color .3s,color .3s;
+    }
+    .hud-pill.pts    { color:var(--blue-deep); background:var(--blue-pale); border-color:rgba(33,150,211,.25); }
+    .hud-pill.streak { color:var(--gray-500);  background:var(--gray-100);  border-color:var(--gray-300); }
+    .hud-pill.streak[data-lvl="1"] { color:#92400e; background:#fffbeb; border-color:#f59e0b; }
+    .hud-pill.streak[data-lvl="2"] { color:#9a3412; background:#fff7ed; border-color:#f97316; }
+    .hud-pill.streak[data-lvl="3"] { color:#991b1b; background:#fff1f2; border-color:#ef4444; }
+    .hud-pill.streak[data-lvl="4"] { color:#6b21a8; background:#faf5ff; border-color:#a855f7; }
+    .hud-sub { font-size:.6rem; font-weight:800; color:var(--gray-400); letter-spacing:.02em; line-height:1; }
+    .hud-sub.active { color:#d97706; }
+    @keyframes pop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+    .hud-pill.pop { animation:pop .32s ease; }
 
     /* ── TOPBAR ── */
     .topbar {
@@ -352,7 +376,17 @@
       <div class="brand-icon">🌿</div>
       <span class="brand-name">EcoMisión</span>
     </div>
-    <span class="progress-pill">Pregunta {{ numero }} de {{ total }}</span>
+    <div class="hud-pills">
+      <div class="hud-wrap">
+        <span class="hud-pill streak" id="hud-streak" data-lvl="">🔥 <strong id="hud-streak-val">0</strong></span>
+        <span class="hud-sub" id="hud-mult">×1.0</span>
+      </div>
+      <div class="hud-wrap">
+        <span class="hud-pill pts" id="hud-pts">⭐ <strong id="hud-pts-val">0</strong> pts</span>
+        <span class="hud-sub" style="color:transparent">·</span>
+      </div>
+      <span class="progress-pill">Pregunta {{ numero }} de {{ total }}</span>
+    </div>
   </div>
 
   <!-- DATOS DE RETROALIMENTACIÓN inyectados desde Jinja -->
@@ -433,9 +467,8 @@
   </div><!-- /layout -->
 
   <script>
-    // ── Datos de la pregunta actual ──
     const preguntaId   = {{ pregunta.id }};
-    const retro        = RETRO;  // objeto completo importado arriba
+    const retro        = RETRO;
 
     const btnComprobar = document.getElementById('btn-comprobar');
     const btnSiguiente = document.getElementById('btn-siguiente');
@@ -450,101 +483,161 @@
     const textoEl      = document.getElementById('panel-texto');
     const tipEl        = document.getElementById('panel-tip');
 
-    const radios       = document.querySelectorAll('.radio-opcion');
-    const labels       = document.querySelectorAll('.opciones label');
+    const radios  = document.querySelectorAll('.radio-opcion');
+    const labels  = document.querySelectorAll('.opciones label');
+
+    const hudStreakPill = document.getElementById('hud-streak');
+    const hudStreakVal  = document.getElementById('hud-streak-val');
+    const hudMultEl     = document.getElementById('hud-mult');
+    const hudPtsPill    = document.getElementById('hud-pts');
+    const hudPtsVal     = document.getElementById('hud-pts-val');
+
+    const TOTAL    = {{ total }};
+    const NUMERO   = {{ numero }};
+    const BASE_PTS = 250;
 
     let comprobado = false;
 
+    // ── Multiplicador según racha acumulada (cada 2 aciertos seguidos +0.2) ──
+    // racha 0-1 → ×1.0 | 2-3 → ×1.2 | 4-5 → ×1.4 | 6-7 → ×1.6 | 8+ → ×1.8
+    function calcMult(racha) {
+      if (racha >= 8) return 1.8;
+      if (racha >= 6) return 1.6;
+      if (racha >= 4) return 1.4;
+      if (racha >= 2) return 1.2;
+      return 1.0;
+    }
+    function calcLvl(racha) {
+      if (racha >= 8) return '4';
+      if (racha >= 6) return '3';
+      if (racha >= 4) return '2';
+      if (racha >= 2) return '1';
+      return '';
+    }
+    function flames(racha) {
+      if (racha >= 8) return '🔥🔥🔥🔥';
+      if (racha >= 6) return '🔥🔥🔥';
+      if (racha >= 4) return '🔥🔥';
+      if (racha >= 2) return '🔥';
+      return '🔥';
+    }
+
+    // ── Estado persistido ──
+    function getState() {
+      try { return JSON.parse(sessionStorage.getItem('eco_st')) || { racha:0, pts:0 }; }
+      catch { return { racha:0, pts:0 }; }
+    }
+    function saveState(st) {
+      try { sessionStorage.setItem('eco_st', JSON.stringify(st)); } catch {}
+    }
+
+    function updateHUD(st) {
+      const mult = calcMult(st.racha);
+      const lvl  = calcLvl(st.racha);
+
+      // streak pill
+      hudStreakVal.textContent = st.racha;
+      hudStreakPill.dataset.lvl = lvl;
+      // emoji de llamas solo cuando hay racha
+      const icon = st.racha >= 2 ? flames(st.racha) + ' ' : '🔥 ';
+      hudStreakPill.innerHTML = icon + '<strong>' + st.racha + '</strong>';
+
+      // multiplicador debajo
+      hudMultEl.textContent = '×' + mult.toFixed(1);
+      hudMultEl.classList.toggle('active', mult > 1.0);
+
+      // puntos
+      hudPtsVal.textContent = st.pts;
+    }
+
+    function popPill(el) {
+      el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+    }
+
+    // ── Init ──
+    if (NUMERO === 1) saveState({ racha:0, pts:0 });
+    updateHUD(getState());
+
+    // ── Helpers ──
     function getSeleccionado() {
-      for (const r of radios) {
-        if (r.checked) return r.value;
-      }
+      for (const r of radios) if (r.checked) return r.value;
       return null;
     }
-
     function bloquearOpciones() {
       radios.forEach(r => r.disabled = true);
+      labels.forEach(l => { l.style.cursor='default'; l.style.transform='none'; });
+    }
+    function marcarOpciones(sel) {
       labels.forEach(lbl => {
-        lbl.style.cursor = 'default';
-        lbl.style.transform = 'none';
+        const v = lbl.dataset.valor;
+        if (v === CORRECTA)               lbl.classList.add('correcta-lbl');
+        else if (v === sel && v !== CORRECTA) lbl.classList.add('incorrecta-lbl');
       });
     }
-
-    function marcarOpciones(respuestaUsuario) {
-      labels.forEach(lbl => {
-        const val = lbl.dataset.valor;
-        if (val === CORRECTA) {
-          lbl.classList.add('correcta-lbl');
-        } else if (val === respuestaUsuario && val !== CORRECTA) {
-          lbl.classList.add('incorrecta-lbl');
-        }
-      });
-    }
-
-    function mostrarPanel(esCorrecta, respuestaUsuario) {
+    function mostrarPanel(esCorrecta, ptsGanados, mult) {
       const data = retro[String(preguntaId)];
-
       placeholder.style.display = 'none';
       panelRes.classList.add('show');
 
-      if (esCorrecta) {
-        badgeEl.textContent = '✅ ¡Correcto!';
-        badgeEl.className   = 'resultado-badge ok';
-      } else {
-        badgeEl.textContent = '❌ Incorrecto';
-        badgeEl.className   = 'resultado-badge fail';
-      }
+      let badge = esCorrecta ? '✅ ¡Correcto!' : '❌ Incorrecto';
+      if (esCorrecta && mult > 1.0) badge += `  ×${mult.toFixed(1)}  (+${ptsGanados} pts)`;
+      else if (esCorrecta)          badge += `  (+${ptsGanados} pts)`;
+      badgeEl.textContent = badge;
+      badgeEl.className   = 'resultado-badge ' + (esCorrecta ? 'ok' : 'fail');
 
       if (data) {
         emojiEl.textContent  = data.emoji  || '📖';
         tituloEl.textContent = data.titulo || '';
         textoEl.textContent  = data.texto  || '';
-
-        // tip extra solo si falló
         if (!esCorrecta && data.correcta_explicada) {
-          tipEl.style.display = 'flex';
-          tipEl.textContent   = data.correcta_explicada;
-        } else {
-          tipEl.style.display = 'none';
-        }
+          tipEl.style.display = 'flex'; tipEl.textContent = data.correcta_explicada;
+        } else { tipEl.style.display = 'none'; }
       } else {
         emojiEl.textContent  = esCorrecta ? '🎉' : '📖';
         tituloEl.textContent = esCorrecta ? '¡Muy bien!' : 'Sigue aprendiendo';
-        textoEl.textContent  = esCorrecta
-          ? 'Respuesta correcta. ¡Continúa así!'
-          : `La respuesta correcta era: "${CORRECTA}".`;
-        tipEl.style.display = 'none';
+        textoEl.textContent  = esCorrecta ? 'Respuesta correcta. ¡Continúa así!' : `La respuesta correcta era: "${CORRECTA}".`;
+        tipEl.style.display  = 'none';
       }
     }
 
-    // ── Acción: Comprobar ──
+    // ── Comprobar ──
     btnComprobar.addEventListener('click', () => {
       if (comprobado) return;
-
       const sel = getSeleccionado();
       if (!sel) {
         errorMsg.textContent = 'Elige una opción antes de continuar.';
-        errorMsg.style.display = 'flex';
-        return;
+        errorMsg.style.display = 'flex'; return;
       }
       errorMsg.style.display = 'none';
       comprobado = true;
 
       const esCorrecta = (sel === CORRECTA);
+      let st = getState();
 
+      if (esCorrecta) {
+        st.racha++;
+        const mult      = calcMult(st.racha);
+        const ptsGanados = Math.round(BASE_PTS * mult);
+        st.pts += ptsGanados;
+        saveState(st);
+        updateHUD(st);
+        popPill(hudStreakPill);
+        popPill(hudPtsPill);
+        mostrarPanel(true, ptsGanados, mult);
+      } else {
+        st.racha = 0;
+        saveState(st);
+        updateHUD(st);
+        mostrarPanel(false, 0, 1.0);
+      }
+
+      respHidden.value = sel;
       bloquearOpciones();
       marcarOpciones(sel);
-      mostrarPanel(esCorrecta, sel);
-
-      // preparar envío al servidor con la respuesta real
-      respHidden.value = sel;
-
-      // intercambiar botones
       btnComprobar.classList.remove('visible');
       btnSiguiente.classList.add('visible');
     });
 
-    // Al hacer submit solo si ya se comprobó
     document.getElementById('form-quiz').addEventListener('submit', (e) => {
       if (!comprobado) {
         e.preventDefault();
