@@ -1,0 +1,277 @@
+{
+  "1": {
+    "emoji": "♻️",
+    "titulo": "El triángulo de reciclaje",
+    "texto": "El número 1 dentro del triángulo de reciclaje identifica el PET (Polietileno Tereftalato). Es uno de los plásticos más reciclados del mundo: se usa en botellas de agua y bebidas, y puede transformarse en ropa polar, alfombras o nuevas botellas. No indica toxicidad ni límite de reciclajes."
+  },
+  "2": {
+    "emoji": "🐟",
+    "titulo": "Microplásticos en el océano",
+    "texto": "Los microplásticos son partículas menores a 5 mm que los animales marinos confunden con comida. Al ingerirlos, bloquean sus sistemas digestivos y acumulan toxinas que luego pasan a los peces que comemos. No se disuelven ni nutren: son una amenaza silenciosa para toda la cadena alimenticia."
+  },
+  "3": {
+    "emoji": "🚿",
+    "titulo": "Preparar el envase antes de reciclar",
+    "texto": "Enjuagar y aplastar el envase es clave: los restos de comida o líquido pueden contaminar toda una carga de reciclaje y obligar a enviarla al vertedero. Aplastarlo además reduce el volumen y facilita el transporte. Pintarlo o romperlo en pedazos no ayuda en absoluto."
+  },
+  "4": {
+    "emoji": "👕",
+    "titulo": "Segunda vida del PET",
+    "texto": "El PET reciclado puede convertirse en fibra de poliéster para ropa polar, bolsas, alfombras e incluso nuevas botellas. Es uno de los materiales con más salidas en la industria del reciclaje. El vidrio y el combustible para aviones son procesos completamente distintos."
+  },
+  "5": {
+    "emoji": "🔥",
+    "titulo": "Quemar plástico: un grave error",
+    "texto": "Quemar plástico a cielo abierto libera dioxinas y furanos, gases extremadamente tóxicos que causan cáncer y enfermedades respiratorias. No genera vapor beneficioso ni protege de los rayos UV; todo lo contrario: contamina el aire de las comunidades cercanas de forma directa."
+  },
+  "6": {
+    "emoji": "🪟",
+    "titulo": "El PVC (plástico 3)",
+    "texto": "El PVC se usa en tuberías, marcos de ventanas, tarjetas de crédito y algunos juguetes. Es uno de los plásticos más difíciles de reciclar porque libera cloro al procesarse. Los envases de yogur y mantequilla suelen ser plástico 5 (PP), no PVC."
+  },
+  "7": {
+    "emoji": "🐢",
+    "titulo": "La pesca fantasma",
+    "texto": "Las redes y bolsas abandonadas en el mar siguen atrapando y matando animales durante años sin ningún control, fenómeno conocido como 'pesca fantasma'. Tortugas, delfines y aves marinas quedan enredadas y mueren asfixiadas. No ofrecen refugio: son una trampa mortal."
+  },
+  "8": {
+    "emoji": "🛍️",
+    "titulo": "Bolsas plásticas: ¡punto especial!",
+    "texto": "Las bolsas de plástico son películas flexibles que se enrollan en la maquinaria de las plantas de reciclaje y la dañan. Por eso necesitan puntos de acopio específicos (muchos supermercados los tienen). Nunca deben mezclarse con botellas rígidas, ni importa su color."
+  },
+  "9": {
+    "emoji": "⏳",
+    "titulo": "500 años bajo tierra",
+    "texto": "Una botella de plástico puede tardar entre 100 y 500 años en degradarse en la naturaleza, y nunca desaparece del todo: se fragmenta en microplásticos. Pensar que tarda solo 5 o 10 años es uno de los mitos más peligrosos sobre el plástico."
+  },
+  "10": {
+    "emoji": "💨",
+    "titulo": "El cartón en el vertedero genera metano",
+    "texto": "Cuando el papel y el cartón se descomponen sin oxígeno (de forma anaeróbica) en un vertedero, producen metano, un gas de efecto invernadero hasta 80 veces más potente que el CO₂ en el corto plazo. Reciclarlos evita este proceso y ahorra también la tala de árboles nuevos."
+  },
+  "11": {
+    "emoji": "🫧",
+    "titulo": "El plástico burbuja sí se recicla",
+    "texto": "El plástico de burbujas es una película plástica flexible y, como todas ellas, no va al contenedor de botellas porque atasca las máquinas. Sin embargo, sí puede reciclarse en puntos de acopio específicos para film plástico. No es un residuo peligroso."
+  },
+  "12": {
+    "emoji": "🌳",
+    "titulo": "Tala y cartón nuevo",
+    "texto": "Producir cartón virgen implica talar bosques, lo que destruye hábitats de miles de especies, provoca erosión del suelo y elimina árboles que absorben CO₂. Los árboles restantes no crecen el doble de rápido: la recuperación forestal toma décadas o siglos."
+  },
+  "13": {
+    "emoji": "🔩",
+    "titulo": "¿Tapa puesta o quitada?",
+    "texto": "No existe una regla universal: depende de la planta de reciclaje de tu ciudad. Muchas modernas piden dejar la tapa puesta para que no se pierda (también es plástico). Otras piden separarlas. Lo importante es informarse sobre las normas locales. La botella no explota ni se vuelve irreciclable."
+  },
+  "14": {
+    "emoji": "🔍",
+    "titulo": "El vidrio puede iniciar incendios",
+    "texto": "Una botella o frasco de vidrio curvo puede actuar como lupa al concentrar los rayos del sol sobre material seco, alcanzando temperaturas suficientes para iniciar un incendio forestal. No atrae plagas ni esteriliza el suelo: el peligro inmediato es el fuego."
+  },
+  "15": {
+    "emoji": "📦",
+    "titulo": "Reciclar cajas de cartón correctamente",
+    "texto": "El primer paso es desarmar y plegar la caja para que ocupe el mínimo espacio posible. Esto facilita el transporte y permite que quepan más en el contenedor. Mojarla la inutiliza para el reciclaje, y rellenarla de papeles dificulta el proceso de separación."
+  },
+  "16": {
+    "emoji": "🏖️",
+    "titulo": "Extracción de arena para fabricar vidrio",
+    "texto": "La arena de sílice extraída de ríos y costas para fabricar vidrio nuevo destruye los ecosistemas acuáticos: altera el flujo del agua, provoca erosión costera y elimina el hábitat de peces e invertebrados. Reciclar vidrio evita completamente esta extracción destructiva."
+  },
+  "17": {
+    "emoji": "♻️",
+    "titulo": "Aplastar sí ayuda",
+    "texto": "FALSO. Aplastar botellas y cajas reduce significativamente su volumen, lo que permite transportar más material en cada viaje y reduce costos y emisiones. Es uno de los gestos más simples y efectivos que puedes hacer antes de reciclar."
+  },
+  "18": {
+    "emoji": "🍕",
+    "titulo": "La grasa contamina el cartón",
+    "texto": "FALSO. Las manchas de grasa en el cartón (como en las cajas de pizza) impiden que las fibras se separen correctamente durante el proceso de reciclaje. La parte limpia puede reciclarse, pero la parte grasosa debe ir a la basura general o al compostaje."
+  },
+  "19": {
+    "emoji": "📄",
+    "titulo": "El papel no es eterno",
+    "texto": "FALSO. El papel solo puede reciclarse entre 5 y 7 veces porque sus fibras se acortan con cada proceso hasta volverse inútiles. El vidrio, en cambio, sí puede reciclarse indefinidamente sin perder calidad. Son materiales muy diferentes."
+  },
+  "20": {
+    "emoji": "🧾",
+    "titulo": "Los recibos térmicos no van al papel",
+    "texto": "VERDADERO. Los recibos de caja están hechos de papel térmico recubierto de Bisfenol A (BPA) u otras sustancias químicas. Si se mezclan con papel normal, contaminan toda la carga. Deben ir a la basura general o a puntos de recogida especiales."
+  },
+  "21": {
+    "emoji": "⚡",
+    "titulo": "Reciclar ahorra energía",
+    "texto": "FALSO. Reciclar casi siempre consume mucha menos energía que extraer y procesar materia prima nueva. Por ejemplo, reciclar aluminio usa un 95% menos de energía que producirlo desde cero. El reciclaje es más eficiente energéticamente en casi todos los materiales."
+  },
+  "22": {
+    "emoji": "🚛",
+    "titulo": "Un error arruina todo el camión",
+    "texto": "VERDADERO. Si se introducen residuos orgánicos, restos de comida u otros contaminantes en un contenedor de reciclaje, toda la carga puede quedar inservible y enviarse al vertedero. La 'contaminación cruzada' es uno de los mayores problemas del reciclaje urbano."
+  },
+  "23": {
+    "emoji": "🌿",
+    "titulo": "Biodegradable no significa instantáneo",
+    "texto": "FALSO. Los envases 'biodegradables' requieren condiciones específicas de temperatura, humedad y microorganismos para degradarse. En el suelo del bosque pueden tardar meses o años. Además, algunos solo se fragmentan en microplásticos. Nunca deben tirarse al suelo."
+  },
+  "24": {
+    "emoji": "🚫",
+    "titulo": "No todos los plásticos se reciclan igual",
+    "texto": "FALSO. Existen 7 tipos de plástico y no todos se aceptan en los contenedores urbanos estándar. El PVC (3), el poliestireno (6) y los plásticos multicapa (7) rara vez se reciclan en circuitos convencionales. Siempre revisa las normas de tu municipio."
+  },
+  "25": {
+    "emoji": "🧼",
+    "titulo": "Enjuagar antes de reciclar",
+    "texto": "VERDADERO. Enjuagar los envases antes de reciclarlos evita malos olores, reduce plagas en los camiones y puntos de acopio, y mejora la calidad del material reciclado. No es necesario dejarlos perfectos, solo sin restos significativos de comida o líquido."
+  },
+  "26": {
+    "emoji": "🪫",
+    "titulo": "Las baterías son residuos peligrosos",
+    "texto": "Las pilas y baterías contienen metales pesados como plomo, cadmio y mercurio, que son altamente tóxicos. Si van a la basura normal, esos metales filtran al suelo y al agua subterránea. Siempre deben llevarse a puntos de recogida específicos, que encontrarás en tiendas y supermercados."
+  },
+  "27": {
+    "emoji": "💻",
+    "titulo": "La basura electrónica crece rápido",
+    "texto": "Los aparatos electrónicos contienen metales valiosos (oro, cobre, cobalto) pero también sustancias tóxicas. Tirarlos a la basura normal contamina y desperdicia recursos. Los puntos limpios o programas de devolución de fabricantes permiten recuperar esos materiales de forma segura."
+  },
+  "28": {
+    "emoji": "🌊",
+    "titulo": "El aceite de cocina bloquea el agua",
+    "texto": "Un solo litro de aceite usado puede contaminar hasta 1.000 litros de agua subterránea, porque forma una película impermeable que impide la oxigenación. Nunca debe tirarse por el fregadero. Existen puntos de recogida y puede reciclarse como biodiesel."
+  },
+  "29": {
+    "emoji": "🧪",
+    "titulo": "Los medicamentos caducados son especiales",
+    "texto": "Los medicamentos caducados contienen principios activos que el agua no puede depurar fácilmente. Tirarlos al inodoro contamina ríos y afecta la vida acuática. En farmacias existen los puntos SIGRE (o similares) para depositarlos de forma segura."
+  },
+  "30": {
+    "emoji": "🪣",
+    "titulo": "Pinturas y barnices son residuos especiales",
+    "texto": "Las pinturas y barnices contienen disolventes y metales pesados que contaminan el suelo y el agua. No deben tirarse a la basura normal ni por el fregadero. Los puntos limpios municipales los reciben y los gestionan de forma adecuada."
+  },
+  "31": {
+    "emoji": "🔋",
+    "titulo": "Las baterías de litio tienen circuito especial",
+    "texto": "Las baterías de litio de teléfonos, laptops y vehículos eléctricos requieren un proceso de reciclaje especializado por su riesgo de incendio y los materiales que contienen (litio, cobalto, níquel). Nunca deben aplastarse ni tirarse a la basura normal."
+  },
+  "32": {
+    "emoji": "🌱",
+    "titulo": "El compostaje reduce el metano",
+    "texto": "Compostar los residuos orgánicos en casa o en centros especializados permite descomponerlos con oxígeno, produciendo abono en lugar de metano. Además, el compost mejora la calidad del suelo y reduce la necesidad de fertilizantes químicos."
+  },
+  "33": {
+    "emoji": "💧",
+    "titulo": "El agua embotellada genera más residuos",
+    "texto": "Producir una botella de plástico de agua requiere hasta 3 litros de agua y genera emisiones de CO₂. Si el agua de grifo en tu ciudad es potable y de buena calidad, usarla es mucho más sostenible. Una botella reutilizable puede reemplazar cientos de desechables al año."
+  },
+  "34": {
+    "emoji": "🥤",
+    "titulo": "Las pajitas de plástico: pequeñas, gran problema",
+    "texto": "Por su pequeño tamaño y peso, las pajitas de plástico escapan fácilmente de los sistemas de filtrado y llegan al mar. Son uno de los objetos más frecuentemente encontrados en playas y en el estómago de aves y tortugas. Existen alternativas de papel, metal o bambú."
+  },
+  "35": {
+    "emoji": "🛒",
+    "titulo": "Las bolsas reutilizables sí marcan la diferencia",
+    "texto": "Una bolsa reutilizable de tela o malla puede reemplazar cientos o miles de bolsas de plástico de un solo uso durante su vida útil. El truco está en usarla realmente muchas veces: si se pierde o se bota pronto, su impacto ambiental puede ser mayor que el que reemplaza."
+  },
+  "36": {
+    "emoji": "🏭",
+    "titulo": "La huella de carbono del reciclaje",
+    "texto": "El transporte de materiales reciclables genera emisiones, pero en casi todos los casos el balance final sigue siendo positivo comparado con producir materiales vírgenes. Reciclar localmente y reducir el consumo en primer lugar son las estrategias más eficientes."
+  },
+  "37": {
+    "emoji": "🍌",
+    "titulo": "Los residuos orgánicos son los más pesados",
+    "texto": "En la mayoría de los hogares, los residuos orgánicos (restos de comida, cáscaras, posos de café) representan entre el 40% y el 50% de toda la basura generada. Separarlos para compostaje o biogás reduce enormemente el peso y el impacto de los vertederos."
+  },
+  "38": {
+    "emoji": "🌿",
+    "titulo": "Compostar en casa es poderoso",
+    "texto": "El compostaje doméstico desvía los residuos orgánicos del vertedero, donde generarían metano al descomponerse sin oxígeno. En cambio, el compost producido mejora el suelo del jardín o de macetas, cerrando el ciclo de los nutrientes de forma natural."
+  },
+  "39": {
+    "emoji": "🥛",
+    "titulo": "El Tetra Pak es multicapa",
+    "texto": "Los envases Tetra Pak están formados por varias capas de cartón, polietileno y aluminio unidas entre sí, lo que los hace muy resistentes e impermeables. Esa misma unión es lo que complica su reciclaje: hay que separar los materiales, lo que requiere maquinaria especializada."
+  },
+  "40": {
+    "emoji": "🏗️",
+    "titulo": "El Tetra Pak necesita planta especial",
+    "texto": "VERDADERO. Por su estructura multicapa, los Tetra Pak no se pueden reciclar en las mismas instalaciones que el cartón normal. Requieren plantas hidropulperas que separan el papel de la capa de plástico y aluminio. No todos los municipios disponen de esta infraestructura."
+  },
+  "41": {
+    "emoji": "🧊",
+    "titulo": "El plumavit: voluminoso y persistente",
+    "texto": "El poliestireno expandido (plumavit, telgopor) es casi todo aire, lo que lo hace muy voluminoso y caro de transportar. Se fragmenta fácilmente en bolitas que persisten en el ambiente durante siglos. Su reciclaje requiere máquinas compactadoras especiales y puntos de acopio dedicados."
+  },
+  "42": {
+    "emoji": "🚬",
+    "titulo": "Las colillas contaminan más de lo que parece",
+    "texto": "VERDADERO. El filtro de los cigarrillos está hecho de acetato de celulosa, un tipo de plástico. Puede tardar hasta 10 años en degradarse y libera nicotina y otros químicos tóxicos al agua y el suelo. Son el residuo más recogido en playas de todo el mundo."
+  },
+  "43": {
+    "emoji": "🚗",
+    "titulo": "Los neumáticos tienen segunda vida",
+    "texto": "Los neumáticos usados se trituran para obtener gránulos de caucho que se usan en superficies de pistas de atletismo, parques infantiles, asfalto silencioso y como combustible alternativo en cementeras. Quemarlos o enterrarlos libera toxinas y es ilegal en muchos países."
+  },
+  "44": {
+    "emoji": "💡",
+    "titulo": "Los focos fluorescentes contienen mercurio",
+    "texto": "Los tubos fluorescentes y focos ahorradores contienen mercurio, un metal tóxico que daña el sistema nervioso. Si se rompen en un vertedero, el mercurio se filtra al suelo y al agua. Deben llevarse a puntos limpios o a tiendas de electricidad que los recogen."
+  },
+  "45": {
+    "emoji": "💨",
+    "titulo": "Los aerosoles: vaciar antes de tirar",
+    "texto": "VERDADERO. Los envases de aerosol presurizados pueden explotar si son compactados estando llenos en los camiones de basura o en las prensas de las plantas de residuos. Siempre deben vaciarse completamente antes de desecharlos. El cuerpo metálico suele ser reciclable."
+  },
+  "46": {
+    "emoji": "♻️",
+    "titulo": "El símbolo de Möbius no garantiza nada",
+    "texto": "El triángulo de tres flechas (Möbius) indica que el material PUEDE ser reciclable, pero no que lo SERÁ en tu ciudad. Las infraestructuras de reciclaje varían mucho entre municipios. Siempre es mejor consultar las normas locales en lugar de asumir que todo lo que lleva ese símbolo se recicla."
+  },
+  "47": {
+    "emoji": "🇨🇱",
+    "titulo": "La Ley REP en Chile",
+    "texto": "La Ley de Responsabilidad Extendida del Productor (REP) obliga a las empresas que fabrican o importan productos como envases, electrónicos, neumáticos y lubricantes a hacerse cargo de su reciclaje al final de su vida útil. La Ley de Plásticos de un Solo Uso prohíbe o regula bolsas, pajitas y otros plásticos desechables."
+  },
+  "48": {
+    "emoji": "📋",
+    "titulo": "Las empresas también tienen responsabilidad",
+    "texto": "VERDADERO. La Ley REP cambia el modelo tradicional en el que solo el consumidor o el Estado gestionaban los residuos. Ahora los productores deben financiar y organizar sistemas de recolección y reciclaje para sus propios productos. Es un gran avance en la política ambiental chilena."
+  },
+  "49": {
+    "emoji": "🌊",
+    "titulo": "La isla de basura del Pacífico",
+    "texto": "La Gran Mancha de Basura del Pacífico es una acumulación de millones de toneladas de plástico concentradas por las corrientes oceánicas en una zona del Pacífico Norte. No es una isla sólida, sino una sopa de microplásticos y fragmentos flotantes. Tiene una extensión estimada de 1,6 millones de km²."
+  },
+  "50": {
+    "emoji": "🔵",
+    "titulo": "Contenedor azul: papel y cartón",
+    "texto": "En la mayoría de los países hispanohablantes, el contenedor azul es para papel y cartón. El verde es para vidrio y el amarillo para plásticos y metales. Conocer esta codificación es fundamental para reciclar correctamente y no contaminar las cargas."
+  },
+  "51": {
+    "emoji": "🟢",
+    "titulo": "Contenedor verde: solo vidrio",
+    "texto": "El contenedor verde está destinado exclusivamente al vidrio (botellas, tarros y frascos). No deben introducirse cerámicas, porcelana, cristal de ventanas ni espejos, ya que tienen composiciones distintas y pueden arruinar el proceso de reciclaje del vidrio."
+  },
+  "52": {
+    "emoji": "🍾",
+    "titulo": "El color del vidrio importa al reciclar",
+    "texto": "FALSO. Mezclar vidrio de distintos colores afecta la calidad del vidrio reciclado resultante, ya que los colorantes no se pueden eliminar fácilmente. Por eso muchas plantas separan el vidrio por colores. Usar siempre el mismo contenedor y no mezclar es lo más correcto."
+  },
+  "53": {
+    "emoji": "📰",
+    "titulo": "Papeles que no van al contenedor azul",
+    "texto": "El papel encerado, el papel de aluminio, los papeles de regalo metalizados y cualquier papel manchado con grasa o comida no deben ir al contenedor de papel. Las fibras contaminadas o mezcladas con otros materiales no pueden reciclarse junto con el papel limpio."
+  },
+  "54": {
+    "emoji": "👗",
+    "titulo": "La ropa tiene segunda vida",
+    "texto": "VERDADERO. La ropa en buen estado puede donarse a organizaciones sociales o depositarse en contenedores de ropa y textiles. Los textiles en mal estado pueden reciclarse en trapos industriales o materiales de aislamiento. Tirarlos a la basura es desperdiciar recursos y ocupar espacio en vertederos."
+  },
+  "55": {
+    "emoji": "👚",
+    "titulo": "El impacto de la moda rápida",
+    "texto": "La industria textil es una de las más contaminantes del planeta. La 'moda rápida' promueve comprar mucha ropa de baja calidad que se desecha rápidamente. Produce enormes cantidades de residuos, usa millones de litros de agua en el teñido y genera microplásticos con cada lavada de prendas sintéticas."
+  }
+}

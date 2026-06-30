@@ -3,31 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clasificador Ecológico – Pregunta {{ numero }}</title>
+  <title>EcoMisión – Pregunta {{ numero }}</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --green-dark:   #1a5c38;
-      --green-mid:    #2e8b57;
-      --green-light:  #4caf7d;
-      --green-pale:   #e8f5ee;
-      --blue-deep:    #1565a8;
-      --blue-mid:     #2196d3;
-      --blue-pale:    #e3f2fd;
-      --white:        #ffffff;
-      --gray-50:      #f8fafb;
-      --gray-100:     #eef2f5;
-      --gray-300:     #c8d4dc;
-      --gray-500:     #6b8090;
-      --gray-800:     #1e2d3a;
-      --error:        #d32f2f;
-      --radius-sm:    10px;
-      --radius-md:    18px;
-      --radius-lg:    28px;
-      --shadow-card:  0 8px 32px rgba(26,92,56,.10), 0 2px 8px rgba(26,92,56,.07);
-      --shadow-btn:   0 4px 16px rgba(46,139,87,.35);
+      --green-dark:  #1a5c38;
+      --green-mid:   #2e8b57;
+      --green-light: #4caf7d;
+      --green-pale:  #e8f5ee;
+      --blue-mid:    #2196d3;
+      --blue-pale:   #e3f2fd;
+      --blue-deep:   #1565a8;
+      --white:       #ffffff;
+      --gray-50:     #f8fafb;
+      --gray-100:    #eef2f5;
+      --gray-300:    #c8d4dc;
+      --gray-500:    #6b8090;
+      --gray-800:    #1e2d3a;
+      --error:       #d32f2f;
+      --correct:     #2e7d32;
+      --correct-pale:#e8f5e9;
+      --wrong:       #c62828;
+      --wrong-pale:  #ffebee;
+      --radius-sm:   10px;
+      --radius-lg:   28px;
+      --shadow-card: 0 8px 32px rgba(26,92,56,.10), 0 2px 8px rgba(26,92,56,.07);
+      --shadow-btn:  0 4px 16px rgba(46,139,87,.35);
     }
 
     body {
@@ -37,263 +40,519 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       padding: 2rem 1rem;
       position: relative;
       overflow-x: hidden;
     }
 
     body::before, body::after {
-      content: '';
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
+      content: ''; position: fixed; border-radius: 50%;
+      pointer-events: none; z-index: 0;
     }
     body::before {
       width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(78,188,109,.15) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(78,188,109,.18) 0%, transparent 70%);
       top: -120px; left: -120px;
     }
     body::after {
       width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(33,150,211,.13) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(33,150,211,.15) 0%, transparent 70%);
       bottom: -80px; right: -80px;
     }
 
-    /* Top brand strip */
+    /* ── TOPBAR ── */
     .topbar {
       display: flex;
       align-items: center;
-      gap: .6rem;
-      margin-bottom: 1.75rem;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 980px;
+      margin-bottom: 2rem;
       position: relative; z-index: 1;
-      animation: fadeDown .4s ease both;
+      animation: fadeDown .5s ease both;
     }
+    .brand { display: flex; align-items: center; gap: .7rem; }
     .brand-icon {
-      width: 36px; height: 36px;
+      width: 44px; height: 44px;
       background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
+      border-radius: 12px; display: flex; align-items: center;
+      justify-content: center; font-size: 1.4rem;
+      box-shadow: 0 4px 14px rgba(46,139,87,.3);
     }
-    .brand-name {
-      font-size: .95rem;
-      font-weight: 800;
-      color: var(--green-dark);
+    .brand-name { font-size: 1.1rem; font-weight: 800; color: var(--green-dark); }
+    .progress-pill {
+      font-size: .8rem; font-weight: 700; color: var(--green-dark);
+      background: var(--green-pale); padding: .35rem .9rem;
+      border-radius: 99px; border: 1px solid rgba(46,139,87,.2);
+      display: flex; align-items: center; gap: .4rem;
+    }
+    .progress-pill::before { content: '🌿'; }
+
+    /* ── LAYOUT DOS COLUMNAS ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 980px;
+      position: relative; z-index: 1;
+      align-items: start;
     }
 
+    /* ── CARD PREGUNTA (izquierda) ── */
     .card {
       background: var(--white);
       border-radius: var(--radius-lg);
-      padding: 2rem 2rem 2rem;
-      width: 100%;
-      max-width: 540px;
+      padding: 2.5rem 2rem 2rem;
       box-shadow: var(--shadow-card);
       border: 1px solid rgba(46,139,87,.12);
-      position: relative; z-index: 1;
-      animation: fadeUp .5s cubic-bezier(.22,.68,0,1.2) both;
+      animation: fadeUp .55s cubic-bezier(.22,.68,0,1.2) both;
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px) scale(.98); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Progress */
+    /* progress bar */
     .progress-wrap {
-      display: flex;
-      align-items: center;
-      gap: .85rem;
+      display: flex; align-items: center; gap: .85rem;
       margin-bottom: 1.75rem;
     }
-
     .progress-bar {
-      flex: 1;
-      height: 6px;
-      background: var(--gray-100);
-      border-radius: 99px;
-      overflow: hidden;
+      flex: 1; height: 6px; background: var(--gray-100);
+      border-radius: 99px; overflow: hidden;
     }
-
     .progress-fill {
       height: 100%;
       background: linear-gradient(90deg, var(--green-mid), var(--blue-mid));
       border-radius: 99px;
       width: {{ (numero / total * 100) | int }}%;
-      transition: width .5s ease;
     }
-
     .progress-label {
-      font-size: .8rem;
-      font-weight: 700;
-      color: var(--green-dark);
-      white-space: nowrap;
-      background: var(--green-pale);
-      padding: .22rem .65rem;
-      border-radius: 99px;
+      font-size: .8rem; font-weight: 700; color: var(--green-dark);
+      white-space: nowrap; background: var(--green-pale);
+      padding: .22rem .65rem; border-radius: 99px;
       border: 1px solid rgba(46,139,87,.2);
     }
 
-    /* Question number pill */
+    /* pill pregunta */
     .question-num {
-      display: inline-flex;
-      align-items: center;
-      gap: .3rem;
-      font-size: .72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .07em;
-      color: var(--blue-deep);
-      background: var(--blue-pale);
-      padding: .28rem .7rem;
-      border-radius: 99px;
-      margin-bottom: 1rem;
+      display: inline-flex; align-items: center; gap: .3rem;
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--blue-deep);
+      background: var(--blue-pale); padding: .28rem .7rem;
+      border-radius: 99px; margin-bottom: 1rem;
       border: 1px solid rgba(33,150,211,.2);
     }
     .question-num::before { content: '❓'; font-size: .8rem; }
 
     h2 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--gray-800);
-      line-height: 1.4;
-      margin-bottom: 1.75rem;
-      letter-spacing: -.01em;
+      font-size: 1.25rem; font-weight: 700; color: var(--gray-800);
+      line-height: 1.45; margin-bottom: 1.75rem; letter-spacing: -.01em;
     }
 
-    /* Options */
-    .opciones {
-      display: flex;
-      flex-direction: column;
-      gap: .6rem;
-    }
-
+    /* opciones */
+    .opciones { display: flex; flex-direction: column; gap: .6rem; }
     .opciones span { display: contents; }
     .opciones input[type="radio"] { display: none; }
 
     .opciones label {
-      display: flex;
-      align-items: center;
-      gap: .85rem;
-      background: var(--gray-50);
-      border: 1.5px solid var(--gray-300);
-      border-radius: var(--radius-sm);
-      color: var(--gray-800);
-      cursor: pointer;
-      font-size: .93rem;
-      font-weight: 500;
+      display: flex; align-items: center; gap: .85rem;
+      background: var(--gray-50); border: 1.5px solid var(--gray-300);
+      border-radius: var(--radius-sm); color: var(--gray-800);
+      cursor: pointer; font-size: .93rem; font-weight: 500;
       padding: .9rem 1.1rem;
       transition: border-color .18s, background .18s, box-shadow .18s, transform .1s;
-      position: relative;
     }
     .opciones label::before {
-      content: '';
-      flex-shrink: 0;
-      width: 18px; height: 18px;
-      border: 2px solid var(--gray-300);
-      border-radius: 50%;
+      content: ''; flex-shrink: 0; width: 18px; height: 18px;
+      border: 2px solid var(--gray-300); border-radius: 50%;
       transition: border-color .18s, background .18s;
     }
     .opciones label:hover {
-      border-color: var(--green-light);
-      background: var(--green-pale);
+      border-color: var(--green-light); background: var(--green-pale);
       transform: translateX(2px);
     }
     .opciones label:hover::before { border-color: var(--green-mid); }
-
     .opciones input[type="radio"]:checked + label {
-      border-color: var(--green-mid);
-      background: var(--green-pale);
-      color: var(--green-dark);
-      font-weight: 600;
+      border-color: var(--green-mid); background: var(--green-pale);
+      color: var(--green-dark); font-weight: 600;
       box-shadow: 0 0 0 3px rgba(46,139,87,.12);
     }
     .opciones input[type="radio"]:checked + label::before {
-      border-color: var(--green-mid);
-      background: var(--green-mid);
+      border-color: var(--green-mid); background: var(--green-mid);
       box-shadow: inset 0 0 0 3px var(--white);
     }
 
+    /* estados correcta/incorrecta (se aplican con JS antes de avanzar) */
+    .opciones label.correcta-lbl {
+      border-color: var(--correct) !important;
+      background: var(--correct-pale) !important;
+      color: var(--correct) !important;
+      font-weight: 700;
+    }
+    .opciones label.correcta-lbl::before {
+      content: '✓';
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 900;
+      background: var(--correct) !important;
+      border-color: var(--correct) !important;
+      color: white;
+    }
+    .opciones label.incorrecta-lbl {
+      border-color: var(--wrong) !important;
+      background: var(--wrong-pale) !important;
+      color: var(--wrong) !important;
+      opacity: .8;
+    }
+    .opciones label.incorrecta-lbl::before {
+      content: '✗';
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 900;
+      background: var(--wrong) !important;
+      border-color: var(--wrong) !important;
+      color: white;
+    }
+
+    /* error */
     .error-msg {
-      color: var(--error);
-      font-size: .82rem;
-      margin-top: 1rem;
-      display: flex;
-      align-items: center;
-      gap: .35rem;
-      background: #fff5f5;
-      padding: .6rem .9rem;
-      border-radius: 8px;
-      border: 1px solid rgba(211,47,47,.2);
+      color: var(--error); font-size: .82rem; margin-top: 1rem;
+      display: flex; align-items: center; gap: .35rem;
+      background: #fff5f5; padding: .6rem .9rem;
+      border-radius: 8px; border: 1px solid rgba(211,47,47,.2);
     }
     .error-msg::before { content: '⚠'; }
 
+    /* botones */
+    .btn-row { display: flex; gap: .75rem; margin-top: 1.5rem; }
+
     .btn {
-      width: 100%;
+      flex: 1;
       background: linear-gradient(135deg, var(--green-mid) 0%, var(--blue-mid) 100%);
-      color: var(--white);
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: inherit;
-      font-size: 1rem;
-      font-weight: 700;
-      padding: .9rem;
-      cursor: pointer;
-      margin-top: 1.5rem;
+      color: var(--white); border: none; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: 1rem; font-weight: 700;
+      padding: .9rem; cursor: pointer;
       transition: opacity .2s, transform .15s, box-shadow .2s;
-      box-shadow: var(--shadow-btn);
-      letter-spacing: .01em;
+      box-shadow: var(--shadow-btn); letter-spacing: .01em;
+      display: none; /* se muestra con JS */
     }
     .btn:hover  { opacity: .9; box-shadow: 0 6px 22px rgba(46,139,87,.4); }
     .btn:active { transform: scale(.98); }
+    .btn.visible { display: block; }
 
+    #btn-comprobar {
+      background: linear-gradient(135deg, var(--green-mid) 0%, var(--blue-mid) 100%);
+      display: block; /* siempre visible al inicio */
+    }
+
+    /* ── PANEL RETROALIMENTACIÓN (derecha) ── */
+    .panel {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.5rem;
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(46,139,87,.12);
+      animation: fadeUp .65s cubic-bezier(.22,.68,0,1.2) .1s both;
+      position: sticky;
+      top: 1.5rem;
+    }
+
+    .panel-placeholder {
+      display: flex; flex-direction: column; align-items: center;
+      gap: .75rem; text-align: center; padding: 1rem 0;
+    }
+    .panel-placeholder .big-icon {
+      font-size: 2.8rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    .panel-placeholder p {
+      font-size: .88rem; color: var(--gray-500); line-height: 1.55;
+    }
+    .panel-placeholder strong { color: var(--gray-800); display: block; margin-bottom: .25rem; font-size: .95rem; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-7px); }
+    }
+
+    /* resultado: correcto */
+    .panel-resultado { display: none; }
+    .panel-resultado.show { display: block; }
+
+    .resultado-badge {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-size: .75rem; font-weight: 700; letter-spacing: .07em;
+      text-transform: uppercase; padding: .3rem .85rem;
+      border-radius: 99px; margin-bottom: .85rem;
+      border: 1.5px solid;
+    }
+    .resultado-badge.ok {
+      background: var(--correct-pale); color: var(--correct);
+      border-color: rgba(46,125,50,.25);
+    }
+    .resultado-badge.fail {
+      background: var(--wrong-pale); color: var(--wrong);
+      border-color: rgba(198,40,40,.25);
+    }
+
+    .panel-emoji { font-size: 2.2rem; display: block; margin-bottom: .5rem; }
+    .panel-titulo {
+      font-size: 1.05rem; font-weight: 800; color: var(--gray-800);
+      margin-bottom: .6rem; line-height: 1.3;
+    }
+    .panel-divider { height: 1px; background: var(--gray-100); margin: .85rem 0; }
+    .panel-texto {
+      font-size: .875rem; color: var(--gray-500); line-height: 1.65;
+    }
+
+    /* tip "sabías que" */
+    .panel-tip {
+      margin-top: 1rem; background: var(--green-pale);
+      border: 1px solid rgba(46,139,87,.2);
+      border-radius: var(--radius-sm); padding: .75rem 1rem;
+      font-size: .8rem; color: var(--green-dark); line-height: 1.55;
+      display: flex; gap: .5rem; align-items: flex-start;
+    }
+    .panel-tip::before { content: '💡'; flex-shrink: 0; }
+
+    /* ── ANIMACIONES ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(18px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .panel-resultado.show { animation: slideIn .35s ease both; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 760px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .panel {
+        position: static;
+        order: -1; /* panel arriba en móvil */
+      }
+      .panel-placeholder { display: none; } /* ocultar placeholder en móvil hasta responder */
+      .panel { padding: 1.5rem 1.25rem; }
+    }
     @media (max-width: 480px) {
-      .card { padding: 1.75rem 1.25rem 1.5rem; }
-      h2 { font-size: 1.1rem; }
+      .card { padding: 2rem 1.25rem 1.5rem; }
+      h2 { font-size: 1.05rem; }
     }
   </style>
 </head>
 <body>
 
+  <!-- TOPBAR -->
   <div class="topbar">
-    <div class="brand-icon">🌿</div>
-    <span class="brand-name">Clasificador Ecológico</span>
+    <div class="brand">
+      <div class="brand-icon">🌿</div>
+      <span class="brand-name">EcoMisión</span>
+    </div>
+    <span class="progress-pill">Pregunta {{ numero }} de {{ total }}</span>
   </div>
 
-  <div class="card">
+  <!-- DATOS DE RETROALIMENTACIÓN inyectados desde Jinja -->
+  <script>
+    const RETRO = {{ retroalimentacion | tojson }};
+    const CORRECTA = {{ pregunta.correcta | tojson }};
+  </script>
 
-    <div class="progress-wrap">
-      <div class="progress-bar"><div class="progress-fill"></div></div>
-      <span class="progress-label">{{ numero }} / {{ total }}</span>
-    </div>
+  <div class="layout">
 
-    <span class="question-num">Pregunta {{ numero }}</span>
-    <h2>{{ pregunta.pregunta }}</h2>
+    <!-- ── COLUMNA IZQUIERDA: pregunta ── -->
+    <div class="card">
 
-    <form method="POST" action="/juego">
-      <div class="opciones">
-        {% for opcion in pregunta.opciones_mezcladas %}
-          <span>
-            <input type="radio" id="op{{ loop.index }}" name="respuesta" value="{{ opcion }}">
-            <label for="op{{ loop.index }}">{{ opcion }}</label>
-          </span>
-        {% endfor %}
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <span class="progress-label">{{ numero }} / {{ total }}</span>
       </div>
 
-      {% if error %}
-        <p class="error-msg">{{ error }}</p>
-      {% endif %}
+      <span class="question-num">Pregunta {{ numero }}</span>
+      <h2>{{ pregunta.pregunta }}</h2>
 
-      <button type="submit" class="btn">
-        {% if numero == total %}Finalizar quiz 🏁{% else %}Siguiente pregunta →{% endif %}
-      </button>
-    </form>
+      <!-- Formulario oculto que se envía al servidor -->
+      <form id="form-quiz" method="POST" action="/juego">
+        <input type="hidden" name="respuesta" id="respuesta-hidden">
 
-  </div>
+        <div class="opciones" id="opciones-wrap">
+          {% for opcion in pregunta.opciones_mezcladas %}
+            <span>
+              <input type="radio" id="op{{ loop.index }}"
+                     name="_local_respuesta"
+                     value="{{ opcion }}"
+                     class="radio-opcion">
+              <label for="op{{ loop.index }}" data-valor="{{ opcion }}">{{ opcion }}</label>
+            </span>
+          {% endfor %}
+        </div>
+
+        {% if error %}
+          <p class="error-msg" id="error-msg">{{ error }}</p>
+        {% else %}
+          <p class="error-msg" id="error-msg" style="display:none;"></p>
+        {% endif %}
+
+        <div class="btn-row">
+          <button type="button" id="btn-comprobar" class="btn visible">
+            Comprobar respuesta ✔
+          </button>
+          <button type="submit" id="btn-siguiente" class="btn">
+            {% if numero == total %}Finalizar quiz 🏁{% else %}Siguiente pregunta →{% endif %}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ── COLUMNA DERECHA: retroalimentación ── -->
+    <div class="panel" id="panel-retro">
+
+      <!-- Estado inicial -->
+      <div class="panel-placeholder" id="panel-placeholder">
+        <span class="big-icon">🌎</span>
+        <p>
+          <strong>¿Lo sabes?</strong>
+          Selecciona una opción y comprueba tu respuesta para ver la explicación aquí.
+        </p>
+      </div>
+
+      <!-- Estado tras responder -->
+      <div class="panel-resultado" id="panel-resultado">
+        <span class="resultado-badge" id="resultado-badge"></span>
+        <span class="panel-emoji" id="panel-emoji"></span>
+        <div class="panel-titulo" id="panel-titulo"></div>
+        <div class="panel-divider"></div>
+        <p class="panel-texto" id="panel-texto"></p>
+        <div class="panel-tip" id="panel-tip" style="display:none;"></div>
+      </div>
+    </div>
+
+  </div><!-- /layout -->
+
+  <script>
+    // ── Datos de la pregunta actual ──
+    const preguntaId   = {{ pregunta.id }};
+    const retro        = RETRO;  // objeto completo importado arriba
+
+    const btnComprobar = document.getElementById('btn-comprobar');
+    const btnSiguiente = document.getElementById('btn-siguiente');
+    const errorMsg     = document.getElementById('error-msg');
+    const respHidden   = document.getElementById('respuesta-hidden');
+
+    const placeholder  = document.getElementById('panel-placeholder');
+    const panelRes     = document.getElementById('panel-resultado');
+    const badgeEl      = document.getElementById('resultado-badge');
+    const emojiEl      = document.getElementById('panel-emoji');
+    const tituloEl     = document.getElementById('panel-titulo');
+    const textoEl      = document.getElementById('panel-texto');
+    const tipEl        = document.getElementById('panel-tip');
+
+    const radios       = document.querySelectorAll('.radio-opcion');
+    const labels       = document.querySelectorAll('.opciones label');
+
+    let comprobado = false;
+
+    function getSeleccionado() {
+      for (const r of radios) {
+        if (r.checked) return r.value;
+      }
+      return null;
+    }
+
+    function bloquearOpciones() {
+      radios.forEach(r => r.disabled = true);
+      labels.forEach(lbl => {
+        lbl.style.cursor = 'default';
+        lbl.style.transform = 'none';
+      });
+    }
+
+    function marcarOpciones(respuestaUsuario) {
+      labels.forEach(lbl => {
+        const val = lbl.dataset.valor;
+        if (val === CORRECTA) {
+          lbl.classList.add('correcta-lbl');
+        } else if (val === respuestaUsuario && val !== CORRECTA) {
+          lbl.classList.add('incorrecta-lbl');
+        }
+      });
+    }
+
+    function mostrarPanel(esCorrecta, respuestaUsuario) {
+      const data = retro[String(preguntaId)];
+
+      placeholder.style.display = 'none';
+      panelRes.classList.add('show');
+
+      if (esCorrecta) {
+        badgeEl.textContent = '✅ ¡Correcto!';
+        badgeEl.className   = 'resultado-badge ok';
+      } else {
+        badgeEl.textContent = '❌ Incorrecto';
+        badgeEl.className   = 'resultado-badge fail';
+      }
+
+      if (data) {
+        emojiEl.textContent  = data.emoji  || '📖';
+        tituloEl.textContent = data.titulo || '';
+        textoEl.textContent  = data.texto  || '';
+
+        // tip extra solo si falló
+        if (!esCorrecta && data.correcta_explicada) {
+          tipEl.style.display = 'flex';
+          tipEl.textContent   = data.correcta_explicada;
+        } else {
+          tipEl.style.display = 'none';
+        }
+      } else {
+        emojiEl.textContent  = esCorrecta ? '🎉' : '📖';
+        tituloEl.textContent = esCorrecta ? '¡Muy bien!' : 'Sigue aprendiendo';
+        textoEl.textContent  = esCorrecta
+          ? 'Respuesta correcta. ¡Continúa así!'
+          : `La respuesta correcta era: "${CORRECTA}".`;
+        tipEl.style.display = 'none';
+      }
+    }
+
+    // ── Acción: Comprobar ──
+    btnComprobar.addEventListener('click', () => {
+      if (comprobado) return;
+
+      const sel = getSeleccionado();
+      if (!sel) {
+        errorMsg.textContent = 'Elige una opción antes de continuar.';
+        errorMsg.style.display = 'flex';
+        return;
+      }
+      errorMsg.style.display = 'none';
+      comprobado = true;
+
+      const esCorrecta = (sel === CORRECTA);
+
+      bloquearOpciones();
+      marcarOpciones(sel);
+      mostrarPanel(esCorrecta, sel);
+
+      // preparar envío al servidor con la respuesta real
+      respHidden.value = sel;
+
+      // intercambiar botones
+      btnComprobar.classList.remove('visible');
+      btnSiguiente.classList.add('visible');
+    });
+
+    // Al hacer submit solo si ya se comprobó
+    document.getElementById('form-quiz').addEventListener('submit', (e) => {
+      if (!comprobado) {
+        e.preventDefault();
+        errorMsg.textContent = 'Primero comprueba tu respuesta.';
+        errorMsg.style.display = 'flex';
+      }
+    });
+  </script>
+
 </body>
 </html>

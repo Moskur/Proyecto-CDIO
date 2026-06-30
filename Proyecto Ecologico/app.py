@@ -10,25 +10,41 @@ from functools import wraps
 app = Flask(__name__)
 app.secret_key = "clave_secreta_quiz"
 
+# rutas absolutas para no tener el problema del "archivo no encontrado"
+# cuando se corre desde otra carpeta. Lo aprendimos a las malas lol
 BASE_DIR     = os.path.dirname(os.path.abspath(__file__))
 ARCHIVO_CSV  = os.path.join(BASE_DIR, "jugadores.csv")
 USUARIOS_CSV = os.path.join(BASE_DIR, "usuarios.csv")
 
+# columnas de cada csv (tienen que coincidir exacto o se rompe todo)
 CAMPOS_CSV  = ["nombre", "genero", "correo", "puntaje_quiz", "puntaje_minijuego", "fecha"]
 CAMPOS_USER = ["nombre", "correo", "password", "genero", "fecha_registro"]
 GENEROS     = ["Mujer", "Hombre", "No-binario", "Otro"]
 
+# cargamos las preguntas una sola vez al arrancar la app
 with open(os.path.join(BASE_DIR, "preguntas.json"), encoding="utf-8") as f:
     preguntas_completas = json.load(f)
 
-PUNTOS_POR_PREGUNTA = 250   # puntos que vale cada respuesta correcta del quiz
+# también cargamos la retroalimentación para mostrarla en el panel lateral
+# si el archivo no existe simplemente usamos un diccionario vacío y no explota
+_retro_path = os.path.join(BASE_DIR, "retroalimentacion.json")
+if os.path.exists(_retro_path):
+    with open(_retro_path, encoding="utf-8") as f:
+        retroalimentacion = json.load(f)
+else:
+    retroalimentacion = {}
+
+# cada respuesta correcta del quiz vale 250 puntos
+PUNTOS_POR_PREGUNTA = 250
 
 
-# -- VALIDACIONES --
+# ---- VALIDACIONES ----
+# funciones para verificar que el usuario no meta cualquier cosa en los campos
 
 def nombre_valido(nombre):
     if not nombre.strip():
         return "Por favor, escribe tu nombre."
+    # solo letras y espacios, sin números ni caracteres raros
     if not re.fullmatch(r"[A-Za-záéíóúÁÉÍÓÚüÜñÑ ]+", nombre.strip()):
         return "El nombre solo puede tener letras y espacios."
     return ""
@@ -36,19 +52,23 @@ def nombre_valido(nombre):
 def correo_valido(correo):
     if not correo.strip():
         return "Por favor, escribe tu correo."
+    # formato básico nombre@dominio.com
     if not re.fullmatch(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", correo.strip()):
         return "El correo debe tener el formato: nombre@dominio.com"
     return ""
 
 def password_valida(pw):
+    # minimo 6 caracteres, nada más por ahora
     if not pw or len(pw) < 6:
         return "La contraseña debe tener al menos 6 caracteres."
     return ""
 
 
-# -- MANEJO DE USUARIOS --
+# ---- MANEJO DE USUARIOS ----
+# usamos un csv en vez de base de datos porque es más simple para el profe
 
 def leer_usuarios():
+    # lee todos los usuarios del csv y los devuelve como lista de dicts
     usuarios = []
     try:
         with open(USUARIOS_CSV, "r", encoding="utf-8") as f:
@@ -56,10 +76,12 @@ def leer_usuarios():
             for row in reader:
                 usuarios.append(row)
     except FileNotFoundError:
+        # primera vez que corre, el archivo todavía no existe
         pass
     return usuarios
 
 def guardar_usuario(nombre, correo, password, genero):
+    # revisar si el archivo está vacío para saber si hay que escribir el encabezado
     escribir_cabecera = False
     try:
         with open(USUARIOS_CSV, "r", encoding="utf-8") as f:
@@ -68,31 +90,34 @@ def guardar_usuario(nombre, correo, password, genero):
     except FileNotFoundError:
         escribir_cabecera = True
 
+    # modo "a" para agregar sin borrar lo que ya había
     with open(USUARIOS_CSV, mode="a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=CAMPOS_USER)
         if escribir_cabecera:
             writer.writeheader()
         writer.writerow({
             "nombre":         nombre,
-            "correo":         correo.lower(),
+            "correo":         correo.lower(),  # guardamos todo en minúscula para comparar fácil
             "password":       password,
             "genero":         genero,
             "fecha_registro": datetime.now().strftime("%Y-%m-%d %H:%M"),
         })
 
 def buscar_usuario(correo):
+    # busca un usuario por correo, devuelve None si no lo encuentra
     for u in leer_usuarios():
         if u["correo"] == correo.lower():
             return u
     return None
 
 def correo_registrado(correo):
+    # helper rápido para saber si el correo ya está en uso
     return buscar_usuario(correo) is not None
 
 
-# -- GUARDAR PARTIDAS --
-# Hay un registro por jugador (correo). Solo se actualiza el puntaje de la fuente
-# correspondiente si el nuevo puntaje es mayor al que ya tenía.
+# ---- GUARDAR PARTIDAS ----
+# un solo registro por jugador (por correo).
+# si juega de nuevo, solo se actualiza si supera su puntaje anterior.
 
 def leer_partidas():
     partidas = []
@@ -100,6 +125,7 @@ def leer_partidas():
         with open(ARCHIVO_CSV, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
+                # convertir puntajes a int, si están vacíos o raros ponemos 0
                 try:
                     row["puntaje_quiz"]      = int(row.get("puntaje_quiz", 0) or 0)
                     row["puntaje_minijuego"] = int(row.get("puntaje_minijuego", 0) or 0)
@@ -112,6 +138,7 @@ def leer_partidas():
     return partidas
 
 def escribir_partidas(partidas):
+    # sobreescribe el csv completo con la lista actualizada
     with open(ARCHIVO_CSV, mode="w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=CAMPOS_CSV)
         writer.writeheader()
@@ -121,23 +148,25 @@ def guardar_partida(nombre, genero, correo, puntos, fuente="quiz"):
     partidas = leer_partidas()
     correo   = correo.lower()
 
-    # buscar si ya existe un registro para este jugador
+    # buscar si ya jugó antes
     registro = next((p for p in partidas if p["correo"] == correo), None)
 
     if registro is None:
-        # primera vez: crear fila nueva
+        # nunca había jugado: creamos su fila
         registro = {
-            "nombre":           nombre,
-            "genero":           genero,
-            "correo":           correo,
-            "puntaje_quiz":     0,
-            "puntaje_minijuego":0,
-            "fecha":            datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "nombre":            nombre,
+            "genero":            genero,
+            "correo":            correo,
+            "puntaje_quiz":      0,
+            "puntaje_minijuego": 0,
+            "fecha":             datetime.now().strftime("%Y-%m-%d %H:%M"),
         }
         partidas.append(registro)
 
-    # solo reemplazar si el nuevo puntaje es estrictamente mayor
+    # elegir el campo correcto según de dónde viene el puntaje
     campo = "puntaje_quiz" if fuente == "quiz" else "puntaje_minijuego"
+
+    # solo actualizamos si el nuevo puntaje es mejor (no queremos bajarle el puntaje)
     if int(puntos) > int(registro[campo]):
         registro[campo] = int(puntos)
         registro["fecha"] = datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -145,7 +174,9 @@ def guardar_partida(nombre, genero, correo, puntos, fuente="quiz"):
     escribir_partidas(partidas)
 
 
-# -- DECORADOR DE LOGIN --
+# ---- DECORADOR DE LOGIN ----
+# esto protege las rutas que requieren estar logueado
+# si no estás logueado, te manda al login
 
 def login_requerido(f):
     @wraps(f)
@@ -156,7 +187,7 @@ def login_requerido(f):
     return decorated
 
 
-# -- AUTENTICACIÓN --
+# ---- AUTENTICACIÓN ----
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -166,6 +197,7 @@ def login():
         password = request.form.get("password", "").strip()
         usuario  = buscar_usuario(correo)
 
+        # verificar que exista y que la contraseña coincida
         if not usuario or usuario["password"] != password:
             error = "Correo o contraseña incorrectos."
         else:
@@ -191,17 +223,21 @@ def register():
         password = request.form.get("password", "").strip()
         genero   = request.form.get("genero", "").strip()
 
+        # validar cada campo y guardar el error si hay
         errores["nombre"]   = nombre_valido(nombre)
         errores["correo"]   = correo_valido(correo)
         errores["password"] = password_valida(password)
         if not genero:
             errores["genero"] = "Por favor, elige tu género."
 
+        # verificar si el correo ya está ocupado (solo si el formato era válido)
         if correo and not errores["correo"] and correo_registrado(correo):
             errores["correo"] = "Este correo ya está registrado."
 
+        # para volver a llenar el formulario si hay errores
         datos = {"nombre": nombre, "correo": correo}
 
+        # si no hay ningún error, guardamos y logueamos al usuario
         if not any(errores.values()):
             guardar_usuario(nombre, correo, password, genero)
             session["usuario_logueado"] = True
@@ -213,24 +249,29 @@ def register():
 
 @app.route("/logout")
 def logout():
+    # borramos todo de la sesión y mandamos al login
     session.clear()
     return redirect(url_for("login"))
 
 
-# -- RUTAS DEL JUEGO --
+# ---- RUTAS DEL JUEGO ----
 
 @app.route("/", methods=["GET", "POST"])
 @login_requerido
 def registro():
+    # esta es la pantalla de inicio del quiz (después del login)
     jugador     = session.get("jugador", {})
     error_extra = ""
 
     if request.method == "POST":
+        # elegir 10 preguntas al azar y mezclar las opciones de cada una
         preguntas = random.sample(preguntas_completas, min(10, len(preguntas_completas)))
         for p in preguntas:
             opciones = p["opciones"][:]
             random.shuffle(opciones)
             p["opciones_mezcladas"] = opciones
+
+        # guardar en sesión para ir avanzando pregunta a pregunta
         session["preguntas"] = preguntas
         session["indice"]    = 0
         session["puntaje"]   = 0
@@ -246,6 +287,7 @@ def juego():
     preguntas = session.get("preguntas", [])
     indice    = session.get("indice", 0)
 
+    # si no hay preguntas o ya terminó, ir al resultado
     if not preguntas or indice >= len(preguntas):
         return redirect(url_for("resultado"))
 
@@ -258,8 +300,9 @@ def juego():
             error = "Elige una opción antes de continuar."
         else:
             if respuesta == pregunta_actual["correcta"]:
-                # sumar 250 puntos por cada respuesta correcta
+                # sumar los puntos correspondientes
                 session["puntaje"] = session.get("puntaje", 0) + PUNTOS_POR_PREGUNTA
+            # avanzar a la siguiente pregunta
             session["indice"] = indice + 1
             return redirect(url_for("juego"))
 
@@ -268,7 +311,8 @@ def juego():
                            pregunta=pregunta_actual,
                            numero=indice + 1,
                            total=len(preguntas),
-                           error=error)
+                           error=error,
+                           retroalimentacion=retroalimentacion)
 
 
 @app.route("/resultado")
@@ -278,13 +322,14 @@ def resultado():
     puntos  = session.get("puntaje", 0)
     total   = len(session.get("preguntas", []))
 
-    # calcular cuántas preguntas acertó para mostrar en la UI
+    # cuántas preguntas acertó (para mostrar en la pantalla de resultado)
     aciertos = puntos // PUNTOS_POR_PREGUNTA
 
     if jugador:
         guardar_partida(jugador["nombre"], jugador["genero"],
                         jugador["correo"], puntos, fuente="quiz")
 
+    # limpiar los datos del quiz de la sesión pero dejar el login activo
     session.pop("preguntas", None)
     session.pop("indice",    None)
     session.pop("puntaje",   None)
@@ -302,22 +347,22 @@ def minijuego():
 @app.route("/guardar_minijuego", methods=["POST"])
 @login_requerido
 def guardar_minijuego():
+    # el minijuego llama esto con fetch para guardar el puntaje sin recargar
     jugador = session.get("jugador", {})
     puntos  = request.form.get("puntos", 0, type=int)
     if jugador:
         guardar_partida(jugador["nombre"], jugador["genero"],
                         jugador["correo"], puntos, fuente="minijuego")
-    return ("", 204)
+    return ("", 204)  # 204 = éxito sin contenido
 
 
 @app.route("/leaderboard")
 @login_requerido
 def leaderboard():
-    jugador = session.get("jugador", {})
-
+    jugador  = session.get("jugador", {})
     partidas = leer_partidas()
 
-    # calcular total combinado y ordenar de mayor a menor
+    # sumar quiz + minijuego para el puntaje total y ordenar de mayor a menor
     for p in partidas:
         p["puntaje_total"] = p["puntaje_quiz"] + p["puntaje_minijuego"]
     partidas.sort(key=lambda p: p["puntaje_total"], reverse=True)
@@ -332,12 +377,14 @@ def leaderboard():
     )
 
 
-# -- PANEL DE ADMINISTRADOR --
-# Credenciales del admin (independientes de usuarios.csv)
+# ---- PANEL DE ADMINISTRADOR ----
+# las credenciales del admin son fijas aquí, no están en el csv de usuarios
+# usuario: admin  |  contraseña: 2014
 ADMIN_USER = "admin"
 ADMIN_PASS = "2014"
 
 def admin_requerido(f):
+    # igual que login_requerido pero para el panel de administrador
     @wraps(f)
     def decorated(*args, **kwargs):
         if not session.get("admin_logueado"):
@@ -369,7 +416,7 @@ def admin_logout():
 @admin_requerido
 def admin_panel():
     partidas = leer_partidas()
-    # calcular total para mostrar en la tabla
+    # calcular puntaje total para mostrar en la tabla del panel
     for p in partidas:
         p["puntaje_total"] = p["puntaje_quiz"] + p["puntaje_minijuego"]
     partidas.sort(key=lambda p: p["puntaje_total"], reverse=True)

@@ -13,16 +13,20 @@
       --green-light: #4caf7d;
       --green-pale:  #e8f5ee;
       --blue-mid:    #2196d3;
+      --blue-pale:   #e3f2fd;
       --white:       #ffffff;
       --gray-50:     #f8fafb;
       --gray-100:    #eef2f5;
+      --gray-300:    #c8d4dc;
       --gray-500:    #6b8090;
       --gray-800:    #1e2d3a;
       --radius-sm:   10px;
+      --radius-md:   18px;
       --radius-lg:   28px;
       --shadow-card: 0 8px 32px rgba(26,92,56,.10), 0 2px 8px rgba(26,92,56,.07);
       --shadow-btn:  0 4px 16px rgba(46,139,87,.35);
     }
+
     body {
       background: linear-gradient(135deg, #e8f5ee 0%, #e3f2fd 50%, #f0faf4 100%);
       min-height: 100vh; font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -31,20 +35,167 @@
     }
     body::before {
       content: ''; position: fixed; border-radius: 50%;
-      width: 500px; height: 500px; pointer-events: none; z-index: 0;
-      background: radial-gradient(circle, rgba(78,188,109,.18) 0%, transparent 70%);
-      top: -120px; left: -120px;
+      width: 520px; height: 520px; pointer-events: none; z-index: 0;
+      background: radial-gradient(circle, rgba(78,188,109,.22) 0%, transparent 70%);
+      top: -130px; left: -130px;
     }
     body::after {
       content: ''; position: fixed; border-radius: 50%;
-      width: 400px; height: 400px; pointer-events: none; z-index: 0;
-      background: radial-gradient(circle, rgba(33,150,211,.15) 0%, transparent 70%);
-      bottom: -80px; right: -80px;
+      width: 420px; height: 420px; pointer-events: none; z-index: 0;
+      background: radial-gradient(circle, rgba(33,150,211,.18) 0%, transparent 70%);
+      bottom: -90px; right: -90px;
     }
+
+    /* ── Floating leaves ── */
+    .deco-leaf {
+      position: fixed; pointer-events: none; z-index: 0;
+      opacity: 0; animation: floatLeaf linear infinite;
+      font-size: 1.5rem; user-select: none;
+    }
+    @keyframes floatLeaf {
+      0%   { opacity: 0;   transform: translateY(0) rotate(0deg); }
+      10%  { opacity: .4; }
+      90%  { opacity: .3; }
+      100% { opacity: 0;   transform: translateY(-110vh) rotate(360deg); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 760px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Quiénes Somos panel ── */
+    .qs-panel {
+      width: 230px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: .85rem;
+      padding-top: 4.5rem; /* align with card, below topbar */
+    }
+
+    .qs-trigger {
+      background: var(--white);
+      border: 1px solid rgba(46,139,87,.18);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: .85rem 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      transition: box-shadow .2s, border-color .2s;
+      animation: fadeUp .55s cubic-bezier(.22,.68,0,1.2) .1s both;
+    }
+    .qs-trigger:hover { border-color: var(--green-mid); box-shadow: 0 8px 28px rgba(46,139,87,.16); }
+
+    .qs-trigger-label {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .82rem; font-weight: 700;
+      color: var(--green-dark); letter-spacing: .04em; text-transform: uppercase;
+    }
+    .qs-trigger-label span { font-size: 1.1rem; }
+
+    .qs-chevron {
+      color: var(--green-mid); font-size: .8rem;
+      transition: transform .3s cubic-bezier(.22,.68,0,1.2);
+    }
+    .qs-trigger[aria-expanded="true"] .qs-chevron { transform: rotate(180deg); }
+
+    .qs-body {
+      background: var(--white);
+      border: 1px solid rgba(46,139,87,.14);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      max-height: 0; opacity: 0;
+      transition: max-height .45s cubic-bezier(.22,.68,0,1.2), opacity .35s ease, padding .35s ease;
+      padding: 0 1.1rem;
+    }
+    .qs-body.open { max-height: 800px; opacity: 1; padding: 1.25rem 1.1rem 1.4rem; }
+
+    .qs-uni {
+      display: flex; align-items: center; gap: .45rem;
+      background: var(--green-pale); border-radius: 8px;
+      padding: .55rem .75rem; margin-bottom: 1rem;
+    }
+    .qs-uni-icon { font-size: 1rem; }
+    .qs-uni-text { font-size: .72rem; font-weight: 700; color: var(--green-dark); line-height: 1.4; }
+
+    .qs-desc {
+      font-size: .8rem; color: var(--gray-500);
+      line-height: 1.55; margin-bottom: 1rem;
+    }
+
+    .qs-members-label {
+      font-size: .67rem; font-weight: 700;
+      letter-spacing: .09em; text-transform: uppercase;
+      color: var(--gray-300); margin-bottom: .6rem;
+    }
+
+    .qs-member {
+      display: flex; align-items: center; gap: .65rem;
+      padding: .55rem 0; border-bottom: 1px solid var(--gray-100);
+    }
+    .qs-member:last-of-type { border-bottom: none; }
+
+    .qs-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 800; color: var(--white);
+      flex-shrink: 0;
+    }
+    .qs-member-name { font-size: .8rem; font-weight: 700; color: var(--gray-800); }
+    .qs-member-role { font-size: .68rem; color: var(--gray-500); margin-top: .1rem; }
+
+    /* ── Mini stats inside panel ── */
+    .qs-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: .45rem; margin-top: 1rem; padding-top: 1rem;
+      border-top: 1px solid var(--gray-100);
+    }
+    .qs-stat {
+      background: var(--gray-50); border-radius: 8px;
+      padding: .6rem .3rem; text-align: center;
+    }
+    .qs-stat-icon { font-size: .95rem; }
+    .qs-stat-value {
+      font-size: 1rem; font-weight: 800;
+      color: var(--green-dark); line-height: 1.2;
+      letter-spacing: -.02em;
+    }
+    .qs-stat-label {
+      font-size: .58rem; font-weight: 600; color: var(--gray-500);
+      letter-spacing: .04em; text-transform: uppercase; margin-top: .1rem;
+    }
+
+    /* ── Center column ── */
+    .center-col {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
     .topbar {
       display: flex; align-items: center; justify-content: space-between;
-      width: 100%; max-width: 460px; margin-bottom: 2rem;
-      position: relative; z-index: 1;
+      width: 100%; margin-bottom: 2rem;
       animation: fadeDown .5s ease both;
     }
     .brand { display: flex; align-items: center; gap: .7rem; }
@@ -63,21 +214,15 @@
       background: var(--white); transition: color .2s, border-color .2s;
     }
     .logout-btn:hover { color: var(--green-dark); border-color: var(--green-mid); }
+
     .card {
       background: var(--white); border-radius: var(--radius-lg);
-      padding: 2.5rem 2rem 2rem; width: 100%; max-width: 460px;
+      padding: 2.5rem 2rem 2rem; width: 100%;
       box-shadow: var(--shadow-card); border: 1px solid rgba(46,139,87,.12);
-      position: relative; z-index: 1; text-align: center;
+      text-align: center;
       animation: fadeUp .55s cubic-bezier(.22,.68,0,1.2) both;
     }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(28px) scale(.98); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+
     .avatar {
       width: 72px; height: 72px;
       background: linear-gradient(135deg, var(--green-mid), var(--blue-mid));
@@ -88,6 +233,7 @@
     h1 { font-size: 1.75rem; font-weight: 800; color: var(--gray-800); margin-bottom: .35rem; }
     .greeting-name { color: var(--green-mid); }
     .subtitle { color: var(--gray-500); font-size: .9rem; margin-bottom: 2rem; line-height: 1.5; }
+
     .info-row {
       display: flex; gap: .75rem; justify-content: center;
       margin-bottom: 2rem; flex-wrap: wrap;
@@ -98,7 +244,9 @@
       font-size: .8rem; font-weight: 600; color: var(--gray-500);
       display: flex; align-items: center; gap: .3rem;
     }
+
     .divider { height: 1px; background: var(--gray-100); margin: 0 0 1.5rem; }
+
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
       width: 100%;
@@ -111,16 +259,17 @@
     }
     .btn:hover  { opacity: .9; box-shadow: 0 6px 22px rgba(46,139,87,.4); }
     .btn:active { transform: scale(.98); }
+
     .btn-mini {
       display: block; text-align: center; margin-top: .75rem;
       padding: .75rem; border-radius: var(--radius-sm);
-      background: var(--green-pale);
-      border: 1.5px solid var(--green-mid);
+      background: var(--green-pale); border: 1.5px solid var(--green-mid);
       color: var(--green-dark); font-weight: 700; font-size: .95rem;
       text-decoration: none;
       transition: background .2s, border-color .2s, box-shadow .2s;
     }
     .btn-mini:hover { background: #d0edda; box-shadow: 0 4px 14px rgba(46,139,87,.2); }
+
     .rules {
       margin-top: 1.5rem; text-align: left;
       background: var(--gray-50); border-radius: var(--radius-sm);
@@ -130,45 +279,139 @@
     .rules ul { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
     .rules li { font-size: .875rem; color: var(--gray-800); display: flex; gap: .5rem; }
     .rules li::before { content: '✅'; flex-shrink: 0; }
-    @media (max-width: 480px) { .card { padding: 2rem 1.5rem 1.75rem; } h1 { font-size: 1.5rem; } }
+
+    /* ── Responsive ── */
+    @media (max-width: 860px) {
+      .qs-panel { display: none; }
+      .layout { max-width: 460px; }
+    }
+    @media (max-width: 480px) {
+      .card { padding: 2rem 1.5rem 1.75rem; }
+      h1 { font-size: 1.5rem; }
+    }
   </style>
 </head>
 <body>
-  <div class="topbar">
-    <div class="brand">
-      <div class="brand-icon">🌿</div>
-      <span class="brand-name">EcoMisión</span>
+
+  <!-- Floating leaves -->
+  <div class="deco-leaf" style="left:5%;  animation-duration:14s; animation-delay:0s;   top:100vh;">🍃</div>
+  <div class="deco-leaf" style="left:12%; animation-duration:18s; animation-delay:3s;   top:100vh; font-size:1rem;">🌿</div>
+  <div class="deco-leaf" style="left:80%; animation-duration:16s; animation-delay:6s;   top:100vh;">🌱</div>
+  <div class="deco-leaf" style="left:90%; animation-duration:12s; animation-delay:2s;   top:100vh; font-size:1rem;">🍃</div>
+  <div class="deco-leaf" style="left:55%; animation-duration:20s; animation-delay:9s;   top:100vh; font-size:.9rem;">🌿</div>
+
+  <div class="layout">
+
+    <!-- ── Left: Quiénes Somos ── -->
+    <aside class="qs-panel" aria-label="Quiénes somos">
+      <button class="qs-trigger" aria-expanded="false" aria-controls="qs-body" id="qs-btn" onclick="toggleQS()">
+        <span class="qs-trigger-label"><span>👥</span> Quiénes somos</span>
+        <span class="qs-chevron">▾</span>
+      </button>
+
+      <div class="qs-body" id="qs-body" role="region" aria-labelledby="qs-btn">
+        <div class="qs-uni">
+          <span class="qs-uni-icon">🎓</span>
+          <div class="qs-uni-text">Univ. de Los Lagos<br>Puerto Montt · 1er semestre</div>
+        </div>
+
+        <p class="qs-desc">
+          Somos un equipo de estudiantes comprometidos con el medio ambiente, desarrollando herramientas digitales para promover hábitos ecológicos.
+        </p>
+
+        <div class="qs-members-label">Integrantes</div>
+
+        <div class="qs-member">
+          <div class="qs-avatar">MF</div>
+          <div>
+            <div class="qs-member-name">Matías Fernández</div>
+            <div class="qs-member-role">Desarrollador</div>
+          </div>
+        </div>
+        <div class="qs-member">
+          <div class="qs-avatar">JR</div>
+          <div>
+            <div class="qs-member-name">Javier Ramírez</div>
+            <div class="qs-member-role">Diseño & UX</div>
+          </div>
+        </div>
+        <div class="qs-member">
+          <div class="qs-avatar">VV</div>
+          <div>
+            <div class="qs-member-name">Victor Vega</div>
+            <div class="qs-member-role">Contenido</div>
+          </div>
+        </div>
+
+        <div class="qs-stats">
+          <div class="qs-stat">
+            <div class="qs-stat-icon">♻️</div>
+            <div class="qs-stat-value">3</div>
+            <div class="qs-stat-label">Integr.</div>
+          </div>
+          <div class="qs-stat">
+            <div class="qs-stat-icon">🌿</div>
+            <div class="qs-stat-value">1er</div>
+            <div class="qs-stat-label">Semestre</div>
+          </div>
+          <div class="qs-stat">
+            <div class="qs-stat-icon">🌍</div>
+            <div class="qs-stat-value">100%</div>
+            <div class="qs-stat-label">Eco</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── Center ── -->
+    <div class="center-col">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-icon">🌿</div>
+          <span class="brand-name">EcoMisión</span>
+        </div>
+        <a href="/logout" class="logout-btn">Cerrar sesión</a>
+      </div>
+
+      <div class="card">
+        <div class="avatar">🦸</div>
+        <h1>¡Hola, <span class="greeting-name">{{ jugador.nombre }}</span>!</h1>
+        <p class="subtitle">Listo/a para poner a prueba tu conocimiento ambiental. El quiz tiene 10 preguntas aleatorias.</p>
+
+        <div class="info-row">
+          <span class="chip">📧 {{ jugador.correo }}</span>
+          <span class="chip">⚧ {{ jugador.genero }}</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <form method="POST" action="/">
+          <button type="submit" class="btn">Comenzar quiz 🌍</button>
+        </form>
+
+        <a href="/minijuego" class="btn-mini">🎮 Jugar EcoCatcher</a>
+
+        <div class="rules">
+          <p>Reglas</p>
+          <ul>
+            <li>10 preguntas seleccionadas al azar.</li>
+            <li>Solo hay una respuesta correcta por pregunta.</li>
+            <li>Tu puntaje se guarda al finalizar.</li>
+            <li>Puedes repetir el quiz las veces que quieras.</li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <a href="/logout" class="logout-btn">Cerrar sesión</a>
+
   </div>
 
-  <div class="card">
-    <div class="avatar">🦸</div>
-    <h1>¡Hola, <span class="greeting-name">{{ jugador.nombre }}</span>!</h1>
-    <p class="subtitle">Listo/a para poner a prueba tu conocimiento ambiental. El quiz tiene 10 preguntas aleatorias.</p>
-
-    <div class="info-row">
-      <span class="chip">📧 {{ jugador.correo }}</span>
-      <span class="chip">⚧ {{ jugador.genero }}</span>
-    </div>
-
-    <div class="divider"></div>
-
-    <form method="POST" action="/">
-      <button type="submit" class="btn">Comenzar quiz 🌍</button>
-    </form>
-
-    <a href="/minijuego" class="btn-mini">🎮 Jugar EcoCatcher</a>
-
-    <div class="rules">
-      <p>Reglas</p>
-      <ul>
-        <li>10 preguntas seleccionadas al azar.</li>
-        <li>Solo hay una respuesta correcta por pregunta.</li>
-        <li>Tu puntaje se guarda al finalizar.</li>
-        <li>Puedes repetir el quiz las veces que quieras.</li>
-      </ul>
-    </div>
-  </div>
+  <script>
+    function toggleQS() {
+      const btn  = document.getElementById('qs-btn');
+      const body = document.getElementById('qs-body');
+      const open = body.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open);
+    }
+  </script>
 </body>
 </html>
