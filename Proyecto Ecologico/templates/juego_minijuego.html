@@ -74,6 +74,44 @@
       font-size: .82rem; font-weight: 700; color: #a5d6a7;
     }
 
+    /* insignia de dificultad activa, junto al puntaje en el HUD */
+    .diff-badge {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 99px;
+      padding: .28rem .75rem;
+      font-size: .8rem; font-weight: 700;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+    .diff-badge.easy   { color: #a5d6a7; border-color: rgba(165,214,167,.35); }
+    .diff-badge.medium { color: #ffcc80; border-color: rgba(255,204,128,.35); }
+    .diff-badge.hard   { color: #ef9a9a; border-color: rgba(239,154,154,.4); }
+
+    /* selector de dificultad dentro del overlay de inicio / fin de juego */
+    .diff-select-label {
+      font-size: .78rem; font-weight: 700; color: #80cbc4;
+      text-transform: uppercase; letter-spacing: .06em;
+      margin-bottom: .6rem;
+    }
+    .diff-buttons {
+      display: flex; gap: .6rem; justify-content: center;
+    }
+    .diff-btn {
+      font-family: inherit;
+      font-size: .85rem; font-weight: 800; line-height: 1.5;
+      color: #fff;
+      border: none; border-radius: var(--radius-sm);
+      padding: .7rem .9rem;
+      cursor: pointer;
+      min-width: 84px;
+      transition: opacity .2s, transform .15s;
+    }
+    .diff-btn:hover  { opacity: .88; }
+    .diff-btn:active { transform: scale(.96); }
+    .diff-easy   { background: linear-gradient(135deg, #43a047, #66bb6a); box-shadow: 0 4px 16px rgba(67,160,71,.4); }
+    .diff-medium { background: linear-gradient(135deg, #ef6c00, #ffa726); box-shadow: 0 4px 16px rgba(239,108,0,.4); }
+    .diff-hard   { background: linear-gradient(135deg, #b71c1c, #ef5350); box-shadow: 0 4px 16px rgba(183,28,28,.4); }
+
     .timer-badge {
       background: rgba(255,255,255,.08);
       border: 1px solid rgba(255,255,255,.12);
@@ -167,7 +205,13 @@
     #gameCanvas {
       width: 640px;
       height: 468px;
+      transition: border-color .3s;
     }
+    /* el borde del canvas cambia de color según la dificultad elegida,
+       para que se note de un vistazo qué tan intenso está el juego */
+    .canvas-wrapper.diff-easy   #gameCanvas { border-color: rgba(102,187,106,.5); }
+    .canvas-wrapper.diff-medium #gameCanvas { border-color: rgba(255,167,38,.55); }
+    .canvas-wrapper.diff-hard   #gameCanvas { border-color: rgba(239,83,80,.6); }
 
     .overlay {
       position: absolute;
@@ -257,6 +301,31 @@
     }
     body.is-touch .touch-controls {
       display: flex;
+    }
+
+    /* --- Ajustes solo para pantallas de móvil (no afecta escritorio) --- */
+    @media (max-width: 700px) {
+      /* el canvas se achica para caber en pantalla y queda centrado */
+      .canvas-wrapper {
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
+      }
+      #gameCanvas {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 520 / 380;
+      }
+      /* los botones táctiles ocupan toda la fila, quedando apilados
+         justo debajo del canvas y arriba del panel de reglas */
+      .touch-controls {
+        flex: 1 1 100%;
+        max-width: 420px;
+        margin: .85rem auto 0;
+      }
+      .game-layout {
+        justify-content: center;
+      }
     }
     .touch-btn {
       display: flex;
@@ -419,6 +488,33 @@
     }
     .home-btn-fixed:hover  { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.35); }
     .home-btn-fixed:active { transform: scale(.93); }
+
+    /* -- CONFETI / FUEGOS ARTIFICIALES al ganar -- */
+    .confetti-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 30;
+    }
+    .confetti-piece {
+      position: absolute;
+      top: -20px;
+      border-radius: 2px;
+      animation: confetti-fall linear forwards;
+    }
+    @keyframes confetti-fall {
+      to { transform: translateY(110vh) rotate(540deg); opacity: .3; }
+    }
+    .spark-piece {
+      position: absolute;
+      border-radius: 50%;
+      animation: spark-burst ease-out forwards;
+    }
+    @keyframes spark-burst {
+      0%   { transform: translate(0, 0) scale(1);   opacity: 1; }
+      100% { transform: translate(var(--sx), var(--sy)) scale(0); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -433,6 +529,7 @@
     </div>
     <div class="lives" id="lives">❤️❤️❤️</div>
     <div class="hud-score">🌿 <span id="score">0</span></div>
+    <div class="diff-badge" id="diffBadge">🌱 Fácil</div>
     <div class="timer-badge" id="timer">50s</div>
   </div>
 
@@ -465,12 +562,28 @@
           Usa ← → para moverte y ESPACIO para sprintar.<br>
           <span style="color:#ffe082">⏱️ Tiempo extra &nbsp;|&nbsp; 🛡️ Escudo protege una vida &nbsp;|&nbsp; ⚡ Reserva de stamina &nbsp;|&nbsp; ❤️ Cura una vida</span>
         </p>
-        <button class="overlay-btn" id="overlayBtn" onclick="startGame()">Jugar 🌍</button>
+        <div class="diff-select" id="diffSelect">
+          <p class="diff-select-label" id="diffSelectLabel">Elige tu dificultad</p>
+          <div class="diff-buttons">
+            <button type="button" class="diff-btn diff-easy"   onclick="startGame('easy')">🌱<br>Fácil</button>
+            <button type="button" class="diff-btn diff-medium" onclick="startGame('medium')">🌿<br>Intermedio</button>
+            <button type="button" class="diff-btn diff-hard"   onclick="startGame('hard')">🔥<br>Difícil</button>
+          </div>
+        </div>
         <div class="overlay-nav hidden" id="overlayNav">
           <a href="/" class="overlay-nav-btn">🏠 Inicio</a>
           <a href="/leaderboard" class="overlay-nav-btn">🏆 Ranking</a>
         </div>
       </div>
+    </div>
+
+    <!-- Controles táctiles: solo visibles en móvil (ver body.is-touch en CSS).
+         Va aquí dentro de game-layout para que, en pantallas angostas,
+         quede apilado justo debajo del canvas y arriba del panel de reglas. -->
+    <div class="touch-controls" id="touchControls">
+      <button type="button" class="touch-btn" id="btnLeft" aria-label="Mover izquierda">◀</button>
+      <button type="button" class="touch-btn touch-btn-sprint" id="btnSprint" aria-label="Sprint">⚡ Sprint</button>
+      <button type="button" class="touch-btn" id="btnRight" aria-label="Mover derecha">▶</button>
     </div>
 
     <!-- Panel lateral de información -->
@@ -492,13 +605,6 @@
       </div>
       <p class="bins-caption">Cualquier residuo atrapado suma +25 pts</p>
     </aside>
-  </div>
-
-  <!-- Controles táctiles: solo visibles en móvil (ver body.is-touch en CSS) -->
-  <div class="touch-controls" id="touchControls">
-    <button type="button" class="touch-btn" id="btnLeft" aria-label="Mover izquierda">◀</button>
-    <button type="button" class="touch-btn touch-btn-sprint" id="btnSprint" aria-label="Sprint">⚡ Sprint</button>
-    <button type="button" class="touch-btn" id="btnRight" aria-label="Mover derecha">▶</button>
   </div>
 
   <p class="controls-hint">← → Moverse &nbsp;|&nbsp; ESPACIO Sprint &nbsp;|&nbsp; Móvil: usa los botones</p>
@@ -523,7 +629,6 @@ const SPRINT_DRAIN  = 1.8;
 const STAMINA_REGEN = 0.55;
 const BASE_SPEED  = 4;
 const SPRINT_MULT = 2.2;
-const BASE_FALL   = 2.8;
 
 // power-ups disponibles y cuánto duran / cuánto tiempo dan
 const POWERUP_TYPES = {
@@ -536,13 +641,41 @@ const POWERUP_TYPES = {
 // la reserva de stamina queda ligeramente favorecida sobre el resto
 const POWERUP_WEIGHTS = { time: 1, shield: 1, stamina: 1.3, heal: 1 };
 const TIME_BONUS    = 5;    // segundos que añade el power-up de tiempo
-const MAX_TIME_POWERUPS = 3; // máximo de relojes por partida
-const SHIELD_DURATION = 8000; // ms que dura el escudo
+
 const STAMINA_BONUS   = 40;   // stamina reserva que añade el power-up
 const HEAL_AMOUNT      = 1;    // vidas que restaura el power-up de curación
 const POINTS_PER_TRASH  = 25;   // puntos base por residuo
 const COMBO_EVERY       = 3;    // recogidas para subir de nivel de combo
-const COMBO_STEP        = 0.1;  // cuánto sube el multiplicador por nivel
+
+// -- CONFIGURACIÓN POR DIFICULTAD --
+// fallBase/fallGrowth: qué tan rápido caen los residuos, y qué tan rápido
+// se acelera esa caída con el tiempo. spawnBase/spawnMin/spawnDecay: cada
+// cuántos frames aparece un residuo nuevo (más bajo = más seguido).
+// comboStep: cuánto sube el multiplicador cada COMBO_EVERY recogidas.
+const DIFFICULTIES = {
+  easy: {
+    label: "Fácil", emoji: "🌱", cssClass: "easy",
+    fallBase: 2.2, fallGrowth: 0.05,
+    spawnBase: 105, spawnMin: 50, spawnDecay: 1.1,
+    comboStep: 0.1,
+    maxTimePowerups: 4, shieldDuration: 8000,
+  },
+  medium: {
+    label: "Intermedio", emoji: "🌿", cssClass: "medium",
+    fallBase: 2.8, fallGrowth: 0.08,
+    spawnBase: 90, spawnMin: 35, spawnDecay: 1.5,
+    comboStep: 0.2,
+    maxTimePowerups: 3, shieldDuration: 8000,
+  },
+  hard: {
+    label: "Difícil", emoji: "🔥", cssClass: "hard",
+    fallBase: 3.6, fallGrowth: 0.13,
+    spawnBase: 72, spawnMin: 24, spawnDecay: 2.1,
+    comboStep: 0.4,
+    maxTimePowerups: 3, shieldDuration: 10000,
+  },
+};
+let difficulty = DIFFICULTIES.easy; // dificultad activa (se fija al iniciar partida)
 
 // -- MEJOR PUNTAJE (persiste entre partidas) --
 let bestScore = 0;
@@ -568,10 +701,10 @@ function newState() {
     blocks:     [],
     powerups:   [],
     spawnTimer: 0,
-    spawnRate:  90,
+    spawnRate:  difficulty.spawnBase,
     powerupTimer: 0,
     powerupRate:  546,
-    fallSpeed:  BASE_FALL,
+    fallSpeed:  difficulty.fallBase,
     keys: { left: false, right: false, space: false },
     particles: [],
     // combo
@@ -1163,7 +1296,8 @@ const overlay      = document.getElementById("overlay");
 const oEmoji       = document.getElementById("overlayEmoji");
 const oTitle       = document.getElementById("overlayTitle");
 const oMsg         = document.getElementById("overlayMsg");
-const oBtn         = document.getElementById("overlayBtn");
+const diffBadgeEl     = document.getElementById("diffBadge");
+const canvasWrapperEl = document.querySelector(".canvas-wrapper");
 
 // -- DETECCIÓN DE DISPOSITIVO TÁCTIL --
 // se usa capacidad táctil real (no solo el ancho de pantalla), así una
@@ -1237,7 +1371,15 @@ ligarBotonMantenido(btnSprint,
   () => { state.keys.space = false; });
 
 // -- LOOP PRINCIPAL --
-function startGame() {
+function startGame(diffKey) {
+  // si se llama sin argumento (ej. algún código viejo), se reusa la última dificultad
+  if (diffKey && DIFFICULTIES[diffKey]) difficulty = DIFFICULTIES[diffKey];
+
+  // insignia del HUD y color del canvas, para que se note la dificultad activa
+  diffBadgeEl.textContent = `${difficulty.emoji} ${difficulty.label}`;
+  diffBadgeEl.className = `diff-badge ${difficulty.cssClass}`;
+  canvasWrapperEl.className = `canvas-wrapper diff-${difficulty.cssClass}`;
+
   if (animId) cancelAnimationFrame(animId);
   state = newState();
   state.running = true;
@@ -1299,8 +1441,8 @@ function update(ts, dt) {
 
   // dificultad progresiva: cada segundo que pasa, los bloques caen más rápido
   const elapsed = MAX_TIME - s.timeLeft;
-  s.fallSpeed = BASE_FALL + elapsed * 0.08;
-  s.spawnRate = Math.max(35, 90 - elapsed * 1.5);
+  s.fallSpeed = difficulty.fallBase + elapsed * difficulty.fallGrowth;
+  s.spawnRate = Math.max(difficulty.spawnMin, difficulty.spawnBase - elapsed * difficulty.spawnDecay);
 
   // spawnear bloques de residuos normales
   s.spawnTimer++;
@@ -1321,7 +1463,7 @@ function update(ts, dt) {
     s.powerupTimer = 0;
     // Si ya se spawnearon el máximo de relojes, solo puede salir escudo/stamina/cura
     let tipos = Object.keys(POWERUP_TYPES);
-    if (s.timePowerupsSpawned >= MAX_TIME_POWERUPS) {
+    if (s.timePowerupsSpawned >= difficulty.maxTimePowerups) {
       tipos = tipos.filter(t => t !== "time");
     }
     // el power-up de curación solo puede aparecer una vez por partida,
@@ -1397,7 +1539,7 @@ function update(ts, dt) {
       const newLevel = Math.floor(s.streak / COMBO_EVERY);
       if (newLevel > s.comboLevel) {
         s.comboLevel = newLevel;
-        s.multiplier = parseFloat((1.0 + s.comboLevel * COMBO_STEP).toFixed(1));
+        s.multiplier = parseFloat((1.0 + s.comboLevel * difficulty.comboStep).toFixed(1));
         // popup de subida de combo
         s.comboPopup = {
           text: `COMBO x${s.multiplier.toFixed(1)}! 🔥`,
@@ -1467,7 +1609,7 @@ function activarPowerup(tipo, ts) {
     state.timeLeft = Math.min(state.timeLeft + TIME_BONUS, MAX_TIME);
   } else if (tipo === "shield") {
     state.shieldActive = true;
-    state.shieldEndsAt = ts + SHIELD_DURATION;
+    state.shieldEndsAt = ts + difficulty.shieldDuration;
   } else if (tipo === "stamina") {
     // acumular en la reserva sin superar MAX_STAMINA
     state.staminaReserva = Math.min(MAX_STAMINA, state.staminaReserva + STAMINA_BONUS);
@@ -1621,12 +1763,12 @@ function updateHUD(ts) {
 
   // mostrar racha / próximo combo (independiente del escudo)
   if (s.comboLevel > 0) {
-    powerupEl.textContent = `🔥 Racha x${s.multiplier.toFixed(1)} · ${s.streak % COMBO_EVERY || COMBO_EVERY}/${COMBO_EVERY} para x${(s.multiplier + COMBO_STEP).toFixed(1)}`;
+    powerupEl.textContent = `🔥 Racha x${s.multiplier.toFixed(1)} · ${s.streak % COMBO_EVERY || COMBO_EVERY}/${COMBO_EVERY} para x${(s.multiplier + difficulty.comboStep).toFixed(1)}`;
   } else {
     const next = COMBO_EVERY - (s.streak % COMBO_EVERY);
     powerupEl.textContent = next === COMBO_EVERY && s.streak === 0
       ? ""
-      : `⚡ ${next} más para combo x${(1.0 + COMBO_STEP).toFixed(1)}`;
+      : `⚡ ${next} más para combo x${(1.0 + difficulty.comboStep).toFixed(1)}`;
   }
 }
 
@@ -1649,6 +1791,12 @@ async function endGame(reason) {
 
   overlay.classList.remove("hidden");
 
+  // confeti al ganar (sobrevivir el tiempo); si además es récord, se suman
+  // chispitas doradas estilo fuegos artificiales
+  if (reason === "time") {
+    lanzarConfeti(isNewBest);
+  }
+
   const sc = state.score;
   const bestLine = isNewBest
     ? `<br><span style="color:#ffe082">🏅 ¡Nuevo récord!</span>`
@@ -1664,8 +1812,7 @@ async function endGame(reason) {
     oMsg.innerHTML = `Se te escaparon demasiados residuos. Obtuviste <strong>${sc} puntos</strong>.${bestLine}`;
   }
 
-  oBtn.textContent = "Jugar de nuevo 🔄";
-  oBtn.onclick     = startGame;
+  document.getElementById("diffSelectLabel").textContent = "Jugar de nuevo 🔄 — elige dificultad";
 
   // mostrar botones de navegación al terminar una partida
   document.getElementById("overlayNav").classList.remove("hidden");
@@ -1677,6 +1824,62 @@ document.querySelectorAll(".bin-mini").forEach(c => {
   const binType = parseInt(c.dataset.bin, 10);
   drawTrash(bctx, 0, 0, binType);
 });
+
+// -- CONFETI AL GANAR (y chispitas de fuegos artificiales si es récord) --
+function lanzarConfeti(esRecord) {
+  const layer = document.createElement("div");
+  layer.className = "confetti-layer";
+  document.body.appendChild(layer);
+
+  const colores = ["#56d17e", "#2196d3", "#ffe082", "#ef5350", "#ce93d8", "#80deea"];
+
+  // confeti cayendo desde arriba
+  const cantidad = esRecord ? 90 : 50;
+  for (let i = 0; i < cantidad; i++) {
+    const p = document.createElement("div");
+    p.className = "confetti-piece";
+    const size = 6 + Math.random() * 6;
+    p.style.left   = Math.random() * 100 + "vw";
+    p.style.width  = size + "px";
+    p.style.height = (size * 0.4) + "px";
+    p.style.background = colores[Math.floor(Math.random() * colores.length)];
+    p.style.animationDuration = (2 + Math.random() * 1.5) + "s";
+    p.style.animationDelay = (Math.random() * 0.6) + "s";
+    layer.appendChild(p);
+  }
+
+  // si es récord: chispitas tipo fuegos artificiales, en varias explosiones
+  if (esRecord) {
+    const origenes = [[25, 35], [75, 30], [50, 20], [35, 55], [65, 55]];
+    origenes.forEach((o, idx) => {
+      setTimeout(() => estallido(layer, o[0], o[1], colores), idx * 220);
+    });
+  }
+
+  // limpiar el layer cuando termina la animación
+  setTimeout(() => layer.remove(), esRecord ? 4200 : 3600);
+}
+
+function estallido(layer, xvw, yvh, colores) {
+  const n = 22;
+  for (let i = 0; i < n; i++) {
+    const s = document.createElement("div");
+    s.className = "spark-piece";
+    const ang = (Math.PI * 2 * i) / n;
+    const dist = 60 + Math.random() * 50;
+    s.style.setProperty("--sx", Math.cos(ang) * dist + "px");
+    s.style.setProperty("--sy", Math.sin(ang) * dist + "px");
+    const size = 4 + Math.random() * 4;
+    s.style.width  = size + "px";
+    s.style.height = size + "px";
+    s.style.left = xvw + "vw";
+    s.style.top  = yvh + "vh";
+    s.style.background = colores[Math.floor(Math.random() * colores.length)];
+    s.style.boxShadow = `0 0 6px ${s.style.background}`;
+    s.style.animationDuration = ".8s";
+    layer.appendChild(s);
+  }
+}
 </script>
 </body>
 </html>
