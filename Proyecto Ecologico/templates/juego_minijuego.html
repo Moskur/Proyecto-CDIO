@@ -242,6 +242,52 @@
       flex: 0 0 auto;
     }
 
+    /* controles táctiles: ocultos por defecto, solo aparecen en móvil
+       (la clase .is-touch se agrega vía JS si el dispositivo soporta touch) */
+    .touch-controls {
+      display: none;
+      width: 100%;
+      max-width: 640px;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      margin-top: .85rem;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    body.is-touch .touch-controls {
+      display: flex;
+    }
+    .touch-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,.08);
+      border: 1.5px solid rgba(255,255,255,.18);
+      border-radius: var(--radius-lg);
+      color: #c8e6c9;
+      font-size: 1.5rem;
+      width: 64px;
+      height: 64px;
+      flex: 0 0 auto;
+      touch-action: none;
+      transition: background .12s, transform .1s;
+    }
+    .touch-btn:active,
+    .touch-btn.pressed {
+      background: rgba(255,255,255,.22);
+      transform: scale(.94);
+    }
+    .touch-btn-sprint {
+      flex: 1 1 auto;
+      max-width: 220px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      gap: .4rem;
+      color: #fff9c4;
+      border-color: rgba(255,249,196,.3);
+    }
+
     /* layout que une el canvas y el panel lateral */
     .game-layout {
       display: flex;
@@ -448,7 +494,14 @@
     </aside>
   </div>
 
-  <p class="controls-hint">← → Moverse &nbsp;|&nbsp; ESPACIO Sprint &nbsp;|&nbsp; Móvil: toca los lados</p>
+  <!-- Controles táctiles: solo visibles en móvil (ver body.is-touch en CSS) -->
+  <div class="touch-controls" id="touchControls">
+    <button type="button" class="touch-btn" id="btnLeft" aria-label="Mover izquierda">◀</button>
+    <button type="button" class="touch-btn touch-btn-sprint" id="btnSprint" aria-label="Sprint">⚡ Sprint</button>
+    <button type="button" class="touch-btn" id="btnRight" aria-label="Mover derecha">▶</button>
+  </div>
+
+  <p class="controls-hint">← → Moverse &nbsp;|&nbsp; ESPACIO Sprint &nbsp;|&nbsp; Móvil: usa los botones</p>
   <p class="streak-note">🔥 Racha: cada 3 reciclajes seguidos sin fallar sube tu multiplicador +0.1x (x1.1, x1.2, x1.3…)</p>
 
   <!-- créditos del personaje -->
@@ -1112,6 +1165,12 @@ const oTitle       = document.getElementById("overlayTitle");
 const oMsg         = document.getElementById("overlayMsg");
 const oBtn         = document.getElementById("overlayBtn");
 
+// -- DETECCIÓN DE DISPOSITIVO TÁCTIL --
+// se usa capacidad táctil real (no solo el ancho de pantalla), así una
+// tablet o PC con ventana angosta no muestra botones que no necesita
+const esTactil = ("ontouchstart" in window) || navigator.maxTouchPoints > 0;
+if (esTactil) document.body.classList.add("is-touch");
+
 // -- CONTROLES DE TECLADO --
 document.addEventListener("keydown", e => {
   if (!state) return;
@@ -1138,6 +1197,44 @@ canvas.addEventListener("touchend", () => {
   if (!state) return;
   state.keys.left = state.keys.right = false;
 }, { passive: true });
+
+// -- BOTONES TÁCTILES (izquierda / derecha / sprint) --
+// helper: liga un botón a una tecla de state.keys mientras esté presionado,
+// soportando tanto touch como mouse (útil también al probar en escritorio)
+function ligarBotonMantenido(btn, onDown, onUp) {
+  const activar = e => {
+    e.preventDefault();
+    btn.classList.add("pressed");
+    if (state) onDown();
+  };
+  const soltar = e => {
+    if (e) e.preventDefault();
+    btn.classList.remove("pressed");
+    if (state) onUp();
+  };
+  btn.addEventListener("touchstart", activar, { passive: false });
+  btn.addEventListener("touchend",   soltar,  { passive: false });
+  btn.addEventListener("touchcancel",soltar,  { passive: false });
+  btn.addEventListener("mousedown",  activar);
+  btn.addEventListener("mouseup",    soltar);
+  btn.addEventListener("mouseleave", soltar);
+}
+
+const btnLeft   = document.getElementById("btnLeft");
+const btnRight  = document.getElementById("btnRight");
+const btnSprint = document.getElementById("btnSprint");
+
+ligarBotonMantenido(btnLeft,
+  () => { state.keys.left = true; },
+  () => { state.keys.left = false; });
+
+ligarBotonMantenido(btnRight,
+  () => { state.keys.right = true; },
+  () => { state.keys.right = false; });
+
+ligarBotonMantenido(btnSprint,
+  () => { state.keys.space = true; },
+  () => { state.keys.space = false; });
 
 // -- LOOP PRINCIPAL --
 function startGame() {
