@@ -72,23 +72,23 @@
     /* ── Layout ── */
     .layout {
       display: flex;
-      align-items: flex-start;
       justify-content: center;
-      gap: 1.5rem;
       width: 100%;
-      max-width: 740px;
+      max-width: 460px;
       position: relative;
       z-index: 1;
     }
 
-    /* ── Quiénes Somos panel ── */
+    /* ── Quiénes Somos panel (a un costado, fuera del flujo centrado) ── */
     .qs-panel {
+      position: fixed;
+      left: clamp(1rem, 4vw, 3rem);
+      top: 6rem;
       width: 230px;
-      flex-shrink: 0;
       display: flex;
       flex-direction: column;
       gap: .85rem;
-      padding-top: 4.5rem;
+      z-index: 5;
     }
     .qs-trigger {
       background: var(--white);
@@ -274,9 +274,8 @@
     .link-row a:hover { text-decoration: underline; }
 
     /* ── Responsive ── */
-    @media (max-width: 860px) {
+    @media (max-width: 1080px) {
       .qs-panel { display: none; }
-      .layout { max-width: 460px; }
     }
     @media (max-width: 480px) { .card { padding: 2rem 1.5rem 1.75rem; } h1 { font-size: 1.6rem; } }
   </style>
@@ -290,68 +289,68 @@
   <div class="deco-leaf" style="left:90%; animation-duration:12s; animation-delay:2s;   top:100vh; font-size:1rem;">🍃</div>
   <div class="deco-leaf" style="left:55%; animation-duration:20s; animation-delay:9s;   top:100vh; font-size:.9rem;">🌿</div>
 
-  <div class="layout">
+  <!-- ── Quiénes Somos (a un costado, no afecta el centrado) ── -->
+  <aside class="qs-panel" aria-label="Quiénes somos">
+    <button class="qs-trigger" aria-expanded="false" aria-controls="qs-body" id="qs-btn" onclick="toggleQS()">
+      <span class="qs-trigger-label"><span>👥</span> Quiénes somos</span>
+      <span class="qs-chevron">▾</span>
+    </button>
 
-    <!-- ── Left: Quiénes Somos ── -->
-    <aside class="qs-panel" aria-label="Quiénes somos">
-      <button class="qs-trigger" aria-expanded="false" aria-controls="qs-body" id="qs-btn" onclick="toggleQS()">
-        <span class="qs-trigger-label"><span>👥</span> Quiénes somos</span>
-        <span class="qs-chevron">▾</span>
-      </button>
+    <div class="qs-body" id="qs-body" role="region" aria-labelledby="qs-btn">
+      <div class="qs-uni">
+        <span class="qs-uni-icon">🎓</span>
+        <div class="qs-uni-text">Univ. de Los Lagos<br>Puerto Montt · 1er semestre</div>
+      </div>
 
-      <div class="qs-body" id="qs-body" role="region" aria-labelledby="qs-btn">
-        <div class="qs-uni">
-          <span class="qs-uni-icon">🎓</span>
-          <div class="qs-uni-text">Univ. de Los Lagos<br>Puerto Montt · 1er semestre</div>
-        </div>
+      <p class="qs-desc">
+        Somos un equipo de estudiantes comprometidos con el medio ambiente, desarrollando herramientas digitales para promover hábitos ecológicos.
+      </p>
 
-        <p class="qs-desc">
-          Somos un equipo de estudiantes comprometidos con el medio ambiente, desarrollando herramientas digitales para promover hábitos ecológicos.
-        </p>
+      <div class="qs-members-label">Integrantes</div>
 
-        <div class="qs-members-label">Integrantes</div>
-
-        <div class="qs-member">
-          <div class="qs-avatar">MF</div>
-          <div>
-            <div class="qs-member-name">Matías Fernández</div>
-            <div class="qs-member-role">Desarrollador</div>
-          </div>
-        </div>
-        <div class="qs-member">
-          <div class="qs-avatar">JR</div>
-          <div>
-            <div class="qs-member-name">Javier Ramírez</div>
-            <div class="qs-member-role">Diseño & UX</div>
-          </div>
-        </div>
-        <div class="qs-member">
-          <div class="qs-avatar">VV</div>
-          <div>
-            <div class="qs-member-name">Victor Vega</div>
-            <div class="qs-member-role">Contenido</div>
-          </div>
-        </div>
-
-        <div class="qs-stats">
-          <div class="qs-stat">
-            <div class="qs-stat-icon">♻️</div>
-            <div class="qs-stat-value">3</div>
-            <div class="qs-stat-label">Integr.</div>
-          </div>
-          <div class="qs-stat">
-            <div class="qs-stat-icon">🌿</div>
-            <div class="qs-stat-value">1er</div>
-            <div class="qs-stat-label">Semestre</div>
-          </div>
-          <div class="qs-stat">
-            <div class="qs-stat-icon">🌍</div>
-            <div class="qs-stat-value">100%</div>
-            <div class="qs-stat-label">Eco</div>
-          </div>
+      <div class="qs-member">
+        <div class="qs-avatar">MF</div>
+        <div>
+          <div class="qs-member-name">Matías Fernández</div>
+          <div class="qs-member-role">Desarrollador</div>
         </div>
       </div>
-    </aside>
+      <div class="qs-member">
+        <div class="qs-avatar">JR</div>
+        <div>
+          <div class="qs-member-name">Javier Ramírez</div>
+          <div class="qs-member-role">Diseño & UX</div>
+        </div>
+      </div>
+      <div class="qs-member">
+        <div class="qs-avatar">VV</div>
+        <div>
+          <div class="qs-member-name">Victor Vega</div>
+          <div class="qs-member-role">Contenido</div>
+        </div>
+      </div>
+
+      <div class="qs-stats">
+        <div class="qs-stat">
+          <div class="qs-stat-icon">♻️</div>
+          <div class="qs-stat-value">3</div>
+          <div class="qs-stat-label">Integr.</div>
+        </div>
+        <div class="qs-stat">
+          <div class="qs-stat-icon">🌿</div>
+          <div class="qs-stat-value">1er</div>
+          <div class="qs-stat-label">Semestre</div>
+        </div>
+        <div class="qs-stat">
+          <div class="qs-stat-icon">🌍</div>
+          <div class="qs-stat-value">100%</div>
+          <div class="qs-stat-label">Eco</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="layout">
 
     <!-- ── Center ── -->
     <div class="center-col">
