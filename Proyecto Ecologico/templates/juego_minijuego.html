@@ -83,9 +83,9 @@
       font-size: .8rem; font-weight: 700;
       transition: background .2s, border-color .2s, color .2s;
     }
-    .diff-badge.easy   { color: #a5d6a7; border-color: rgba(165,214,167,.35); }
-    .diff-badge.medium { color: #ffcc80; border-color: rgba(255,204,128,.35); }
-    .diff-badge.hard   { color: #ef9a9a; border-color: rgba(239,154,154,.4); }
+    .diff-badge.easy   { color: #fff; border-color: rgba(165,214,167,.5); background: rgba(76,175,121,.22); }
+    .diff-badge.medium { color: #fff; border-color: rgba(255,204,128,.55); background: rgba(255,167,38,.22); }
+    .diff-badge.hard   { color: #fff; border-color: rgba(239,154,154,.55); background: rgba(239,83,80,.24); }
 
     /* selector de dificultad dentro del overlay de inicio / fin de juego */
     .diff-select-label {
@@ -437,6 +437,34 @@
       line-height: 1.3;
     }
 
+    /* panel de multiplicador de racha por dificultad */
+    /* burbuja propia, separada visualmente del resto del panel */
+    .mult-box {
+      margin-top: 1rem;
+      padding: .85rem .9rem;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius-lg);
+    }
+    .mult-box .info-title { margin-top: 0; }
+
+    .mult-list {
+      list-style: none;
+      display: flex; flex-direction: column; gap: .4rem;
+    }
+    .mult-list li {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: .78rem; font-weight: 700; color: #cfd8dc;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius-sm);
+      padding: .4rem .6rem;
+    }
+    .mult-diff { font-weight: 800; }
+    .mult-easy   { color: #a5d6a7; }
+    .mult-medium { color: #ffcc80; }
+    .mult-hard   { color: #ef9a9a; }
+
     .controls-hint {
       margin-top: .65rem;
       font-size: .75rem; color: rgba(255,255,255,.35);
@@ -604,6 +632,15 @@
         <div class="bin-item"><canvas class="bin-mini" data-bin="3" width="36" height="36"></canvas><span>Plátano</span><span class="bin-pts">+25</span></div>
       </div>
       <p class="bins-caption">Cualquier residuo atrapado suma +25 pts</p>
+
+      <div class="mult-box">
+        <h3 class="info-title">🔥 Multiplicador de racha</h3>
+        <ul class="mult-list">
+          <li><span class="mult-diff mult-easy">🌱 Fácil</span><span>+0.1 cada 3</span></li>
+          <li><span class="mult-diff mult-medium">🌿 Intermedio</span><span>+0.2 cada 3</span></li>
+          <li><span class="mult-diff mult-hard">🔥 Difícil</span><span>+0.4 cada 3</span></li>
+        </ul>
+      </div>
     </aside>
   </div>
 
@@ -638,8 +675,9 @@ const POWERUP_TYPES = {
   heal:    { emoji: "❤️", color: "#ff5252", label: "+1 vida" },
 };
 // pesos relativos al elegir qué power-up cae (más alto = más probable);
-// la reserva de stamina queda ligeramente favorecida sobre el resto
-const POWERUP_WEIGHTS = { time: 1, shield: 1, stamina: 1.3, heal: 1 };
+// la reserva de stamina queda favorecida sobre el resto (subida 20% extra
+// respecto al valor original de 1.3, para que aparezca más seguido)
+const POWERUP_WEIGHTS = { time: 1, shield: 1, stamina: 1.56, heal: 1 };
 const TIME_BONUS    = 5;    // segundos que añade el power-up de tiempo
 
 const STAMINA_BONUS   = 40;   // stamina reserva que añade el power-up
@@ -659,6 +697,7 @@ const DIFFICULTIES = {
     spawnBase: 105, spawnMin: 50, spawnDecay: 1.1,
     comboStep: 0.1,
     maxTimePowerups: 4, shieldDuration: 8000,
+    sprintGrowth: 0,       // en fácil el sprint no se acelera con el tiempo
   },
   medium: {
     label: "Intermedio", emoji: "🌿", cssClass: "medium",
@@ -666,6 +705,7 @@ const DIFFICULTIES = {
     spawnBase: 90, spawnMin: 35, spawnDecay: 1.5,
     comboStep: 0.2,
     maxTimePowerups: 3, shieldDuration: 8000,
+    sprintGrowth: 0.006,   // +0.3 al multiplicador tras los 50s (leve)
   },
   hard: {
     label: "Difícil", emoji: "🔥", cssClass: "hard",
@@ -673,6 +713,7 @@ const DIFFICULTIES = {
     spawnBase: 72, spawnMin: 24, spawnDecay: 2.1,
     comboStep: 0.4,
     maxTimePowerups: 3, shieldDuration: 10000,
+    sprintGrowth: 0.01,    // +0.5 al multiplicador tras los 50s (más notorio)
   },
 };
 let difficulty = DIFFICULTIES.easy; // dificultad activa (se fija al iniciar partida)
@@ -1433,16 +1474,18 @@ function update(ts, dt) {
     s.sprinting = false;
   }
 
-  // mover jugador
-  const spd = BASE_SPEED * (s.sprinting && s.stamina > 0 ? SPRINT_MULT : 1);
-  if (s.keys.left)  s.player.x -= spd;
-  if (s.keys.right) s.player.x += spd;
-  s.player.x = Math.max(0, Math.min(CANVAS_W - PLAYER_W, s.player.x));
-
   // dificultad progresiva: cada segundo que pasa, los bloques caen más rápido
   const elapsed = MAX_TIME - s.timeLeft;
   s.fallSpeed = difficulty.fallBase + elapsed * difficulty.fallGrowth;
   s.spawnRate = Math.max(difficulty.spawnMin, difficulty.spawnBase - elapsed * difficulty.spawnDecay);
+
+  // mover jugador: en Intermedio/Difícil el sprint se vuelve un poco más
+  // rápido con el tiempo, para compensar que caen más residuos más rápido
+  const sprintMultActual = SPRINT_MULT + elapsed * difficulty.sprintGrowth;
+  const spd = BASE_SPEED * (s.sprinting ? sprintMultActual : 1);
+  if (s.keys.left)  s.player.x -= spd;
+  if (s.keys.right) s.player.x += spd;
+  s.player.x = Math.max(0, Math.min(CANVAS_W - PLAYER_W, s.player.x));
 
   // spawnear bloques de residuos normales
   s.spawnTimer++;
